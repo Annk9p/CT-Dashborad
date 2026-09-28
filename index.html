@@ -554,7 +554,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
     </div>
     <div class="ox-chart-grid">
       <div class="ox-chart">
-        <div class="ox-chart__head"><div><div class="ox-chart__title" id="ttl-people">โพสต์แล้วต่อคน</div><div class="ox-chart__sub" id="sub-people">เรียงจากมากไปน้อย</div></div></div>
+        <div class="ox-chart__head"><div><div class="ox-chart__title" id="ttl-people">ครีเอเตอร์</div><div class="ox-chart__sub" id="sub-people">เรียงจากมากไปน้อย</div></div><div class="ox-legend" id="lg-people"></div></div>
         <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-people" role="img"></canvas></div></div>
       </div>
       <div class="ox-chart">
@@ -565,10 +565,10 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 
     <div class="ox-section-title"><h2 data-i18n="t.crew">บทบาททีมงาน — จำนวนคลิปต่อคน</h2><span class="ox-xs ox-muted" id="sub-crew">นับจากคอลัมน์ Recorder / Editor / Actor / Voice over</span></div>
     <div class="ox-chart-grid">
-      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.recorder">ถ่าย (Recorder)</div><div class="ox-chart__sub" id="sub-recorder">—</div></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-recorder" role="img"></canvas></div></div></div>
-      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.editor">ตัดต่อ (Editor)</div><div class="ox-chart__sub" id="sub-editor">—</div></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-editor" role="img"></canvas></div></div></div>
-      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.actor">นักแสดง (Actor)</div><div class="ox-chart__sub" id="sub-actor">—</div></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-actor" role="img"></canvas></div></div></div>
-      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.voice">พากย์ (Voice over)</div><div class="ox-chart__sub" id="sub-voice">—</div></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-voice" role="img"></canvas></div></div></div>
+      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.recorder">ถ่าย (Recorder)</div><div class="ox-chart__sub" id="sub-recorder">—</div></div><div class="ox-legend" id="lg-recorder"></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-recorder" role="img"></canvas></div></div></div>
+      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.editor">ตัดต่อ (Editor)</div><div class="ox-chart__sub" id="sub-editor">—</div></div><div class="ox-legend" id="lg-editor"></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-editor" role="img"></canvas></div></div></div>
+      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.actor">นักแสดง (Actor)</div><div class="ox-chart__sub" id="sub-actor">—</div></div><div class="ox-legend" id="lg-actor"></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-actor" role="img"></canvas></div></div></div>
+      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.voice">พากย์ (Voice over)</div><div class="ox-chart__sub" id="sub-voice">—</div></div><div class="ox-legend" id="lg-voice"></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-voice" role="img"></canvas></div></div></div>
     </div>
 
     <div class="kpi-card">
@@ -815,7 +815,7 @@ const DICT = {
     'p.this_week': 'สัปดาห์นี้', 'p.last_week': 'สัปดาห์ก่อน', 'p.this_month': 'เดือนนี้', 'p.last_month': 'เดือนก่อน', 'p.all_year': 'ทั้งปี', 'p.custom': 'กำหนดเอง', to: 'ถึง',
     allBrands: 'ทุกแบรนด์', allStatus: 'ทุกสถานะ', allTypes: 'ทุกประเภท', creators: 'ครีเอเตอร์', status: 'สถานะ', all: 'ทั้งหมด', perPage: 'แสดงต่อหน้า', prev: 'ก่อนหน้า', next: 'ถัดไป', cancel: 'ยกเลิก',
     'k.target': 'เป้าหมายรวม (คลิป)', 'k.done': 'โพสต์แล้ว (Done)', 'k.bal': 'ขาด / เกินเป้า', 'k.pct': 'ความสำเร็จ', 'k.myTarget': 'เป้าหมายช่วงนี้', 'k.todo': 'คงเหลือต้องทำ',
-    'c.trend': 'คลิปที่โพสต์แล้วตามช่วงเวลา', 'c.trendAny': 'จำนวนคลิปตามช่วงเวลา', 'c.peopleAny': 'จำนวนคลิปต่อคน', 'c.people': 'โพสต์แล้วต่อคน', 'c.people.sub': 'เรียงจากมากไปน้อย', 'c.type': 'สัดส่วนตามประเภทคลิป', 'c.type.sub': 'เฉพาะที่โพสต์แล้ว (Done)',
+    'c.trend': 'คลิปที่โพสต์แล้วตามช่วงเวลา', 'c.trendAny': 'จำนวนคลิปตามช่วงเวลา', 'c.peopleAny': 'ครีเอเตอร์', 'c.people': 'ครีเอเตอร์', 'c.people.sub': 'เรียงจากมากไปน้อย', 'c.type': 'สัดส่วนตามประเภทคลิป', 'c.type.sub': 'เฉพาะที่โพสต์แล้ว (Done)',
     't.matrix': 'ผลงานรายบุคคล เทียบเป้าหมาย', 't.clips': 'รายการคลิปตามเงื่อนไข', 't.myClips': 'รายการคลิป', 't.reuse': 'คลิปพร้อมนำไปใช้', 't.reuse.sub': 'คลิกแถวเพื่อดูตัวอย่างคลิป · คัดลอกลิงก์ TikTok หรือที่อยู่ไฟล์ต้นฉบับได้ทันที',
     'h.creator': 'ครีเอเตอร์', 'h.elT': 'Eloop เป้า', 'h.elD': 'Eloop โพสต์', 'h.mvT': 'Moov เป้า', 'h.mvD': 'Moov โพสต์', 'h.target': 'รวมเป้า', 'h.done': 'โพสต์แล้ว', 'h.gap': 'ขาด/เกิน', 'h.pct': 'ความสำเร็จ', 'h.status': 'สถานะ',
     'h.recorder': 'ถ่าย (Recorder)', 'h.editor': 'ตัดต่อ (Editor)', 'h.actor': 'นักแสดง (Actor)', 'h.voice': 'พากย์ (Voice)', 'yt.allPlaylists': 'ทุก Playlist', 'yt.allOwners': 'ทุก Owner', 'yt.notStarted': 'ยังไม่เริ่ม', 'yt.search': 'ค้นหาหัวข้อ สินค้า หรือชื่อคน', 'yt.k.total': 'หัวข้อทั้งหมด (2026)', 'yt.k.done': 'เสร็จแล้ว (Done)', 'yt.k.wip': 'กำลังทำ (In Progress + Draft)', 'yt.k.todo': 'ยังไม่เริ่ม', 'yt.c.playlist': 'หัวข้อต่อ Playlist', 'yt.c.playlist.sub': 'แยกตามสถานะ', 'yt.c.status': 'สัดส่วนสถานะ', 'yt.c.status.sub': 'ทุกหัวข้อปี 2026 ตามตัวกรอง', 'yt.crew': 'บทบาททีมงาน — จำนวนหัวข้อต่อคน', 'yt.crew.sub': 'นับจากคอลัมน์ Owner / MC / Editor', 'yt.t.list': 'รายการหัวข้อ YouTube 2026', 'yt.shoot': 'วันถ่าย', 'yt.links': 'ลิงก์', 'yt.script': 'สคริปต์', 'yt.video': 'วิดีโอ', 'yt.ofTotal': '{p}% ของทั้งหมด', 'yt.topics': 'หัวข้อ', 'yt.updated': 'อัปเดตล่าสุด {t} · แหล่งข้อมูล: Google Sheet (YouTube Plan) · เฉพาะส่วน "Youtube 2026"', 'yt.noData': 'ยังไม่มีข้อมูล YouTube 2026', 'yt.noDataHint': 'ตรวจว่าชีตมีแถวหัวข้อ "Youtube 2026" และรัน update_data.sh', refreshed: 'โหลดข้อมูลแล้ว · {t}', allPeople: 'ทุกคน (รวมภาระงาน)', 't.summary': 'รวมภาระงานทุกคน', 'h.ttTotal': 'TikTok รวม', 'h.ttTarget': 'เป้า TikTok', 'h.ytTotal': 'YouTube รวม', 'h.grand': 'รวมทั้งหมด', summarySub: 'TikTok: คลิปในช่วง {a} – {b} · YouTube: หัวข้อปี 2026 ทั้งหมด (นับตามบทบาท)', allPeopleName: 'ทุกคน', allPeopleQuota: 'ภาระงานรวมของทีม', updatedAt: 'ข้อมูลล่าสุด {t}', updatedStale: 'ข้อมูลล่าสุด {t} (เกิน 1 ชม.)', preview: 'ตัวอย่างคลิป', previewHint: 'คลิกแถวเพื่อดูตัวอย่างคลิป', noVideo: 'คลิปนี้ยังไม่มีลิงก์วิดีโอ', close: 'ปิด', 't.crew': 'บทบาททีมงาน — จำนวนคลิปต่อคน', 't.crew.sub': 'นับจากคอลัมน์ Recorder / Editor / Actor / Voice over', crewSub: '{n} คลิป · {p} คน', copyTopic: 'คัดลอกหัวข้อ', copiedTopic: 'คัดลอกหัวข้อแล้ว', nSelected: 'เลือก {n} รายการ', clear: 'ล้าง', byStatus: 'แยกตามสถานะ', 'h.date': 'วันที่', 'h.brand': 'แบรนด์', 'h.product': 'สินค้า', 'h.type': 'ประเภท', 'h.topic': 'หัวข้อคลิป', 'h.file': 'ไฟล์', 'h.actions': 'นำไปใช้',
@@ -843,7 +843,7 @@ const DICT = {
     'p.this_week': 'This week', 'p.last_week': 'Last week', 'p.this_month': 'This month', 'p.last_month': 'Last month', 'p.all_year': 'Whole year', 'p.custom': 'Custom', to: 'to',
     allBrands: 'All brands', allStatus: 'All statuses', allTypes: 'All types', creators: 'Creators', status: 'Status', all: 'All', perPage: 'Per page', prev: 'Previous', next: 'Next', cancel: 'Cancel',
     'k.target': 'Total target (clips)', 'k.done': 'Posted (Done)', 'k.bal': 'Short / over target', 'k.pct': 'Achievement', 'k.myTarget': 'Target this period', 'k.todo': 'Remaining to do',
-    'c.trend': 'Posted clips over time', 'c.trendAny': 'Clips over time', 'c.peopleAny': 'Clips per creator', 'c.people': 'Posted per creator', 'c.people.sub': 'Sorted high to low', 'c.type': 'Share by content type', 'c.type.sub': 'Posted (Done) only',
+    'c.trend': 'Posted clips over time', 'c.trendAny': 'Clips over time', 'c.peopleAny': 'Creators', 'c.people': 'Creators', 'c.people.sub': 'Sorted high to low', 'c.type': 'Share by content type', 'c.type.sub': 'Posted (Done) only',
     't.matrix': 'Per-creator delivery vs target', 't.clips': 'Clips matching filters', 't.myClips': 'Clips', 't.reuse': 'Ready-to-use clips', 't.reuse.sub': 'Click a row to preview the clip · copy the TikTok link or source file path instantly',
     'h.creator': 'Creator', 'h.elT': 'Eloop target', 'h.elD': 'Eloop posted', 'h.mvT': 'Moov target', 'h.mvD': 'Moov posted', 'h.target': 'Target', 'h.done': 'Posted', 'h.gap': 'Gap', 'h.pct': 'Achievement', 'h.status': 'Status',
     'h.recorder': 'Recorder', 'h.editor': 'Editor', 'h.actor': 'Actor', 'h.voice': 'Voice over', 'yt.allPlaylists': 'All playlists', 'yt.allOwners': 'All owners', 'yt.notStarted': 'Not started', 'yt.search': 'Search topic, product or person', 'yt.k.total': 'Total topics (2026)', 'yt.k.done': 'Done', 'yt.k.wip': 'In progress + Draft', 'yt.k.todo': 'Not started', 'yt.c.playlist': 'Topics per playlist', 'yt.c.playlist.sub': 'By status', 'yt.c.status': 'Status share', 'yt.c.status.sub': 'All 2026 topics matching filters', 'yt.crew': 'Crew roles — topics per person', 'yt.crew.sub': 'From the Owner / MC / Editor columns', 'yt.t.list': 'YouTube 2026 topics', 'yt.shoot': 'Shoot date', 'yt.links': 'Links', 'yt.script': 'Script', 'yt.video': 'Video', 'yt.ofTotal': '{p}% of total', 'yt.topics': 'topics', 'yt.updated': 'Updated {t} · Source: Google Sheet (YouTube Plan) · "Youtube 2026" section only', 'yt.noData': 'No YouTube 2026 data yet', 'yt.noDataHint': 'Check the sheet has a "Youtube 2026" header row and run update_data.sh', refreshed: 'Data loaded · {t}', allPeople: 'All people (workload summary)', 't.summary': 'Workload summary — all people', 'h.ttTotal': 'TikTok total', 'h.ttTarget': 'TikTok target', 'h.ytTotal': 'YouTube total', 'h.grand': 'Grand total', summarySub: 'TikTok: clips in {a} – {b} · YouTube: all 2026 topics (by role)', allPeopleName: 'All people', allPeopleQuota: 'Team workload summary', updatedAt: 'Data updated {t}', updatedStale: 'Data updated {t} (over 1 h ago)', preview: 'Clip preview', previewHint: 'Click a row to preview the clip', noVideo: 'This clip has no video link yet', close: 'Close', 't.crew': 'Crew roles — clips per person', 't.crew.sub': 'From the Recorder / Editor / Actor / Voice over columns', crewSub: '{n} clips · {p} people', copyTopic: 'Copy topic', copiedTopic: 'Topic copied', nSelected: '{n} selected', clear: 'Clear', byStatus: 'By status', 'h.date': 'Date', 'h.brand': 'Brand', 'h.product': 'Product', 'h.type': 'Type', 'h.topic': 'Topic', 'h.file': 'File', 'h.actions': 'Use',
@@ -1014,6 +1014,40 @@ const donutLabels = { id: 'donutLabels', afterDatasetsDraw(chart){
   });
   ctx.restore();
 } };
+/* หลายคนเกิน 5 ชุดสี — ใช้ token 5 สีเดิมแล้วผสมกับพื้นหลังเป็นชั้นถัดไป (ยังไม่มี hex ใหม่ในโค้ด) */
+function mixHex(hex, target, amount){
+  const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const [r, g, b] = p(hex.length === 4 ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}` : hex), [tr, tg, tb] = p(target);
+  const m = (a, t) => Math.round(a + (t - a) * amount).toString(16).padStart(2, '0');
+  return `#${m(r, tr)}${m(g, tg)}${m(b, tb)}`;
+}
+function slicePalette(n){
+  const base = [1, 2, 3, 4, 5].map(chartColor), surface = tok('--omnix-surface') || '#ffffff';
+  return Array.from({ length: n }, (_, i) => { const tier = Math.floor(i / 5); return tier ? mixHex(base[i % 5], surface, Math.min(0.2 + tier * 0.22, 0.66)) : base[i % 5]; });
+}
+/* ชิ้นสีอ่อนหรือไม่ — ใช้เลือกสีตัวอักษรให้อ่านออกทั้งสองธีม */
+function onLight(hex){
+  if (!/^#[0-9a-f]{6}$/i.test(hex || '')) return false;
+  const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(v => v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.42;
+}
+/* ป้ายในชิ้นโดนัท: ชื่อ + จำนวน (x.x%) — ชิ้นที่แคบไปดูได้จาก legend/tooltip */
+const donutNames = { id: 'donutNames', afterDatasetsDraw(chart){
+  const meta = chart.getDatasetMeta(0), data = chart.data.datasets[0].data, total = data.reduce((a, b) => a + b, 0); if (!total) return;
+  const { ctx } = chart; ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  meta.data.forEach((arc, i) => {
+    const v = data[i]; if (!v) return; const ang = arc.endAngle - arc.startAngle; if (ang < 0.34) return;
+    const mid = (arc.startAngle + arc.endAngle) / 2, r = (arc.innerRadius + arc.outerRadius) / 2;
+    const x = arc.x + Math.cos(mid) * r, y = arc.y + Math.sin(mid) * r;
+    const name = String(chart.data.labels[i]), pct = (v / total * 100).toFixed(1) + '%';
+    ctx.fillStyle = onLight(chart.data.datasets[0].backgroundColor[i]) ? '#131820' : '#fff';   // ชิ้นสีอ่อนใช้ตัวอักษรเข้ม
+    ctx.font = `600 11px ${tok('--omnix-font')}`;
+    ctx.fillText(name.length > 12 ? name.slice(0, 11) + '…' : name, x, y - 7);
+    ctx.font = `500 10px ${tok('--omnix-font')}`;
+    ctx.fillText(`${v} (${pct})`, x, y + 6);
+  });
+  ctx.restore();
+} };
 const gridOpts = () => ({ color: tok('--omnix-chart-grid'), drawTicks: false });
 const noGrid = { display: false };
 const charts = {};
@@ -1156,6 +1190,17 @@ async function loadSheet(){
   }
 }
 
+/* โดนัทชุดคน — ชื่อ/จำนวน/% บนชิ้น และ legend ครบทุกคนใต้หัวกราฟ */
+function drawDonut(key, canvasId, legendId, list){
+  const el = document.getElementById(canvasId), lg = document.getElementById(legendId);
+  const total = list.reduce((a, x) => a + x[1], 0), colors = slicePalette(list.length);
+  if (lg) legend(lg, list.map((x, i) => [`${x[0]} ${x[1]} (${(x[1] / total * 100).toFixed(1)}%)`, colors[i]]));
+  if (!window.Chart || !list.length) return;
+  charts[key] = new Chart(el, { type: 'doughnut', plugins: [donutNames],
+    data: { labels: list.map(x => x[0]), datasets: [{ data: list.map(x => x[1]), backgroundColor: colors, borderColor: tok('--omnix-surface'), borderWidth: 2, hoverOffset: 4 }] },
+    options: { cutout: '52%', plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed} ${t('clips')} (${(i.parsed / total * 100).toFixed(1)}%)` } } } } });
+}
+
 /* ===== 6. ภาพรวมทีม ===== */
 function computeStaff(clips, start, end, brand, quotas){
   const weeks = targetWeeks(start, end);
@@ -1236,8 +1281,7 @@ function renderManager(){
   $('ttl-people').textContent = t(isAllSt ? 'c.people' : 'c.peopleAny');
   $('sub-people').textContent = `${t('c.people.sub')} · ${stLabel}`;
   chartState('c-people', peopleTotal ? '' : 'empty', rangeLabel);
-  if (window.Chart) charts.people = new Chart($('c-people'), { type: 'bar', plugins: [barLabels], data: { labels: peopleList.map(x => x[0]), datasets: [{ data: peopleList.map(x => x[1]), backgroundColor: chartColor(1), barThickness: 18 }] },
-    options: { indexAxis: 'y', layout: { padding: { right: 72 } }, plugins: { barLabels: { total: peopleTotal }, tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed.x} ${t('clips')} (${(i.parsed.x / peopleTotal * 100).toFixed(1)}%)` } } }, scales: { x: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } }, y: { grid: noGrid, ticks: { autoSkip: false } } } } });
+  drawDonut('people', 'c-people', 'lg-people', peopleList.filter(x => x[1] > 0));
   /* กราฟรอง 2 */
   const tc = {}; chartSet.forEach(c => { const k = c.type || t('unknownType'); tc[k] = (tc[k] || 0) + 1; });
   const sorted = Object.entries(tc).sort((a, b) => b[1] - a[1]), top = sorted.slice(0, 5), rest = sorted.slice(5).reduce((a, x) => a + x[1], 0);
@@ -1256,8 +1300,7 @@ function renderManager(){
     const list = Object.entries(cnt).sort((a, b) => b[1] - a[1]), total = list.reduce((a, x) => a + x[1], 0);
     $(`sub-${key}`).textContent = t('crewSub', { n: fmtN(total), p: list.length });
     chartState(id, list.length ? '' : 'empty', rangeLabel);
-    if (window.Chart) charts[key] = new Chart($(id), { type: 'bar', plugins: [barLabels], data: { labels: list.map(x => x[0]), datasets: [{ data: list.map(x => x[1]), backgroundColor: chartColor(1), barThickness: 18 }] },
-      options: { indexAxis: 'y', layout: { padding: { right: 72 } }, scales: { x: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } }, y: { grid: noGrid, ticks: { autoSkip: false } } }, plugins: { barLabels: { total }, tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed.x} ${t('clips')} (${(i.parsed.x / total * 100).toFixed(1)}%)` } } } } });
+    drawDonut(key, id, `lg-${key}`, list);
   });
 
   /* ตารางรายบุคคล */
