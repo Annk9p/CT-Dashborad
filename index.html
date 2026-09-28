@@ -503,6 +503,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
     <div class="ox-segment" role="tablist" id="platform-tabs" aria-label="Platform">
       <button type="button" role="tab" data-platform="tiktok" class="is-active" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5 2.6 2.6 0 0 1-2.59-2.6 2.6 2.6 0 0 1 3.4-2.47V9.66a5.7 5.7 0 0 0-5.02 9.83 5.69 5.69 0 0 0 9.9-3.98V9.13a7.35 7.35 0 0 0 4.3 1.38V7.42a4.3 4.3 0 0 1-3.25-1.6z"/></svg>TikTok</button>
       <button type="button" role="tab" data-platform="youtube" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.76-1.77C18.3 5 12 5 12 5s-6.3 0-7.84.43A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.76 1.77C5.7 19 12 19 12 19s6.3 0 7.84-.43a2.5 2.5 0 0 0 1.76-1.77A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3L10 15z"/></svg>YouTube</button>
+      <button type="button" role="tab" data-platform="cal" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4h-2V2h-2v2H9V2H7v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14zm0-12H5V6h14z"/></svg>Calendar</button>
     </div>
   </div>
 
@@ -511,10 +512,9 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
       <button type="button" role="tab" data-mode="manager" class="is-active" data-i18n="tab.manager">ภาพรวม</button>
       <button type="button" role="tab" data-mode="personal" data-i18n="tab.personal">ภาระงาน</button>
       <button type="button" role="tab" data-mode="reuse" data-i18n="tab.reuse">คลังวิดีโอ</button>
-      <button type="button" role="tab" data-mode="cal" data-i18n="tab.cal">ปฏิทินคอนเทนต์</button>
     </div>
-    <div class="kpi-legend-bar ox-xs ox-muted" id="status-legend"></div>
   </div>
+  <div class="kpi-legend-bar ox-xs ox-muted" id="status-legend"></div>
 
   <!-- ===================== ภาพรวมทีม ===================== -->
   <section class="kpi-page is-active" id="page-manager" role="tabpanel">
@@ -831,7 +831,7 @@ const DICT = {
     noClipsHint: 'ลองขยายช่วงเวลา หรือเลือกสถานะ "ทั้งหมด"', showing: 'แสดง {a}–{b} จาก {n} รายการ', none: 'ไม่มีรายการ', open: 'เปิด', noLink: 'ไม่มีลิงก์', copyPath: 'คัดลอก Path', copiedPath: 'คัดลอกที่อยู่ไฟล์แล้ว', copyLink: 'คัดลอกลิงก์', copiedLink: 'คัดลอกลิงก์ TikTok แล้ว', copyFail: 'คัดลอกไม่สำเร็จ',
     myQuota: 'โควต้า {n} คลิป/สัปดาห์ (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} สัปดาห์', myTargetSubBrand: '{b} · {w} สัปดาห์', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'จากเป้า {n} คลิป', todo: 'ต้องทำอีก {n} คลิป', metAll: 'ครบตามเป้าแล้ว',
     noMatch: 'ไม่พบคลิปตามเงื่อนไข', noMatchHint: 'ลองเปลี่ยนช่วงเวลา แบรนด์ หรือสถานะ', noSearch: 'ไม่พบคลิปที่ตรงกับคำค้น', noSearchHint: 'ลองเลือก "ทุกสถานะ" หรือพิมพ์คำอื่น',
-    multiHint: 'เลือกได้หลายสถานะ', byStatusN: 'เฉพาะสถานะ {s}', 'tab.cal': 'ปฏิทินคอนเทนต์', 'cal.today': 'วันนี้', 'cal.add': 'วางคอนเทนต์', 'cal.export': 'ส่งออกแผน (CSV)', 'cal.grid': 'ปฏิทินรายเดือน', 'cal.legendPlan': 'แผนที่วางไว้', 'cal.hint': 'ไอคอน = ช่องทางที่โพสต์ · คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง',
+    multiHint: 'เลือกได้หลายสถานะ', byStatusN: 'เฉพาะสถานะ {s}', 'tab.cal': 'Calendar', 'cal.today': 'วันนี้', 'cal.add': 'วางคอนเทนต์', 'cal.export': 'ส่งออกแผน (CSV)', 'cal.grid': 'ปฏิทินรายเดือน', 'cal.legendPlan': 'แผนที่วางไว้', 'cal.hint': 'ไอคอน = ช่องทางที่โพสต์ · คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง',
     'cal.k.month': 'คลิปในชีตเดือนนี้', 'cal.k.plans': 'แผนที่วางไว้', 'cal.k.free': 'วันที่ยังว่าง', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% ของคลิปเดือนนี้', 'cal.plansSub': 'ยังไม่ถึงวัน {n} รายการ', 'cal.freeSub': 'จากวันที่เหลือในเดือน {n} วัน', 'cal.freePast': 'เดือนนี้ผ่านไปแล้ว',
     'cal.meta': '{n} คลิปจากชีต · {p} แผน · {a} – {b}', 'cal.more': 'อีก {n} รายการ', 'cal.less': 'ย่อ', 'cal.upcoming': 'แผนคอนเทนต์ที่วางไว้', 'cal.local': 'บันทึกไว้ในเบราว์เซอร์นี้ — ส่งออก CSV เพื่อนำไปวางในชีต', 'cal.noPlans': 'ยังไม่มีแผนคอนเทนต์ในเดือนนี้', 'cal.noPlansHint': 'คลิกวันในปฏิทิน หรือกดปุ่ม "วางคอนเทนต์"',
     'cal.newTitle': 'วางคอนเทนต์ล่วงหน้า', 'cal.editTitle': 'แก้ไขแผนคอนเทนต์', 'cal.f.note': 'โน้ต / ไอเดีย', 'cal.f.channel': 'ช่องทางที่จะโพสต์', 'cal.h.channel': 'ช่องทาง', 'cal.save': 'บันทึกแผน', 'cal.delete': 'ลบแผนนี้', 'cal.saved': 'บันทึกแผนแล้ว', 'cal.deleted': 'ลบแผนแล้ว', 'cal.confirmDel': 'ลบแผนคอนเทนต์นี้?', 'cal.needTopic': 'กรอกวันที่และหัวข้อคลิปก่อนบันทึก', 'cal.edit': 'แก้ไข', 'cal.dup': 'ทำซ้ำ', 'cal.exported': 'ส่งออกแผน {n} รายการแล้ว', 'cal.noExport': 'ยังไม่มีแผนให้ส่งออก',
@@ -859,7 +859,7 @@ const DICT = {
     noClipsHint: 'Try a wider date range or "All" statuses', showing: 'Showing {a}–{b} of {n}', none: 'No items', open: 'Open', noLink: 'No link', copyPath: 'Copy path', copiedPath: 'File path copied', copyLink: 'Copy link', copiedLink: 'TikTok link copied', copyFail: 'Copy failed',
     myQuota: 'Quota {n} clips/week (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} weeks', myTargetSubBrand: '{b} · {w} weeks', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'of {n} target', todo: '{n} more clips to do', metAll: 'Target met',
     noMatch: 'No clips match the filters', noMatchHint: 'Try another period, brand or status', noSearch: 'No clips match your search', noSearchHint: 'Try "All statuses" or another keyword',
-    multiHint: 'Select more than one', byStatusN: 'Status: {s}', 'tab.cal': 'Content calendar', 'cal.today': 'Today', 'cal.add': 'Plan content', 'cal.export': 'Export plans (CSV)', 'cal.grid': 'Monthly calendar', 'cal.legendPlan': 'Planned', 'cal.hint': 'Icon = channel · click a day to plan content · click a clip to preview',
+    multiHint: 'Select more than one', byStatusN: 'Status: {s}', 'tab.cal': 'Calendar', 'cal.today': 'Today', 'cal.add': 'Plan content', 'cal.export': 'Export plans (CSV)', 'cal.grid': 'Monthly calendar', 'cal.legendPlan': 'Planned', 'cal.hint': 'Icon = channel · click a day to plan content · click a clip to preview',
     'cal.k.month': 'Sheet clips this month', 'cal.k.plans': 'Planned items', 'cal.k.free': 'Empty days left', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% of this month\'s clips', 'cal.plansSub': '{n} still upcoming', 'cal.freeSub': 'of {n} days left this month', 'cal.freePast': 'Month has passed',
     'cal.meta': '{n} clips from sheet · {p} plans · {a} – {b}', 'cal.more': '{n} more', 'cal.less': 'Less', 'cal.upcoming': 'Planned content', 'cal.local': 'Saved in this browser — export CSV to paste into the sheet', 'cal.noPlans': 'No planned content this month', 'cal.noPlansHint': 'Click a day in the calendar or press "Plan content"',
     'cal.newTitle': 'Plan content ahead', 'cal.editTitle': 'Edit planned content', 'cal.f.note': 'Notes / ideas', 'cal.f.channel': 'Channel to post on', 'cal.h.channel': 'Channel', 'cal.save': 'Save plan', 'cal.delete': 'Delete plan', 'cal.saved': 'Plan saved', 'cal.deleted': 'Plan deleted', 'cal.confirmDel': 'Delete this plan?', 'cal.needTopic': 'Enter a date and topic before saving', 'cal.edit': 'Edit', 'cal.dup': 'Duplicate', 'cal.exported': 'Exported {n} plans', 'cal.noExport': 'No plans to export yet',
@@ -1477,32 +1477,33 @@ function renderYouTube(){
   S.exportRows = rows;
 }
 /* ===== 9a. แถบสถานะ — กดเลือกเพื่อกรองหน้าที่เปิดอยู่ (ภาพรวมเลือกหลายสถานะได้) ===== */
+const viewKey = () => S.platform === 'cal' ? 'cal' : S.mode;
 function activeStatuses(){
-  if (S.mode === 'manager') return S.mgr.statuses.filter(v => v !== '__none');
-  if (S.mode === 'personal') return S.my.status === 'all' ? [] : [S.my.status];
-  if (S.mode === 'reuse') return S.re.status === 'all' ? [] : [S.re.status];
+  if (viewKey() === 'manager') return S.mgr.statuses.filter(v => v !== '__none');
+  if (viewKey() === 'personal') return S.my.status === 'all' ? [] : [S.my.status];
+  if (viewKey() === 'reuse') return S.re.status === 'all' ? [] : [S.re.status];
   return S.cal.statuses;
 }
 function toggleStatus(s){
-  if (S.mode === 'manager') {
+  if (viewKey() === 'manager') {
     const cur = S.mgr.statuses.filter(v => v !== '__none');
     S.mgr.statuses = cur.includes(s) ? cur.filter(v => v !== s) : [...cur, s];
     if (S.mgr.statuses.length === STATUSES.length) S.mgr.statuses = [];
     S.mgr.page = 1;
-  } else if (S.mode === 'personal') S.my.status = S.my.status === s ? 'all' : s;
-  else if (S.mode === 'reuse') { S.re.status = S.re.status === s ? 'all' : s; S.re.page = 1; }
+  } else if (viewKey() === 'personal') S.my.status = S.my.status === s ? 'all' : s;
+  else if (viewKey() === 'reuse') { S.re.status = S.re.status === s ? 'all' : s; S.re.page = 1; }
   else S.cal.statuses = S.cal.statuses.includes(s) ? S.cal.statuses.filter(v => v !== s) : [...S.cal.statuses, s];
   render();
 }
 function clearStatuses(){
-  if (S.mode === 'manager') { S.mgr.statuses = []; S.mgr.page = 1; }
-  else if (S.mode === 'personal') S.my.status = 'all';
-  else if (S.mode === 'reuse') { S.re.status = 'all'; S.re.page = 1; }
+  if (viewKey() === 'manager') { S.mgr.statuses = []; S.mgr.page = 1; }
+  else if (viewKey() === 'personal') S.my.status = 'all';
+  else if (viewKey() === 'reuse') { S.re.status = 'all'; S.re.page = 1; }
   else S.cal.statuses = [];
   render();
 }
 function renderStatusLegend(){
-  const sel = activeStatuses(), on = sel.length > 0, multi = S.mode === 'manager' || S.mode === 'cal';
+  const sel = activeStatuses(), on = sel.length > 0, multi = viewKey() === 'manager' || viewKey() === 'cal';
   document.getElementById('status-legend').innerHTML =
     `<button type="button" class="ox-chip kpi-st-btn${on ? '' : ' is-active'}" data-status="__all" aria-pressed="${!on}">${t('all')}</button>` +
     STATUSES.map(s => {
@@ -1612,8 +1613,10 @@ function switchPlatform(p){
   S.platform = p;
   document.querySelectorAll('#platform-tabs [role=tab]').forEach(b => { b.classList.toggle('is-active', b.dataset.platform === p); b.setAttribute('aria-selected', b.dataset.platform === p); });
   document.getElementById('tiktok-tabs').hidden = p !== 'tiktok';
-  if (p === 'youtube') { ['manager', 'personal', 'reuse', 'cal'].forEach(k => document.getElementById(`page-${k}`).classList.remove('is-active')); document.getElementById('page-youtube').classList.add('is-active'); renderYouTube(); }
-  else { document.getElementById('page-youtube').classList.remove('is-active'); switchMode(S.mode); }
+  document.getElementById('status-legend').hidden = p === 'youtube';
+  if (p === 'tiktok') { document.getElementById('page-youtube').classList.remove('is-active'); document.getElementById('page-cal').classList.remove('is-active'); return switchMode(S.mode); }
+  ['manager', 'personal', 'reuse', 'cal', 'youtube'].forEach(k => document.getElementById(`page-${k}`).classList.toggle('is-active', k === (p === 'cal' ? 'cal' : 'youtube')));
+  p === 'cal' ? renderCal() : renderYouTube();
 }
 function updateBadge(){
   const raw = S.platform === 'youtube' ? YT_AT : LOADED_AT; if (!raw) return;
@@ -1621,11 +1624,11 @@ function updateBadge(){
   const stale = (Date.now() - d.getTime()) > 3600e3, el = document.getElementById('updated-badge');
   el.classList.toggle('is-stale', stale); document.getElementById('updated-text').textContent = t(stale ? 'updatedStale' : 'updatedAt', { t: fmtT(d) });
 }
-function render(){ updateBadge(); if (S.platform === 'youtube') return renderYouTube(); if (!ALL.length) return; ({ manager: renderManager, personal: renderPersonal, reuse: renderReuse, cal: renderCal })[S.mode](); }
+function render(){ updateBadge(); if (S.platform === 'youtube') return renderYouTube(); if (!ALL.length) return; if (S.platform === 'cal') return renderCal(); ({ manager: renderManager, personal: renderPersonal, reuse: renderReuse })[S.mode](); }
 function switchMode(m){
   S.mode = m;
   document.querySelectorAll('#mode-tabs [role=tab]').forEach(b => { b.classList.toggle('is-active', b.dataset.mode === m); b.setAttribute('aria-selected', b.dataset.mode === m); });
-  ['manager', 'personal', 'reuse', 'cal'].forEach(k => document.getElementById(`page-${k}`).classList.toggle('is-active', k === m));
+  ['manager', 'personal', 'reuse'].forEach(k => document.getElementById(`page-${k}`).classList.toggle('is-active', k === m));
   render();
 }
 const $ = id => document.getElementById(id), on = (id, ev, fn) => $(id).addEventListener(ev, fn);
@@ -1700,7 +1703,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
 on('btn-csv', 'click', () => {
   const rows = S.exportRows || [], head = ['id', 'date', 'shop', 'product', 'type', 'topic', 'status', 'creator', 'url', 'path'];
   const csv = [head.join(','), ...rows.map(c => head.map(k => `"${String(c[k] ?? '').replace(/"/g, '""')}"`).join(','))].join('\n');
-  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv); a.download = `content-2026-${S.platform === 'youtube' ? 'youtube' : S.mode}-${S.year}-${TODAY}.csv`; a.click();
+  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv); a.download = `content-2026-${S.platform === 'tiktok' ? S.mode : S.platform}-${S.year}-${TODAY}.csv`; a.click();
 });
 
 /* ===== 10. เริ่มต้น ===== */
