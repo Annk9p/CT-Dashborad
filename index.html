@@ -277,18 +277,23 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
   --omnix-chart-other: #94a3b8;
   --omnix-chart-grid: #e6e9ee;
   --omnix-chart-axis: #5b6472;
+  /* สีตามตัวตนแบรนด์ — ใช้ชุดเดียวกันทุกกราฟ/ป้าย/ปฏิทิน */
+  --brand-eloop: #e02b20;
+  --brand-moov: #131820;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not(.light) {
     --omnix-chart-1: #7c7ce8; --omnix-chart-2: #0d9488; --omnix-chart-3: #d97706;
     --omnix-chart-4: #ec4899; --omnix-chart-5: #3b82f6; --omnix-chart-other: #64748b;
     --omnix-chart-grid: #232a35; --omnix-chart-axis: #98a2b1;
+    --brand-eloop: #ff6a5e; --brand-moov: #e7ebf1;   /* ธีมมืด: แดงสว่างขึ้น · ดำกลับเป็นขาว */
   }
 }
 :root[data-theme="dark"], :root.dark {
   --omnix-chart-1: #7c7ce8; --omnix-chart-2: #0d9488; --omnix-chart-3: #d97706;
   --omnix-chart-4: #ec4899; --omnix-chart-5: #3b82f6; --omnix-chart-other: #64748b;
   --omnix-chart-grid: #232a35; --omnix-chart-axis: #98a2b1;
+  --brand-eloop: #ff6a5e; --brand-moov: #e7ebf1;
 }
 
 /* แถวตัวกรอง — แถวเดียว อยู่บนสุดเสมอ */
@@ -676,7 +681,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
     <div class="kpi-card">
       <div class="kpi-table-head">
         <h2 data-i18n="cal.grid">ปฏิทินรายเดือน</h2>
-        <div class="kpi-legend-bar ox-xs ox-muted"><span class="kpi-cal__item is-demo" style="--c:var(--omnix-chart-1)">Eloop</span><span class="kpi-cal__item is-demo" style="--c:var(--omnix-chart-2)">Moov</span><span class="kpi-cal__item is-plan is-demo" data-i18n="cal.legendPlan">แผนที่วางไว้</span><span data-i18n="cal.hint">คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง</span></div>
+        <div class="kpi-legend-bar ox-xs ox-muted"><span class="kpi-cal__item is-demo" style="--c:var(--brand-eloop)">Eloop</span><span class="kpi-cal__item is-demo" style="--c:var(--brand-moov)">Moov</span><span class="kpi-cal__item is-plan is-demo" data-i18n="cal.legendPlan">แผนที่วางไว้</span><span data-i18n="cal.hint">คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง</span></div>
       </div>
       <div class="kpi-cal-wrap"><div class="kpi-cal" id="cal-grid" role="grid"></div></div>
     </div>
@@ -930,7 +935,8 @@ const ICO = { up: 'm12 5-7 7 1.4 1.4L11 8.8V19h2V8.8l4.6 4.6L19 12z', down: 'm12
 const ico = n => `<svg class="ox-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICO[n]}"/></svg>`;
 const STATUS_BADGE = { Done: 'success', 'In Progress': 'warning', Draft: 'info', Reject: 'accent', Stuck: 'danger' };
 const badgeStatus = s => STATUS_BADGE[s] ? `<span class="ox-badge ox-badge--${STATUS_BADGE[s]}" title="${t('st.' + s)}">${s}</span>` : `<span class="ox-badge">${esc(s || '—')}</span>`;
-const badgeBrand = b => `<span class="ox-badge" style="--c:var(--omnix-chart-${b === 'Moov' ? 2 : 1})">${BRAND_LABEL[b] || esc(b)}</span>`;
+const brandVar = b => `var(--brand-${b === 'Moov' ? 'moov' : 'eloop'})`;
+const badgeBrand = b => `<span class="ox-badge" style="--c:${brandVar(b)}">${BRAND_LABEL[b] || esc(b)}</span>`;
 const badgeType = ty => ty ? `<span class="ox-badge">${esc(ty)}</span>` : '<span class="ox-muted">—</span>';
 const highlight = (text, q) => q ? esc(text).replace(new RegExp(`(${escRe(esc(q))})`, 'gi'), '<mark class="kpi-hl">$1</mark>') : esc(text);
 const topicCell = (c, q) => { const txt = c.topic || c.title || ''; return `<div class="kpi-topic"><div class="line-clamp-2" title="${esc(txt)}">${highlight(txt || '—', q)}</div>${txt ? `<button class="ox-btn ox-btn--ghost ox-btn--icon ox-btn--sm" type="button" data-copy="${esc(txt)}" data-msg="${esc(t('copiedTopic'))}" aria-label="${t('copyTopic')}" title="${t('copyTopic')}">${ico('copy')}</button>` : ''}</div>`; };
@@ -973,7 +979,7 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-copy
 /* ===== 4. กราฟ ===== */
 const tok = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const chartColor = i => tok(`--omnix-chart-${i}`) || tok('--omnix-chart-other');
-const brandColor = b => chartColor(b === 'Moov' ? 2 : 1);   // สีตามตัวตน: Eloop = 1, Moov = 2 ทุกกราฟ
+const brandColor = b => tok(b === 'Moov' ? '--brand-moov' : '--brand-eloop');   // สีตามตัวตนแบรนด์ ใช้เหมือนกันทุกกราฟ
 function oxChartDefaults(){
   if (!window.Chart) return;
   Chart.defaults.font.family = tok('--omnix-font'); Chart.defaults.font.size = 12; Chart.defaults.color = tok('--omnix-chart-axis');
@@ -1514,7 +1520,7 @@ function renderCal(){
     const cls = ['kpi-cal__day', out && 'is-out', s === TODAY && 'is-today', s < TODAY && 'is-past'].filter(Boolean).join(' ');
     html += `<div class="${cls}" role="gridcell" data-day="${s}"><div class="kpi-cal__head"><span class="kpi-cal__num">${d.getDate()}</span>${items.length ? `<span class="kpi-cal__count">${items.length}</span>` : ''}</div>`;
     html += shown.map(it => it.kind === 'clip'
-      ? `<button type="button" class="kpi-cal__item st-${esc(it.status)}" style="--c:${it.shop === 'Moov' ? 'var(--omnix-chart-2)' : 'var(--omnix-chart-1)'}" data-clip="${it.id}" title="${esc(`${PLAT_LABEL[platformOf(it)]} · ${it.status} · ${it.creator} · ${it.topic || it.title}`)}"><span class="ox-dot"></span>${platIcon(platformOf(it))}${esc(it.topic || it.title || it.product || '—')}</button>`
+      ? `<button type="button" class="kpi-cal__item st-${esc(it.status)}" style="--c:${brandVar(it.shop)}" data-clip="${it.id}" title="${esc(`${PLAT_LABEL[platformOf(it)]} · ${it.status} · ${it.creator} · ${it.topic || it.title}`)}"><span class="ox-dot"></span>${platIcon(platformOf(it))}${esc(it.topic || it.title || it.product || '—')}</button>`
       : `<button type="button" class="kpi-cal__item is-plan" data-plan="${it.id}" title="${esc(`${PLAT_LABEL[it.channel || 'tiktok']} · ${t('cal.st.' + it.status)} · ${it.creator || ''} · ${it.topic}`)}"><span class="ox-dot"></span>${platIcon(it.channel || 'tiktok')}${esc(it.topic)}</button>`).join('');
     if (items.length > 3) html += `<button type="button" class="kpi-cal__more" data-more="${s}">${expanded ? t('cal.less') : t('cal.more', { n: items.length - 3 })}</button>`;
     html += '</div>';
