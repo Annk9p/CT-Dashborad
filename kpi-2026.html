@@ -210,7 +210,7 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
 .ox-entity-head__sub { font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
 .ox-entity-card .ox-row--between { justify-content: space-between; }
 .ox-entity-card .ox-metric-row { display: flex; align-items: center; justify-content: space-between; gap: var(--omnix-space-2); }
-.ox-entity-card .ox-metric-row + .ox-metric-row { padding-top: var(--omnix-space-2); border-top: 1px solid var(--omnix-border); }
+.ox-metric-block + .ox-metric-block { margin-top: var(--omnix-space-2); padding-top: var(--omnix-space-2); border-top: 1px solid var(--omnix-border); }
 </style>
 </head>
 <body>
@@ -241,6 +241,10 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
       <option value="TikTok">TikTok</option>
       <option value="Facebook">Facebook</option>
       <option value="YouTube">YouTube</option>
+    </select>
+    <label class="ox-label" for="sel-month" style="margin-left:var(--omnix-space-2)">เดือน</label>
+    <select id="sel-month" class="ox-control">
+      <option value="all">ทั้งปี (YTD)</option>
     </select>
     <button class="ox-btn ox-btn--ghost ox-btn--sm" id="btn-refresh" type="button">รีเฟรชข้อมูล</button>
     <span class="ox-filter-bar__spacer"></span>
@@ -275,11 +279,11 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
 
   <div class="ox-chart-grid">
     <div class="ox-chart">
-      <div class="ox-chart__head"><div><div class="ox-chart__title">% ความคืบหน้ายอดวิว เทียบเป้า</div><div class="ox-chart__sub">เรียงจากมากไปน้อย</div></div></div>
+      <div class="ox-chart__head"><div><div class="ox-chart__title">% ความคืบหน้ายอดวิว เทียบเป้า</div><div class="ox-chart__sub" id="sub-progress">เรียงจากมากไปน้อย</div></div></div>
       <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-progress" role="img" aria-label="กราฟแท่งความคืบหน้าเทียบเป้าตามช่องทางและแบรนด์"></canvas></div></div>
     </div>
     <div class="ox-chart">
-      <div class="ox-chart__head"><div><div class="ox-chart__title">สัดส่วนยอดวิวตามแพลตฟอร์ม</div><div class="ox-chart__sub">รวม YTD ตามตัวกรอง</div></div><div class="ox-legend" id="lg-share"></div></div>
+      <div class="ox-chart__head"><div><div class="ox-chart__title">สัดส่วนยอดวิวตามแพลตฟอร์ม</div><div class="ox-chart__sub" id="sub-share">รวม YTD ตามตัวกรอง</div></div><div class="ox-legend" id="lg-share"></div></div>
       <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-share" role="img" aria-label="กราฟโดนัทสัดส่วนยอดวิวตามแพลตฟอร์ม"></canvas></div></div>
     </div>
   </div>
@@ -352,11 +356,11 @@ function parseKpiRows(rows){
     const target = parseNum(r[3]), sum = parseNum(r[17]), progress = parseNum(r[18]), pace = parseNum(r[22]);
     const months = r.slice(5, 17).map(parseNum);
     if (ml.includes('follower')) {
-      data[cur].follower = { target, sum, progress: progress != null ? progress : (target ? sum / target * 100 : null) };
+      data[cur].follower = { target, sum, progress: progress != null ? progress : (target ? sum / target * 100 : null), months, type: 'cumulative' };
     } else if (ml.includes('total views') || ml === 'views' || ml.includes('views organic')) {
-      data[cur].views = { target, sum, progress, pace, months };
+      data[cur].views = { target, sum, progress, pace, months, type: 'cumulative' };
     } else if (ml.includes('engagement rate')) {
-      data[cur].engagement = { target, sum, progress };
+      data[cur].engagement = { target, sum, progress, months, type: 'rate' };
     }
   }
   return data;
@@ -390,6 +394,16 @@ function brandLogo(brand, size){
   return `<span class="ox-brand-logo" style="width:${s}px;height:${s}px"><img src="${src}" alt="${brand}"></span>`;
 }
 function entityIcons(platform, brand, size){ return `<span class="ox-icon-stack">${platformIcon(platform, size)}${brandLogo(brand, size)}</span>`; }
+/* หลอดความคืบหน้าของตัวชี้วัดหนึ่งตัว — ใช้ในการ์ดแยกแบรนด์/แพลตฟอร์ม ให้แต่ละประเภทมีหลอดของตัวเอง */
+function metricBlock(label, stat, fmtValue){
+  const barW = stat.progress != null ? Math.max(2, Math.min(100, stat.progress)) : 0;
+  const valueTxt = stat.value != null ? fmtValue(stat.value) : '—';
+  const targetTxt = stat.target != null ? fmtValue(stat.target) : '—';
+  return `<div class="ox-metric-block">
+    <div class="ox-metric-row"><span class="ox-xs ox-muted">${label}</span><span class="ox-num ox-xs">${valueTxt} / ${targetTxt}</span></div>
+    <div style="height:6px;border-radius:3px;background:var(--omnix-surface-2);overflow:hidden;margin-top:2px"><span style="display:block;height:100%;width:${barW}%;background:${stat.progress != null ? statusColor(stat.progress) : 'transparent'}"></span></div>
+  </div>`;
+}
 function statusColor(pct){ if (pct == null) return tok('--omnix-chart-other'); if (pct < 60) return tok('--omnix-danger-fg'); if (pct < 80) return tok('--omnix-warning-fg'); return tok('--omnix-success-fg'); }
 function statusBadge(pct){
   if (pct == null) return '<span class="ox-badge">รอข้อมูล</span>';
@@ -471,6 +485,7 @@ async function loadSheet(){
     catch (e) { apiErr = e.message; rows = await fetchGvizRows(); SOURCE = 'Google Sheet (gviz)'; }
     DATA = parseKpiRows(rows);
     LOADED_AT = new Date();
+    populateMonthOptions();
     loading = false;
     render();
     if (apiErr) console.warn('Sheets API failed, used gviz fallback:', apiErr);
@@ -485,8 +500,29 @@ async function loadSheet(){
 
 /* ===== 5. เรนเดอร์ ===== */
 const charts = {};
-let F = { brand: 'all', platform: 'all' };
+let F = { brand: 'all', platform: 'all', month: 'all' };
+let MONTHS_ELAPSED = 0;
 function filteredEntities(){ return ENTITIES.filter(e => (F.brand === 'all' || e.brand === F.brand) && (F.platform === 'all' || e.platform === F.platform)); }
+/* ค่า/เป้าหมาย/ % ความคืบหน้า ของตัวชี้วัดหนึ่งตัว ตามเดือนที่เลือก (all = สะสมทั้งปี YTD)
+   ตัวชี้วัดสะสม (ยอดวิว/ผู้ติดตาม) เทียบกับเป้าหมายเฉลี่ยต่อเดือน (เป้าทั้งปี ÷ 12)
+   ตัวชี้วัดที่เป็นอัตรา (Engagement Rate) เทียบกับเป้าหมายเดิมทุกเดือน (เป้าเป็น % อยู่แล้ว) */
+function metricStat(m, monthKey){
+  if (!m) return { value: null, target: null, progress: null };
+  if (monthKey === 'all') return { value: m.sum, target: m.target, progress: m.progress != null ? m.progress : (m.target ? m.sum / m.target * 100 : null) };
+  const value = m.months ? m.months[monthKey] : null;
+  const target = m.target != null ? (m.type === 'rate' ? m.target : m.target / 12) : null;
+  const progress = (value != null && target) ? value / target * 100 : null;
+  return { value, target, progress };
+}
+function populateMonthOptions(){
+  let n = 0;
+  ENTITIES.forEach(e => { const v = DATA[e.key] && DATA[e.key].views; if (v && v.months) { const c = v.months.filter(m => m != null).length; if (c > n) n = c; } });
+  MONTHS_ELAPSED = n;
+  const sel = document.getElementById('sel-month'), prev = sel.value;
+  sel.innerHTML = '<option value="all">ทั้งปี (YTD)</option>' + MONTH_LABELS.slice(0, n).map((m, i) => `<option value="${i}">${m} 2026</option>`).join('');
+  sel.value = [...sel.options].some(o => o.value === prev) ? prev : 'all';
+  F.month = sel.value === 'all' ? 'all' : +sel.value;
+}
 function legend(el, items){ el.innerHTML = items.map(([name, color]) => `<span class="ox-legend__item"><span class="ox-legend__swatch" style="--c:${color}"></span>${name}</span>`).join(''); }
 function emptyState(id, show, msg){
   const wrap = document.getElementById(id).parentElement;
@@ -513,48 +549,57 @@ function render(){
 
   document.getElementById('meta').textContent = `อัปเดตล่าสุด ${new Intl.DateTimeFormat('th-TH-u-ca-gregory', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(LOADED_AT)} · แหล่งข้อมูล: ${SOURCE}`;
 
-  /* จำนวนเดือนที่มีข้อมูลจริง (ใช้เป็น "เวลาที่ผ่านไป") */
-  let monthsElapsed = 0;
-  withViews.forEach(({ v }) => { const n = v.months.filter(m => m != null).length; if (n > monthsElapsed) monthsElapsed = n; });
-  const timeGonePct = monthsElapsed ? monthsElapsed / 12 * 100 : null;
+  /* จำนวนเดือนที่มีข้อมูลจริง (ใช้เป็น "เวลาที่ผ่านไป") — ถ้าเลือกเดือนเดียว แปลว่าเทียบกับเป้าของเดือนนั้นโดยตรงแล้ว (=100%) */
+  const isMonth = F.month !== 'all';
+  const timeGonePct = isMonth ? 100 : (MONTHS_ELAPSED ? MONTHS_ELAPSED / 12 * 100 : null);
+  const periodLabel = isMonth ? `${MONTH_LABELS[F.month]} 2026` : 'YTD';
+  const kpiSuffix = isMonth ? `(${MONTH_LABELS[F.month]})` : '(YTD)';
+  document.querySelector('#kpis [data-k="views"]').previousElementSibling.textContent = `ยอดวิวรวม ${kpiSuffix}`;
+  document.querySelector('#kpis [data-k="follower"]').previousElementSibling.textContent = `ผู้ติดตามใหม่ ${kpiSuffix}`;
 
   /* ===== KPI ===== */
-  const viewsSum = withViews.reduce((a, x) => a + (x.v.sum || 0), 0);
-  const viewsTarget = withViews.reduce((a, x) => a + (x.v.target || 0), 0);
+  const viewsStats = withViews.map(x => metricStat(x.v, F.month));
+  const viewsSum = viewsStats.reduce((a, s) => a + (s.value || 0), 0);
+  const viewsTarget = viewsStats.reduce((a, s) => a + (s.target || 0), 0);
+  const viewsHas = viewsStats.some(s => s.value != null);
   const viewsProgress = viewsTarget ? viewsSum / viewsTarget * 100 : null;
-  const pace = viewsProgress != null && timeGonePct ? viewsProgress / timeGonePct * 100 : null;
-  document.querySelector('[data-k="views"]').textContent = withViews.length ? fmtN.format(viewsSum) : '—';
-  setDelta(document.querySelector('[data-d="views"]'), pace, 'ของอัตราที่ควรทำได้');
+  const pace = viewsProgress != null && timeGonePct ? viewsProgress / timeGonePct * 100 : viewsProgress;
+  document.querySelector('[data-k="views"]').textContent = viewsHas ? fmtN.format(viewsSum) : '—';
+  setDelta(document.querySelector('[data-d="views"]'), pace, isMonth ? 'ของเป้าเดือนนี้' : 'ของอัตราที่ควรทำได้');
   document.querySelector('[data-k="progress"]').textContent = viewsProgress != null ? fmtP(viewsProgress) : '—';
-  setDelta(document.querySelector('[data-d="progress"]'), pace, 'เทียบเวลาที่ผ่านไป');
+  setDelta(document.querySelector('[data-d="progress"]'), pace, isMonth ? 'ของเป้าเดือนนี้' : 'เทียบเวลาที่ผ่านไป');
 
-  const withFollowerTarget = withFollower.filter(x => x.v.target != null);
-  const followerSum = withFollowerTarget.reduce((a, x) => a + (x.v.sum || 0), 0);
-  const followerTarget = withFollowerTarget.reduce((a, x) => a + (x.v.target || 0), 0);
+  const followerStats = withFollower.map(x => metricStat(x.v, F.month)).filter(s => s.target != null);
+  const followerSum = followerStats.reduce((a, s) => a + (s.value || 0), 0);
+  const followerTarget = followerStats.reduce((a, s) => a + (s.target || 0), 0);
+  const followerHas = followerStats.some(s => s.value != null);
   const followerProgress = followerTarget ? followerSum / followerTarget * 100 : null;
-  const followerPace = followerProgress != null && timeGonePct ? followerProgress / timeGonePct * 100 : null;
-  document.querySelector('[data-k="follower"]').textContent = withFollowerTarget.length ? fmtN.format(followerSum) : '—';
-  setDelta(document.querySelector('[data-d="follower"]'), followerPace, 'เทียบเวลาที่ผ่านไป');
+  const followerPace = followerProgress != null && timeGonePct ? followerProgress / timeGonePct * 100 : followerProgress;
+  document.querySelector('[data-k="follower"]').textContent = followerHas ? fmtN.format(followerSum) : '—';
+  setDelta(document.querySelector('[data-d="follower"]'), followerPace, isMonth ? 'ของเป้าเดือนนี้' : 'เทียบเวลาที่ผ่านไป');
 
-  const engProgressAvg = withEng.length ? withEng.reduce((a, x) => a + (x.v.progress || 0), 0) / withEng.length : null;
-  const engActualAvg = withEng.length ? withEng.reduce((a, x) => a + (x.v.sum || 0), 0) / withEng.length : null;
+  const engStats = withEng.map(x => metricStat(x.v, F.month)).filter(s => s.value != null);
+  const engProgressAvg = engStats.length ? engStats.reduce((a, s) => a + (s.progress || 0), 0) / engStats.length : null;
+  const engActualAvg = engStats.length ? engStats.reduce((a, s) => a + (s.value || 0), 0) / engStats.length : null;
   document.querySelector('[data-k="eng"]').textContent = engActualAvg != null ? engActualAvg.toFixed(2) + '%' : '—';
   setDelta(document.querySelector('[data-d="eng"]'), engProgressAvg, 'ของเป้าหมาย');
 
-  /* ===== กราฟหลัก: เส้นยอดวิวรายเดือนแยกแบรนด์ ===== */
+  /* ===== กราฟหลัก: เส้นยอดวิวรายเดือนแยกแบรนด์ (แสดงทั้งปีเสมอ ไฮไลต์เดือนที่เลือก) ===== */
   Object.values(charts).forEach(c => c.destroy());
   const brands = [...new Set(withViews.map(x => x.e.brand))];
-  const monthsToShow = monthsElapsed || 8;
+  const monthsToShow = MONTHS_ELAPSED || 8;
   const labels = MONTH_LABELS.slice(0, monthsToShow);
   const trendHasData = withViews.length > 0;
   emptyState('c-trend', !trendHasData);
   legend(document.getElementById('lg-trend'), brands.length > 1 ? brands.map(b => [b, BRAND_COLOR[b]()]) : []);
-  document.getElementById('sub-trend').textContent = trendHasData ? `${labels[0]} – ${labels[labels.length - 1]} 2026` : '—';
+  document.getElementById('sub-trend').textContent = trendHasData ? (isMonth ? `ไฮไลต์ ${periodLabel} · ${labels[0]} – ${labels[labels.length - 1]} 2026` : `${labels[0]} – ${labels[labels.length - 1]} 2026`) : '—';
   if (trendHasData) {
     charts.trend = new Chart(document.getElementById('c-trend'), {
       type: 'line',
       data: { labels, datasets: brands.map(b => ({
         label: b, borderColor: BRAND_COLOR[b](), backgroundColor: BRAND_COLOR[b](), pointHoverBackgroundColor: BRAND_COLOR[b](), pointHoverBorderColor: tok('--omnix-surface'),
+        pointRadius: labels.map((_, i) => isMonth && i === F.month ? 6 : 0),
+        pointBackgroundColor: BRAND_COLOR[b](),
         data: labels.map((_, i) => withViews.filter(x => x.e.brand === b).reduce((a, x) => a + (x.v.months[i] || 0), 0))
       })) },
       options: { interaction: { mode: 'index', intersect: false },
@@ -564,7 +609,7 @@ function render(){
   }
 
   /* ===== กราฟรอง 1: แท่งแนวนอน % ความคืบหน้ายอดวิว ===== */
-  const ranked = withViews.map(x => ({ label: x.e.label, pct: x.v.progress })).sort((a, b) => (b.pct || 0) - (a.pct || 0));
+  const ranked = withViews.map(x => ({ label: x.e.label, pct: metricStat(x.v, F.month).progress })).sort((a, b) => (b.pct || 0) - (a.pct || 0));
   emptyState('c-progress', ranked.length === 0);
   if (ranked.length) {
     charts.progress = new Chart(document.getElementById('c-progress'), {
@@ -575,9 +620,12 @@ function render(){
     });
   }
 
+  document.getElementById('sub-progress').textContent = isMonth ? `เรียงจากมากไปน้อย · ${periodLabel}` : 'เรียงจากมากไปน้อย';
+  document.getElementById('sub-share').textContent = isMonth ? `รวม ${periodLabel} ตามตัวกรอง` : 'รวม YTD ตามตัวกรอง';
+
   /* ===== กราฟรอง 2: โดนัทสัดส่วนยอดวิวตามแพลตฟอร์ม ===== */
   const platforms = [...new Set(withViews.map(x => x.e.platform))];
-  const share = platforms.map(p => [p, withViews.filter(x => x.e.platform === p).reduce((a, x) => a + (x.v.sum || 0), 0)]).filter(s => s[1] > 0);
+  const share = platforms.map(p => [p, withViews.filter(x => x.e.platform === p).reduce((a, x) => a + (metricStat(x.v, F.month).value || 0), 0)]).filter(s => s[1] > 0);
   legend(document.getElementById('lg-share'), share.map(([p]) => [p, PLATFORM_COLOR[p]()]));
   emptyState('c-share', share.length === 0);
   if (share.length) {
@@ -588,43 +636,42 @@ function render(){
     });
   }
 
-  /* ===== การ์ดแยกตามแบรนด์ & แพลตฟอร์ม ===== */
+  /* ===== การ์ดแยกตามแบรนด์ & แพลตฟอร์ม — แต่ละประเภทตัวชี้วัดมีหลอดความคืบหน้าของตัวเอง ===== */
   const cardsEl = document.getElementById('entity-cards');
+  const fmtInt = v => fmtN.format(v);
+  const fmtPct2 = v => v.toFixed(2) + '%';
   cardsEl.innerHTML = ents.length ? ents.map(e => {
     const d = DATA[e.key];
-    const v = d.views, fo = d.follower, en = d.engagement;
-    const barW = v && v.progress != null ? Math.max(2, Math.min(100, v.progress)) : 0;
+    const vs = metricStat(d.views, F.month), fs = metricStat(d.follower, F.month), es = metricStat(d.engagement, F.month);
     return `<div class="ox-card ox-entity-card"><div class="ox-card__body">
       <div class="ox-row ox-row--between">
         <div class="ox-entity-head">${entityIcons(e.platform, e.brand, 26)}<div><div class="ox-entity-head__title">${e.platform}</div><div class="ox-entity-head__sub">${e.brand}</div></div></div>
-        ${v ? statusBadge(v.progress) : '<span class="ox-badge">รอข้อมูล</span>'}
+        ${d.views ? statusBadge(vs.progress) : '<span class="ox-badge">รอข้อมูล</span>'}
       </div>
-      <div class="ox-metric-row">
-        <span class="ox-xs ox-muted">ยอดวิว (YTD / เป้า)</span>
-        <span class="ox-num ox-xs">${v && v.sum != null ? fmtN.format(v.sum) : '—'} / ${v && v.target != null ? fmtN.format(v.target) : '—'}</span>
-      </div>
-      <div style="height:6px;border-radius:3px;background:var(--omnix-surface-2);overflow:hidden"><span style="display:block;height:100%;width:${barW}%;background:${v ? statusColor(v.progress) : 'transparent'}"></span></div>
-      <div class="ox-metric-row"><span class="ox-xs ox-muted">ผู้ติดตามใหม่ (YTD)</span><span class="ox-num ox-xs">${fo && fo.sum != null ? fmtN.format(fo.sum) : '—'}${fo && fo.target != null ? ' / ' + fmtN.format(fo.target) : ''}</span></div>
-      <div class="ox-metric-row"><span class="ox-xs ox-muted">Engagement Rate</span><span class="ox-num ox-xs">${en && en.sum != null ? en.sum.toFixed(2) + '%' : '—'}${en && en.target != null ? ' / เป้า ' + en.target.toFixed(2) + '%' : ''}</span></div>
+      ${metricBlock(`ยอดวิว ${kpiSuffix}`, vs, fmtInt)}
+      ${metricBlock(`ผู้ติดตามใหม่ ${kpiSuffix}`, fs, fmtInt)}
+      ${metricBlock(`Engagement Rate ${kpiSuffix}`, es, fmtPct2)}
     </div></div>`;
   }).join('') : '<div class="ox-muted ox-xs" style="padding:8px 0">ไม่มีข้อมูลตามตัวกรองที่เลือก</div>';
-  document.getElementById('cards-note').textContent = `${ents.length} รายการตามตัวกรอง`;
+  document.getElementById('cards-note').textContent = `${ents.length} รายการตามตัวกรอง · ${periodLabel}`;
 
   /* ===== ตาราง ===== */
+  document.querySelector('#tbody').closest('table').querySelector('thead th:nth-child(3)').textContent = isMonth ? periodLabel : 'YTD';
+  document.querySelector('#tbody').closest('table').querySelector('thead th:nth-child(4)').textContent = isMonth ? 'เป้าเดือนนี้ (เป้าทั้งปี ÷ 12)' : 'เป้าหมาย';
   const rowsHtml = [];
   ents.forEach(e => {
     const d = DATA[e.key];
-    if (d.views) rowsHtml.push([e, 'ยอดวิว', d.views.sum, d.views.target, d.views.progress]);
-    if (d.follower) rowsHtml.push([e, 'ผู้ติดตามใหม่', d.follower.sum, d.follower.target, d.follower.progress]);
-    if (d.engagement) rowsHtml.push([e, 'Engagement Rate', d.engagement.sum != null ? d.engagement.sum.toFixed(2) + '%' : null, d.engagement.target != null ? d.engagement.target.toFixed(2) + '%' : null, d.engagement.progress]);
+    if (d.views) rowsHtml.push([e, 'ยอดวิว', fmtInt, metricStat(d.views, F.month)]);
+    if (d.follower) rowsHtml.push([e, 'ผู้ติดตามใหม่', fmtInt, metricStat(d.follower, F.month)]);
+    if (d.engagement) rowsHtml.push([e, 'Engagement Rate', fmtPct2, metricStat(d.engagement, F.month)]);
   });
-  document.getElementById('tbody').innerHTML = rowsHtml.length ? rowsHtml.map(([e, metric, ytd, target, pct]) => {
-    const ytdTxt = ytd == null ? '—' : typeof ytd === 'string' ? ytd : fmtN.format(ytd);
-    const targetTxt = target == null ? '—' : typeof target === 'string' ? target : fmtN.format(target);
-    const barW = pct == null ? 0 : Math.max(2, Math.min(100, pct) * 1.2);
-    return `<tr><td><span class="ox-row">${entityIcons(e.platform, e.brand, 18)}<span>${e.platform} · ${e.brand}</span></span></td><td>${metric}</td><td class="is-num">${ytdTxt}</td><td class="is-num">${targetTxt}</td><td><span class="ox-row"><span class="ox-bar" style="width:${barW}px;background:${statusColor(pct)}"></span><span class="ox-num ox-xs">${fmtP(pct)}</span></span></td><td>${statusBadge(pct)}</td></tr>`;
+  document.getElementById('tbody').innerHTML = rowsHtml.length ? rowsHtml.map(([e, metric, fmtValue, s]) => {
+    const ytdTxt = s.value == null ? '—' : fmtValue(s.value);
+    const targetTxt = s.target == null ? '—' : fmtValue(s.target);
+    const barW = s.progress == null ? 0 : Math.max(2, Math.min(100, s.progress) * 1.2);
+    return `<tr><td><span class="ox-row">${entityIcons(e.platform, e.brand, 18)}<span>${e.platform} · ${e.brand}</span></span></td><td>${metric}</td><td class="is-num">${ytdTxt}</td><td class="is-num">${targetTxt}</td><td><span class="ox-row"><span class="ox-bar" style="width:${barW}px;background:${statusColor(s.progress)}"></span><span class="ox-num ox-xs">${fmtP(s.progress)}</span></span></td><td>${statusBadge(s.progress)}</td></tr>`;
   }).join('') : '<tr><td colspan="6" class="ox-muted" style="text-align:center;padding:24px">ไม่มีข้อมูลตามตัวกรองที่เลือก</td></tr>';
-  document.getElementById('tbl-note').textContent = timeGonePct != null ? `เวลาที่ผ่านไปในปีตามข้อมูล ~${timeGonePct.toFixed(0)}%` : '';
+  document.getElementById('tbl-note').textContent = isMonth ? `แสดงข้อมูลเดือน ${periodLabel} · เป้าหมายรายเดือนประมาณจากเป้าทั้งปี ÷ 12` : (timeGonePct != null ? `เวลาที่ผ่านไปในปีตามข้อมูล ~${timeGonePct.toFixed(0)}%` : '');
 }
 
 /* ===== 6. เหตุการณ์ ===== */
@@ -635,14 +682,16 @@ document.getElementById('seg-brand').addEventListener('click', e => {
   render();
 });
 document.getElementById('sel-platform').addEventListener('change', e => { F.platform = e.target.value; render(); });
+document.getElementById('sel-month').addEventListener('change', e => { F.month = e.target.value === 'all' ? 'all' : +e.target.value; render(); });
 document.getElementById('btn-refresh').addEventListener('click', loadSheet);
 document.getElementById('btn-theme').addEventListener('click', () => {
   const r = document.documentElement, dark = r.getAttribute('data-theme') === 'dark' || (!r.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
   r.setAttribute('data-theme', dark ? 'light' : 'dark'); r.classList.toggle('dark', !dark); render();
 });
 document.getElementById('btn-csv').addEventListener('click', () => {
+  const head = [...document.querySelector('.ox-table--data thead tr').children].map(th => th.textContent.trim());
   const rows = [...document.querySelectorAll('#tbody tr')].map(tr => [...tr.children].map(td => td.textContent.trim()));
-  const csv = ['แพลตฟอร์ม/แบรนด์,ตัวชี้วัด,YTD,เป้าหมาย,% ความคืบหน้า,สถานะ', ...rows.map(r => r.map(v => `"${v.replace(/"/g, '""')}"`).join(','))].join('\n');
+  const csv = [head.join(','), ...rows.map(r => r.map(v => `"${v.replace(/"/g, '""')}"`).join(','))].join('\n');
   const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv); a.download = 'kpi-2026.csv'; a.click();
 });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
