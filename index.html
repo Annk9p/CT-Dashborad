@@ -457,6 +457,8 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 .kpi-cal__item.is-plan .ox-dot { background: var(--omnix-accent); }
 .kpi-cal__item.is-demo { display: inline-block; width: auto; cursor: default; padding-right: 8px; }
 .kpi-cal__more { font-size: 10px; color: var(--omnix-accent); background: none; border: 0; padding: 0 6px; text-align: left; cursor: pointer; font-family: inherit; }
+.kpi-brand-seg button { display: inline-flex; align-items: center; gap: 6px; }
+.kpi-brand-dot { width: 9px; height: 9px; border-radius: var(--omnix-radius-full); background: var(--c); flex: 0 0 auto; }
 .kpi-plat { width: 13px; height: 13px; color: var(--omnix-fg); flex: 0 0 auto; margin-right: 3px; vertical-align: -2px; display: inline-block; }
 .kpi-plat-cell { display: inline-flex; align-items: center; gap: var(--omnix-space-1); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
 .kpi-plan-form { display: grid; grid-template-columns: 1fr 1fr; gap: var(--omnix-space-3); }
@@ -529,7 +531,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
       <div class="kpi-date-inputs">
         <input type="date" class="ox-control" id="mgr-start"><span class="ox-muted ox-xs" data-i18n="to">ถึง</span><input type="date" class="ox-control" id="mgr-end">
       </div>
-      <select id="mgr-brand" class="ox-control"><option value="all" data-i18n="allBrands">ทุกแบรนด์</option><option value="EloopTH">EloopTH</option><option value="Moov">Moov</option></select>
+      <div class="ox-segment kpi-brand-seg" id="mgr-brand" role="group" aria-label="Brand"></div>
       <button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" id="btn-quota" data-i18n="quota.btn">ตั้งค่าโควต้า</button>
       <span class="ox-filter-bar__spacer"></span>
       <span class="ox-filter-bar__meta" id="meta">—</span>
@@ -601,7 +603,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
         <option value="this_week" data-i18n="p.this_week">สัปดาห์นี้</option><option value="last_week" data-i18n="p.last_week">สัปดาห์ก่อน</option><option value="this_month" data-i18n="p.this_month">เดือนนี้</option><option value="all_year" data-i18n="p.all_year">ทั้งปี</option><option value="custom" data-i18n="p.custom">กำหนดเอง</option>
       </select>
       <div class="kpi-date-inputs"><input type="date" class="ox-control" id="my-start"><span class="ox-muted ox-xs" data-i18n="to">ถึง</span><input type="date" class="ox-control" id="my-end"></div>
-      <select id="my-brand" class="ox-control"><option value="all" data-i18n="allBrands">ทุกแบรนด์</option><option value="EloopTH">EloopTH</option><option value="Moov">Moov</option></select>
+      <div class="ox-segment kpi-brand-seg" id="my-brand" role="group" aria-label="Brand"></div>
       <select id="my-status" class="ox-control"><option value="all" data-i18n="allStatus">ทุกสถานะ</option><option value="Done">Done</option><option value="In Progress">In Progress</option><option value="Draft">Draft</option><option value="Reject">Reject</option><option value="Stuck">Stuck</option></select>
     </div>
     <div class="ox-kpi-grid">
@@ -638,7 +640,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
     <div class="ox-filter-bar" role="group">
       <select id="re-status" class="ox-control"><option value="Done" data-i18n="re.done">Done — แนะนำสำหรับยิงแอด</option><option value="Draft">Draft</option><option value="In Progress">In Progress</option><option value="Reject">Reject</option><option value="Stuck">Stuck</option><option value="all" data-i18n="allStatus">ทุกสถานะ</option></select>
       <select id="re-type" class="ox-control"><option value="all" data-i18n="allTypes">ทุกประเภท</option></select>
-      <select id="re-brand" class="ox-control"><option value="all" data-i18n="allBrands">ทุกแบรนด์</option><option value="EloopTH">EloopTH</option><option value="Moov">Moov</option></select>
+      <div class="ox-segment kpi-brand-seg" id="re-brand" role="group" aria-label="Brand"></div>
       <select id="re-preset" class="ox-control"><option value="all_year" data-i18n="p.all_year">ทั้งปี</option><option value="this_month" data-i18n="p.this_month">เดือนนี้</option><option value="last_month" data-i18n="p.last_month">เดือนก่อน</option><option value="this_week" data-i18n="p.this_week">สัปดาห์นี้</option><option value="last_week" data-i18n="p.last_week">สัปดาห์ก่อน</option><option value="custom" data-i18n="p.custom">กำหนดเอง</option></select>
       <div class="kpi-date-inputs"><input type="date" class="ox-control" id="re-start"><span class="ox-muted ox-xs" data-i18n="to">ถึง</span><input type="date" class="ox-control" id="re-end"></div>
       <span class="ox-filter-bar__spacer"></span>
@@ -663,7 +665,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
         <button class="ox-btn ox-btn--secondary ox-btn--sm ox-btn--icon" type="button" id="cal-next" aria-label="Next month"><svg class="ox-ico" viewBox="0 0 24 24"><path d="m8.6 7.4 1.4-1.4 6 6-6 6-1.4-1.4 4.6-4.6z"/></svg></button>
         <button class="ox-btn ox-btn--ghost ox-btn--sm" type="button" id="cal-today" data-i18n="cal.today">วันนี้</button>
       </div>
-      <select id="cal-brand" class="ox-control"><option value="all" data-i18n="allBrands">ทุกแบรนด์</option><option value="EloopTH">EloopTH</option><option value="Moov">Moov</option></select>
+      <div class="ox-segment kpi-brand-seg" id="cal-brand" role="group" aria-label="Brand"></div>
       <select id="cal-creator" class="ox-control"><option value="all" data-i18n="allPeopleName">ทุกคน</option></select>
       <span class="ox-filter-bar__spacer"></span>
       <span class="ox-filter-bar__meta" id="cal-meta">—</span>
@@ -697,7 +699,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
   <!-- ===================== YouTube 2026 ===================== -->
   <section class="kpi-page" id="page-youtube" role="tabpanel">
     <div class="ox-filter-bar" role="group">
-      <select id="yt-brand" class="ox-control"><option value="all" data-i18n="allBrands">ทุกแบรนด์</option><option value="EloopTH">EloopTH</option><option value="MoovTH">MoovTH</option></select>
+      <div class="ox-segment kpi-brand-seg" id="yt-brand" role="group" aria-label="Brand"></div>
       <select id="yt-playlist" class="ox-control"><option value="all" data-i18n="yt.allPlaylists">ทุก Playlist</option></select>
       <select id="yt-status" class="ox-control"><option value="all" data-i18n="allStatus">ทุกสถานะ</option><option value="Done">Done</option><option value="In Progress">In Progress</option><option value="Draft">Draft</option><option value="Not started" data-i18n="yt.notStarted">ยังไม่เริ่ม</option></select>
       <select id="yt-owner" class="ox-control"><option value="all" data-i18n="yt.allOwners">ทุก Owner</option></select>
@@ -1240,7 +1242,7 @@ function renderManager(){
   renderStatusLegend();
   const st = S.mgr, quotas = getQuotas(), staffNames = allStaff();
   const $ = id => document.getElementById(id);
-  $('sel-year').value = S.year; $('mgr-start').value = st.start; $('mgr-end').value = st.end; $('mgr-brand').value = st.brand;
+  $('sel-year').value = S.year; $('mgr-start').value = st.start; $('mgr-end').value = st.end; renderBrandSeg('mgr-brand', st.brand, v => { S.mgr.brand = v; S.mgr.page = 1; renderManager(); });
   document.querySelectorAll('#mgr-preset button').forEach(b => b.classList.toggle('is-active', b.dataset.preset === st.preset));
   $('meta').textContent = t('updated', { t: LOADED_AT ? (LOADED_AT instanceof Date ? fmtT(LOADED_AT) : LOADED_AT) : '—', src: t('src.' + SOURCE), n: fmtN(CLIPS.length) });
   const weeks = targetWeeks(st.start, st.end);
@@ -1334,7 +1336,7 @@ function setMgrPreset(p){ S.mgr.preset = p; [S.mgr.start, S.mgr.end] = presetRan
 function renderSummary(){
   renderStatusLegend();
   const st = S.my, quotas = getQuotas(), $ = id => document.getElementById(id), weeks = targetWeeks(st.start, st.end);
-  $('my-creator').value = '__all'; $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; $('my-brand').value = st.brand; $('my-status').value = st.status;
+  $('my-creator').value = '__all'; $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; renderBrandSeg('my-brand', st.brand, v => { S.my.brand = v; renderPersonal(); }); $('my-status').value = st.status;
   $('my-name').textContent = t('allPeopleName'); $('my-avatar').textContent = '∑'; $('my-quota').textContent = t('allPeopleQuota');
   $('my-summary-card').hidden = false; $('my-clips-card').hidden = true;
   $('my-summary-sub').textContent = t('summarySub', { a: thDate(st.start), b: thDate(st.end) });
@@ -1361,7 +1363,7 @@ function renderPersonal(){
   if (S.my.creator === '__all') return renderSummary();
   const st = S.my, quotas = getQuotas(), name = st.creator, q = quotas[name] || { eloop: 0, moov: 0 }, $ = id => document.getElementById(id);
   $('my-summary-card').hidden = true; $('my-clips-card').hidden = false;
-  $('my-creator').value = name; $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; $('my-brand').value = st.brand; $('my-status').value = st.status;
+  $('my-creator').value = name; $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; renderBrandSeg('my-brand', st.brand, v => { S.my.brand = v; renderPersonal(); }); $('my-status').value = st.status;
   $('my-name').textContent = name || '—'; $('my-avatar').textContent = (name || '–').charAt(0);
   $('my-quota').textContent = t('myQuota', { n: q.eloop + q.moov, e: q.eloop, m: q.moov });
   const weeks = targetWeeks(st.start, st.end), elT = q.eloop * weeks, mvT = q.moov * weeks;
@@ -1387,7 +1389,7 @@ function renderPersonal(){
 function renderReuse(){
   renderStatusLegend();
   const st = S.re, q = st.q.toLowerCase(), $ = id => document.getElementById(id);
-  $('re-status').value = st.status; $('re-type').value = st.type; $('re-brand').value = st.brand; $('re-preset').value = st.preset; $('re-start').value = st.start; $('re-end').value = st.end; $('re-sort').value = st.sort;
+  $('re-status').value = st.status; $('re-type').value = st.type; renderBrandSeg('re-brand', st.brand, v => { S.re.brand = v; S.re.page = 1; renderReuse(); }); $('re-preset').value = st.preset; $('re-start').value = st.start; $('re-end').value = st.end; $('re-sort').value = st.sort;
   const rows = CLIPS.filter(c => c.topic && (st.brand === 'all' || c.shop === st.brand) && (st.type === 'all' || c.type === st.type) && (st.status === 'all' || c.status === st.status) && (st.preset === 'all_year' || inRange(c, st.start, st.end)) && (!q || `${c.topic} ${c.title} ${c.product} ${c.creator} ${c.type}`.toLowerCase().includes(q)));
   rows.sort((a, b) => { if (a.date !== b.date) { if (!a.date) return 1; if (!b.date) return -1; return st.sort === 'newest' ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date); } return st.sort === 'newest' ? b.id - a.id : a.id - b.id; });
   $('re-count').textContent = `${fmtN(rows.length)} ${t('clips')}`;
@@ -1440,7 +1442,7 @@ function renderYouTube(){
   const playlists = [...new Set(YT.map(r => r.playlist).filter(Boolean))].sort(), owners = [...new Set(YT.map(r => r.owner).filter(Boolean))].sort();
   $('yt-playlist').innerHTML = `<option value="all">${t('yt.allPlaylists')}</option>` + playlists.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('');
   $('yt-owner').innerHTML = `<option value="all">${t('yt.allOwners')}</option>` + owners.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('');
-  $('yt-brand').value = st.brand; $('yt-playlist').value = playlists.includes(st.playlist) ? st.playlist : 'all'; $('yt-status').value = st.status; $('yt-owner').value = owners.includes(st.owner) ? st.owner : 'all';
+  renderBrandSeg('yt-brand', st.brand, v => { S.yt.brand = v; renderYouTube(); }, 'MoovTH'); $('yt-playlist').value = playlists.includes(st.playlist) ? st.playlist : 'all'; $('yt-status').value = st.status; $('yt-owner').value = owners.includes(st.owner) ? st.owner : 'all';
   $('yt-meta').textContent = t('yt.updated', { t: YT_AT ? (YT_AT instanceof Date ? fmtT(YT_AT) : YT_AT) : '—' });
   const q = st.q.toLowerCase();
   const base = YT.filter(r => (st.brand === 'all' || r.shop === st.brand) && (st.playlist === 'all' || r.playlist === st.playlist) && (st.owner === 'all' || r.owner === st.owner) && (!q || `${r.topic} ${r.product} ${r.playlist} ${r.owner} ${r.mc} ${r.editor}`.toLowerCase().includes(q)));
@@ -1484,6 +1486,14 @@ function renderYouTube(){
   $('yt-rows').innerHTML = rows.length === 0 ? emptyRow(11, YT.length ? t('noMatch') : t('yt.noData'), YT.length ? t('noMatchHint') : t('yt.noDataHint')) : rows.map((r, i) => `<tr class="is-clickable" data-pv="yt:${r.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${i + 1}</td><td>${badgeBrand(r.shop === 'MoovTH' ? 'Moov' : r.shop)}</td><td>${r.playlist ? `<span class="ox-badge">${esc(r.playlist)}</span>` : '<span class="ox-muted">—</span>'}</td><td>${esc(r.product || '—')}</td><td class="is-topic">${topicCell(r, st.q)}</td><td class="is-nowrap">${ytBadge(r.status)}</td><td>${esc(r.owner || '—')}</td><td>${esc(r.mc || '—')}</td><td>${esc(r.editor || '—')}</td><td class="ox-num is-nowrap">${thDate(r.shoot)}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${lk(r.script, t('yt.script'))}${lk(r.link, t('yt.video'))}</span></td></tr>`).join('');
   S.exportRows = rows;
 }
+/* ===== 9. ตัวกรองแบรนด์แบบปุ่ม — มีจุดสีประจำแบรนด์ ===== */
+function renderBrandSeg(id, value, onChange, moovValue = 'Moov'){
+  const el = document.getElementById(id); if (!el) return;
+  const items = [['all', t('allBrands'), ''], ['EloopTH', 'Eloop', 'var(--brand-eloop)'], [moovValue, 'Moov', 'var(--brand-moov)']];
+  el.innerHTML = items.map(([v, label, c]) => `<button type="button" data-brand="${esc(v)}" class="${v === value ? 'is-active' : ''}" aria-pressed="${v === value}">${c ? `<span class="kpi-brand-dot" style="--c:${c}"></span>` : ''}${esc(label)}</button>`).join('');
+  if (!el.dataset.wired) { el.dataset.wired = '1'; el.addEventListener('click', e => { const b = e.target.closest('[data-brand]'); if (b) onChange(b.dataset.brand); }); }
+}
+
 /* ===== 9a. แถบสถานะ — กดเลือกเพื่อกรองหน้าที่เปิดอยู่ (ภาพรวมเลือกหลายสถานะได้) ===== */
 const viewKey = () => S.platform === 'cal' ? 'cal' : S.mode;
 function activeStatuses(){
@@ -1548,7 +1558,7 @@ function renderCal(){
   const sel = $('cal-creator'), cur = S.cal.creator;
   sel.innerHTML = `<option value="all">${t('allPeopleName')}</option>` + [...people].sort().map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
   sel.value = [...people].includes(cur) ? cur : 'all'; S.cal.creator = sel.value;
-  $('cal-brand').value = S.cal.brand;
+  renderBrandSeg('cal-brand', S.cal.brand, v => { S.cal.brand = v; renderCal(); });
   const clips = calFilter(ALL.filter(c => c.date && c.date >= start && c.date <= end && (!S.cal.statuses.length || S.cal.statuses.includes(c.status))), 'creator');
   const plans = calFilter(getPlans().filter(p => p.date >= start && p.date <= end), 'creator').sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id);
   // KPI
@@ -1641,7 +1651,7 @@ function switchMode(m){
 }
 const $ = id => document.getElementById(id), on = (id, ev, fn) => $(id).addEventListener(ev, fn);
 $('platform-tabs').addEventListener('click', e => { const b = e.target.closest('[role=tab]'); if (b) switchPlatform(b.dataset.platform); });
-['brand', 'playlist', 'status', 'owner'].forEach(k => on(`yt-${k}`, 'change', e => { S.yt[k] = e.target.value; renderYouTube(); }));
+['playlist', 'status', 'owner'].forEach(k => on(`yt-${k}`, 'change', e => { S.yt[k] = e.target.value; renderYouTube(); }));
 on('yt-search', 'input', e => { S.yt.q = e.target.value.trim(); renderYouTube(); });
 $('mode-tabs').addEventListener('click', e => { const b = e.target.closest('[role=tab]'); if (b) switchMode(b.dataset.mode); });
 $('lang-seg').addEventListener('click', e => { const b = e.target.closest('[data-lang]'); if (!b) return; LANG = b.dataset.lang; storage.set('CK_LANG', LANG); applyLang(); if (ALL.length) { setYear(S.year); render(); } });
@@ -1649,7 +1659,6 @@ on('sel-year', 'change', e => { setYear(+e.target.value); render(); });
 $('mgr-preset').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setMgrPreset(b.dataset.preset); });
 const mgrCustom = () => { const s = $('mgr-start').value, e = $('mgr-end').value; if (!s || !e || s > e) return; S.mgr.preset = 'custom'; S.mgr.start = s; S.mgr.end = e; S.mgr.page = 1; renderManager(); };
 on('mgr-start', 'change', mgrCustom); on('mgr-end', 'change', mgrCustom);
-on('mgr-brand', 'change', e => { S.mgr.brand = e.target.value; S.mgr.page = 1; renderManager(); });
 on('mgr-search', 'input', e => { S.mgr.q = e.target.value.trim(); S.mgr.page = 1; renderManager(); });
 on('mgr-pagesize', 'change', e => { S.mgr.size = +e.target.value; S.mgr.page = 1; renderManager(); });
 on('mgr-prev', 'click', () => { S.mgr.page--; renderManager(); }); on('mgr-next', 'click', () => { S.mgr.page++; renderManager(); });
@@ -1658,11 +1667,10 @@ on('my-creator', 'change', e => { S.my.creator = e.target.value; renderPersonal(
 on('my-preset', 'change', e => { S.my.preset = e.target.value; if (e.target.value !== 'custom') [S.my.start, S.my.end] = presetRange(e.target.value, S.year); renderPersonal(); });
 const myCustom = () => { const s = $('my-start').value, e = $('my-end').value; if (!s || !e || s > e) return; S.my.preset = 'custom'; S.my.start = s; S.my.end = e; renderPersonal(); };
 on('my-start', 'change', myCustom); on('my-end', 'change', myCustom);
-on('my-brand', 'change', e => { S.my.brand = e.target.value; renderPersonal(); });
 on('my-status', 'change', e => { S.my.status = e.target.value; renderPersonal(); });
 on('my-search', 'input', e => { S.my.q = e.target.value.trim(); renderPersonal(); });
 on('re-search', 'input', e => { S.re.q = e.target.value.trim(); S.re.page = 1; renderReuse(); });
-['status', 'type', 'brand', 'sort'].forEach(k => on(`re-${k}`, 'change', e => { S.re[k] = e.target.value; S.re.page = 1; renderReuse(); }));
+['status', 'type', 'sort'].forEach(k => on(`re-${k}`, 'change', e => { S.re[k] = e.target.value; S.re.page = 1; renderReuse(); }));
 on('re-preset', 'change', e => { S.re.preset = e.target.value; if (e.target.value !== 'custom') [S.re.start, S.re.end] = presetRange(e.target.value, S.year); S.re.page = 1; renderReuse(); });
 const reCustom = () => { const s = $('re-start').value, e = $('re-end').value; if (!s || !e || s > e) return; S.re.preset = 'custom'; S.re.start = s; S.re.end = e; S.re.page = 1; renderReuse(); };
 on('re-start', 'change', reCustom); on('re-end', 'change', reCustom);
@@ -1673,7 +1681,6 @@ on('re-prev', 'click', () => { S.re.page--; renderReuse(); }); on('re-next', 'cl
 on('cal-prev', 'click', () => { S.cal.ym = shiftMonth(S.cal.ym, -1); S.cal.expanded.clear(); renderCal(); });
 on('cal-next', 'click', () => { S.cal.ym = shiftMonth(S.cal.ym, 1); S.cal.expanded.clear(); renderCal(); });
 on('cal-today', 'click', () => { S.cal.ym = TODAY.slice(0, 7); renderCal(); });
-on('cal-brand', 'change', e => { S.cal.brand = e.target.value; renderCal(); });
 on('cal-creator', 'change', e => { S.cal.creator = e.target.value; renderCal(); });
 on('cal-add', 'click', () => openPlan(null, S.cal.ym === TODAY.slice(0, 7) ? TODAY : S.cal.ym + '-01'));
 on('cal-export', 'click', exportPlans);
