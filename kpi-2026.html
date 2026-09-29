@@ -599,9 +599,10 @@ function renderContentOutput(){
   document.getElementById('content-kpis').innerHTML = brands.map(b => {
     const c = CONTENT_OUTPUT[b];
     const ttSum = c.tiktok && c.tiktok.sum, fbSum = c.facebook && c.facebook.sum;
+    const targetSum = c.target ? c.target.sum : null;
     return `<div class="ox-kpi">
       <div class="ox-kpi__label ox-row" style="gap:6px">${brandLogo(b, 16)}คลิปที่โพสต์ (${b})</div>
-      <div class="ox-row" style="justify-content:space-between;gap:var(--omnix-space-4);margin-top:var(--omnix-space-1)">
+      <div class="ox-row" style="justify-content:space-between;gap:var(--omnix-space-3);margin-top:var(--omnix-space-1)">
         <div style="flex:1;min-width:0">
           <div class="ox-xs ox-muted ox-row" style="gap:4px">${platformIcon('TikTok', 16)}TikTok</div>
           <div class="ox-kpi__value" style="font-size:var(--omnix-text-lg)">${ttSum != null ? fmtN.format(ttSum) : '—'}</div>
@@ -609,6 +610,10 @@ function renderContentOutput(){
         <div style="flex:1;min-width:0">
           <div class="ox-xs ox-muted ox-row" style="gap:4px">${platformIcon('Facebook', 16)}Facebook</div>
           <div class="ox-kpi__value" style="font-size:var(--omnix-text-lg)">${fbSum != null ? fmtN.format(fbSum) : '—'}</div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="ox-xs ox-muted">Output (เป้าหมาย)</div>
+          <div class="ox-kpi__value" style="font-size:var(--omnix-text-lg)">${targetSum != null ? fmtN.format(targetSum) : '—'}</div>
         </div>
       </div>
     </div>`;
