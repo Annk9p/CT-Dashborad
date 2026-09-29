@@ -170,6 +170,7 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
 
 .ox-kpi-grid { display: grid; gap: var(--omnix-space-4); grid-template-columns: repeat(2, 1fr); }
 @media (min-width: 1024px) { .ox-kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1024px) { .ox-kpi-grid--2 { grid-template-columns: repeat(2, 1fr); } }
 .ox-kpi { display: flex; flex-direction: column; gap: var(--omnix-space-1); padding: var(--omnix-space-4); background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); min-width: 0; }
 .ox-kpi__label { font-size: var(--omnix-text-xs); font-weight: 500; color: var(--omnix-fg-muted); letter-spacing: .02em; }
 .ox-kpi__value { font-size: var(--omnix-text-2xl); font-weight: 600; line-height: 1.15; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -255,6 +256,18 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
     <span id="err-msg">โหลดข้อมูลไม่สำเร็จ</span>
     <span class="ox-alert__spacer"></span>
     <button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" onclick="loadSheet()">โหลดใหม่</button>
+  </div>
+
+  <div class="ox-stack">
+    <div class="ox-section-title"><h2>KPI เนื้อหา — จำนวนคลิปที่ต้องโพสต์ต่อเดือน</h2><span class="ox-xs ox-muted" id="content-note"></span></div>
+    <div class="ox-kpi-grid ox-kpi-grid--2" id="content-kpis"></div>
+    <div class="ox-chart is-wide">
+      <div class="ox-chart__head">
+        <div><div class="ox-chart__title">คลิปที่โพสต์ต่อเดือน (TikTok + Facebook) เทียบเป้า</div><div class="ox-chart__sub" id="sub-content">—</div></div>
+        <div class="ox-legend" id="lg-content"></div>
+      </div>
+      <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-content" role="img" aria-label="กราฟแท่งจำนวนคลิปที่โพสต์ต่อเดือนเทียบเป้า แยกแบรนด์"></canvas></div></div>
+    </div>
   </div>
 
   <div class="ox-kpi-grid" id="kpis">
@@ -365,6 +378,29 @@ function parseKpiRows(rows){
   }
   return data;
 }
+/* แถว 3-8 ของชีต (ก่อนส่วน KPI ยอดวิว/ผู้ติดตาม) — เป้าจำนวนคลิปที่ต้องโพสต์ต่อเดือน (TikTok+Facebook) แยก Eloop/Moov
+   หยุดสแกนทันทีที่เจอแถวแรกของส่วน KPI หลัก (classify(col0) จับได้) */
+function parseContentOutput(rows){
+  const out = { Eloop: { target: null, tiktok: null, facebook: null }, Moov: { target: null, tiktok: null, facebook: null } };
+  let targetSeen = 0;
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (classify(r[0])) break;
+    const label = (r[1] || '').trim().toLowerCase();
+    if (!label) continue;
+    const months = r.slice(5, 17).map(parseNum);
+    const sumRaw = parseNum(r[17]);
+    const sum = sumRaw != null ? sumRaw : (months.some(v => v != null) ? months.reduce((a, v) => a + (v || 0), 0) : null);
+    if (label.includes('monthly output')) {
+      targetSeen++;
+      out[targetSeen === 1 ? 'Eloop' : 'Moov'].target = { months, sum };
+    } else if (label.includes('tiktok') && label.includes('eloop')) out.Eloop.tiktok = { months, sum };
+    else if (label.includes('facebook') && label.includes('eloop')) out.Eloop.facebook = { months, sum };
+    else if (label.includes('tiktok') && label.includes('moov')) out.Moov.tiktok = { months, sum };
+    else if (label.includes('facebook') && label.includes('moov')) out.Moov.facebook = { months, sum };
+  }
+  return out;
+}
 
 /* ===== 2. รูปแบบตัวเลขไทย ===== */
 const fmtN = new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 });
@@ -440,7 +476,7 @@ const gridOpts = () => ({ color: tok('--omnix-chart-grid'), drawTicks: false });
 const noGrid = { display: false };
 
 /* ===== 4. โหลดชีต (Sheets API v4 → gviz JSONP) ===== */
-let DATA = null, LOADED_AT = null, SOURCE = '', loading = false;
+let DATA = null, CONTENT_OUTPUT = null, LOADED_AT = null, SOURCE = '', loading = false;
 async function apiJson(url){ const r = await fetch(url, { cache: 'no-store' }); const j = await r.json().catch(() => null); if (!r.ok) throw new Error(j?.error?.message || `http ${r.status}`); return j; }
 const SHEET_TITLES = {};
 async function sheetTitle(id, gid){
@@ -484,6 +520,7 @@ async function loadSheet(){
     try { rows = await fetchApiRows(SHEET.id, SHEET.gid); SOURCE = 'Google Sheets API'; }
     catch (e) { apiErr = e.message; rows = await fetchGvizRows(); SOURCE = 'Google Sheet (gviz)'; }
     DATA = parseKpiRows(rows);
+    CONTENT_OUTPUT = parseContentOutput(rows);
     LOADED_AT = new Date();
     populateMonthOptions();
     loading = false;
@@ -539,6 +576,56 @@ function setDelta(el, ratio, label){
   el.innerHTML = `<svg class="ox-ico" viewBox="0 0 24 24"><path d="${arrow}"/></svg>${ratio.toFixed(0)}% ${label}`;
 }
 
+function hexToRgba(hex, a){
+  const c = hex.replace('#', '');
+  const n = parseInt(c.length === 3 ? c.split('').map(x => x + x).join('') : c, 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+/* ===== KPI เนื้อหา (แถว 3-8 ของชีต) — จำนวนคลิปที่ต้องโพสต์ต่อเดือน เทียบเป้า แยกแบรนด์ ===== */
+function renderContentOutput(){
+  if (!CONTENT_OUTPUT) return;
+  const brands = F.brand === 'all' ? ['Eloop', 'Moov'] : [F.brand];
+
+  document.getElementById('content-kpis').innerHTML = brands.map(b => {
+    const c = CONTENT_OUTPUT[b];
+    const targetSum = c.target ? c.target.sum : null;
+    const hasActual = (c.tiktok && c.tiktok.sum != null) || (c.facebook && c.facebook.sum != null);
+    const actualSum = (c.tiktok && c.tiktok.sum || 0) + (c.facebook && c.facebook.sum || 0);
+    const progress = targetSum ? actualSum / targetSum * 100 : null;
+    return `<div class="ox-kpi">
+      <div class="ox-kpi__label ox-row" style="gap:6px">${brandLogo(b, 16)}คลิปที่โพสต์ (${b})</div>
+      <div class="ox-kpi__value">${hasActual ? fmtN.format(actualSum) : '—'}${targetSum != null ? ' / ' + fmtN.format(targetSum) : ''}</div>
+      <div class="ox-kpi__delta ${progress == null ? '' : (progress >= 100 ? 'is-up' : 'is-down')}">${progress != null ? fmtP(progress) + ' ของเป้าทั้งปี' : '—'}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('content-note').textContent = 'TikTok + Facebook · ' + brands.join(' · ');
+
+  let n = 0;
+  brands.forEach(b => { const c = CONTENT_OUTPUT[b]; ['target', 'tiktok', 'facebook'].forEach(k => { const m = c[k]; if (m && m.months) { const cnt = m.months.filter(v => v != null).length; if (cnt > n) n = cnt; } }); });
+  const labels = MONTH_LABELS.slice(0, n || 8);
+  const datasets = [];
+  brands.forEach(b => {
+    const c = CONTENT_OUTPUT[b], color = BRAND_COLOR[b]();
+    const actual = labels.map((_, i) => (c.tiktok && c.tiktok.months[i] || 0) + (c.facebook && c.facebook.months[i] || 0));
+    const target = labels.map((_, i) => c.target && c.target.months[i] != null ? c.target.months[i] : null);
+    datasets.push({ label: `${b} จริง`, backgroundColor: color, data: actual });
+    datasets.push({ label: `${b} เป้า`, backgroundColor: hexToRgba(color, 0.35), data: target });
+  });
+  legend(document.getElementById('lg-content'), brands.flatMap(b => [[`${b} จริง`, BRAND_COLOR[b]()], [`${b} เป้า`, hexToRgba(BRAND_COLOR[b](), 0.35)]]));
+  document.getElementById('sub-content').textContent = labels.length ? `${labels[0]} – ${labels[labels.length - 1]} 2026` : '—';
+  if (charts.content) charts.content.destroy();
+  const hasData = datasets.some(d => d.data.some(v => v != null && v > 0));
+  emptyState('c-content', !hasData);
+  if (hasData) {
+    charts.content = new Chart(document.getElementById('c-content'), {
+      type: 'bar',
+      data: { labels, datasets },
+      options: { scales: { x: { grid: noGrid, ticks: { maxRotation: 0 } }, y: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { maxTicksLimit: 5 } } },
+        plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${i.parsed.y == null ? '—' : fmtN.format(i.parsed.y)}` } } } }
+    });
+  }
+}
+
 function render(){
   if (!DATA) return;
   oxChartDefaults();
@@ -586,6 +673,7 @@ function render(){
 
   /* ===== กราฟหลัก: เส้นยอดวิวรายเดือนแยกแบรนด์ (แสดงทั้งปีเสมอ ไฮไลต์เดือนที่เลือก) ===== */
   Object.values(charts).forEach(c => c.destroy());
+  renderContentOutput();
   const brands = [...new Set(withViews.map(x => x.e.brand))];
   const monthsToShow = MONTHS_ELAPSED || 8;
   const labels = MONTH_LABELS.slice(0, monthsToShow);
