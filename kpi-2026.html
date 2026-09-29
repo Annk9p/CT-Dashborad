@@ -259,14 +259,23 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
   </div>
 
   <div class="ox-stack">
-    <div class="ox-section-title"><h2>KPI เนื้อหา — จำนวนคลิปที่ต้องโพสต์ต่อเดือน</h2><span class="ox-xs ox-muted" id="content-note"></span></div>
+    <div class="ox-section-title"><h2>KPI เนื้อหา — จำนวนคลิปที่ต้องโพสต์ต่อเดือน</h2><span class="ox-xs ox-muted">TikTok + Facebook · แยกแบรนด์และแพลตฟอร์ม</span></div>
     <div class="ox-kpi-grid ox-kpi-grid--2" id="content-kpis"></div>
-    <div class="ox-chart is-wide">
-      <div class="ox-chart__head">
-        <div><div class="ox-chart__title">คลิปที่โพสต์ต่อเดือน (TikTok + Facebook) เทียบเป้า</div><div class="ox-chart__sub" id="sub-content">—</div></div>
-        <div class="ox-legend" id="lg-content"></div>
+    <div class="ox-chart-grid" id="content-chart-grid">
+      <div class="ox-chart" id="content-chart-Eloop">
+        <div class="ox-chart__head">
+          <div><div class="ox-chart__title">Eloop — คลิปที่โพสต์ต่อเดือน แยกแพลตฟอร์ม</div><div class="ox-chart__sub" id="sub-content-Eloop">—</div></div>
+          <div class="ox-legend" id="lg-content-Eloop"></div>
+        </div>
+        <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-content-Eloop" role="img" aria-label="กราฟแท่งคลิปที่โพสต์ต่อเดือนของ Eloop แยกแพลตฟอร์ม เทียบเป้า"></canvas></div></div>
       </div>
-      <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-content" role="img" aria-label="กราฟแท่งจำนวนคลิปที่โพสต์ต่อเดือนเทียบเป้า แยกแบรนด์"></canvas></div></div>
+      <div class="ox-chart" id="content-chart-Moov">
+        <div class="ox-chart__head">
+          <div><div class="ox-chart__title">Moov — คลิปที่โพสต์ต่อเดือน แยกแพลตฟอร์ม</div><div class="ox-chart__sub" id="sub-content-Moov">—</div></div>
+          <div class="ox-legend" id="lg-content-Moov"></div>
+        </div>
+        <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-content-Moov" role="img" aria-label="กราฟแท่งคลิปที่โพสต์ต่อเดือนของ Moov แยกแพลตฟอร์ม เทียบเป้า"></canvas></div></div>
+      </div>
     </div>
   </div>
 
@@ -584,46 +593,56 @@ function hexToRgba(hex, a){
 /* ===== KPI เนื้อหา (แถว 3-8 ของชีต) — จำนวนคลิปที่ต้องโพสต์ต่อเดือน เทียบเป้า แยกแบรนด์ ===== */
 function renderContentOutput(){
   if (!CONTENT_OUTPUT) return;
-  const brands = F.brand === 'all' ? ['Eloop', 'Moov'] : [F.brand];
+  const allBrands = ['Eloop', 'Moov'];
+  const brands = F.brand === 'all' ? allBrands : [F.brand];
 
   document.getElementById('content-kpis').innerHTML = brands.map(b => {
     const c = CONTENT_OUTPUT[b];
     const targetSum = c.target ? c.target.sum : null;
-    const hasActual = (c.tiktok && c.tiktok.sum != null) || (c.facebook && c.facebook.sum != null);
-    const actualSum = (c.tiktok && c.tiktok.sum || 0) + (c.facebook && c.facebook.sum || 0);
+    const ttSum = c.tiktok && c.tiktok.sum, fbSum = c.facebook && c.facebook.sum;
+    const hasActual = ttSum != null || fbSum != null;
+    const actualSum = (ttSum || 0) + (fbSum || 0);
     const progress = targetSum ? actualSum / targetSum * 100 : null;
     return `<div class="ox-kpi">
       <div class="ox-kpi__label ox-row" style="gap:6px">${brandLogo(b, 16)}คลิปที่โพสต์ (${b})</div>
       <div class="ox-kpi__value">${hasActual ? fmtN.format(actualSum) : '—'}${targetSum != null ? ' / ' + fmtN.format(targetSum) : ''}</div>
       <div class="ox-kpi__delta ${progress == null ? '' : (progress >= 100 ? 'is-up' : 'is-down')}">${progress != null ? fmtP(progress) + ' ของเป้าทั้งปี' : '—'}</div>
+      <div class="ox-xs ox-muted">${platformIcon('TikTok', 14)} ${ttSum != null ? fmtN.format(ttSum) : '—'} &nbsp; ${platformIcon('Facebook', 14)} ${fbSum != null ? fmtN.format(fbSum) : '—'}</div>
     </div>`;
   }).join('');
-  document.getElementById('content-note').textContent = 'TikTok + Facebook · ' + brands.join(' · ');
 
-  let n = 0;
-  brands.forEach(b => { const c = CONTENT_OUTPUT[b]; ['target', 'tiktok', 'facebook'].forEach(k => { const m = c[k]; if (m && m.months) { const cnt = m.months.filter(v => v != null).length; if (cnt > n) n = cnt; } }); });
-  const labels = MONTH_LABELS.slice(0, n || 8);
-  const datasets = [];
-  brands.forEach(b => {
-    const c = CONTENT_OUTPUT[b], color = BRAND_COLOR[b]();
-    const actual = labels.map((_, i) => (c.tiktok && c.tiktok.months[i] || 0) + (c.facebook && c.facebook.months[i] || 0));
-    const target = labels.map((_, i) => c.target && c.target.months[i] != null ? c.target.months[i] : null);
-    datasets.push({ label: `${b} จริง`, backgroundColor: color, data: actual });
-    datasets.push({ label: `${b} เป้า`, backgroundColor: hexToRgba(color, 0.35), data: target });
+  /* การ์ด: แยกแบรนด์คนละฝั่ง (ox-chart-grid สองคอลัมน์) — ในแต่ละการ์ดแยกแท่งตามแพลตฟอร์ม TikTok/Facebook เทียบเป้า (เส้นประ) */
+  allBrands.forEach(b => {
+    const wrap = document.getElementById(`content-chart-${b}`);
+    if (!brands.includes(b)) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    const c = CONTENT_OUTPUT[b];
+    let n = 0;
+    ['target', 'tiktok', 'facebook'].forEach(k => { const m = c[k]; if (m && m.months) { const cnt = m.months.filter(v => v != null).length; if (cnt > n) n = cnt; } });
+    const labels = MONTH_LABELS.slice(0, n || 8);
+    const tiktokData = labels.map((_, i) => c.tiktok && c.tiktok.months[i] != null ? c.tiktok.months[i] : null);
+    const fbData = labels.map((_, i) => c.facebook && c.facebook.months[i] != null ? c.facebook.months[i] : null);
+    const targetData = labels.map((_, i) => c.target && c.target.months[i] != null ? c.target.months[i] : null);
+    const datasets = [
+      { type: 'bar', label: 'TikTok', backgroundColor: PLATFORM_COLOR.TikTok(), data: tiktokData, order: 1 },
+      { type: 'bar', label: 'Facebook', backgroundColor: PLATFORM_COLOR.Facebook(), data: fbData, order: 1 },
+      { type: 'line', label: 'เป้าหมาย', borderColor: tok('--omnix-chart-axis'), borderDash: [4, 4], borderWidth: 2, pointRadius: 0, backgroundColor: 'transparent', data: targetData, order: 0 }
+    ];
+    legend(document.getElementById(`lg-content-${b}`), [['TikTok', PLATFORM_COLOR.TikTok()], ['Facebook', PLATFORM_COLOR.Facebook()]]);
+    document.getElementById(`sub-content-${b}`).textContent = labels.length ? `${labels[0]} – ${labels[labels.length - 1]} 2026 · เส้นประ = เป้าหมาย` : '—';
+    const key = 'content' + b;
+    if (charts[key]) charts[key].destroy();
+    const hasData = tiktokData.some(v => v != null && v > 0) || fbData.some(v => v != null && v > 0);
+    emptyState(`c-content-${b}`, !hasData);
+    if (hasData) {
+      charts[key] = new Chart(document.getElementById(`c-content-${b}`), {
+        type: 'bar',
+        data: { labels, datasets },
+        options: { scales: { x: { grid: noGrid, ticks: { maxRotation: 0 } }, y: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { maxTicksLimit: 5 } } },
+          plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${i.parsed.y == null ? '—' : fmtN.format(i.parsed.y)}` } } } }
+      });
+    }
   });
-  legend(document.getElementById('lg-content'), brands.flatMap(b => [[`${b} จริง`, BRAND_COLOR[b]()], [`${b} เป้า`, hexToRgba(BRAND_COLOR[b](), 0.35)]]));
-  document.getElementById('sub-content').textContent = labels.length ? `${labels[0]} – ${labels[labels.length - 1]} 2026` : '—';
-  if (charts.content) charts.content.destroy();
-  const hasData = datasets.some(d => d.data.some(v => v != null && v > 0));
-  emptyState('c-content', !hasData);
-  if (hasData) {
-    charts.content = new Chart(document.getElementById('c-content'), {
-      type: 'bar',
-      data: { labels, datasets },
-      options: { scales: { x: { grid: noGrid, ticks: { maxRotation: 0 } }, y: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { maxTicksLimit: 5 } } },
-        plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${i.parsed.y == null ? '—' : fmtN.format(i.parsed.y)}` } } } }
-    });
-  }
 }
 
 function render(){
