@@ -145,18 +145,21 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
   --omnix-chart-1: #5b5bd6; --omnix-chart-2: #0e9f8f; --omnix-chart-3: #d97706;
   --omnix-chart-4: #db2777; --omnix-chart-5: #2563eb; --omnix-chart-other: #94a3b8;
   --omnix-chart-grid: #e6e9ee; --omnix-chart-axis: #5b6472;
+  --brand-eloop: #e02b20; --brand-moov: #6b7280;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not(.light) {
     --omnix-chart-1: #7c7ce8; --omnix-chart-2: #0d9488; --omnix-chart-3: #d97706;
     --omnix-chart-4: #ec4899; --omnix-chart-5: #3b82f6; --omnix-chart-other: #64748b;
     --omnix-chart-grid: #232a35; --omnix-chart-axis: #98a2b1;
+    --brand-eloop: #ff6a5e; --brand-moov: #9ca3af;
   }
 }
 :root[data-theme="dark"], :root.dark {
   --omnix-chart-1: #7c7ce8; --omnix-chart-2: #0d9488; --omnix-chart-3: #d97706;
   --omnix-chart-4: #ec4899; --omnix-chart-5: #3b82f6; --omnix-chart-other: #64748b;
   --omnix-chart-grid: #232a35; --omnix-chart-axis: #98a2b1;
+  --brand-eloop: #ff6a5e; --brand-moov: #9ca3af;
 }
 
 .ox-filter-bar { display: flex; align-items: center; gap: var(--omnix-space-2); flex-wrap: wrap; padding: var(--omnix-space-3); background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); }
@@ -418,7 +421,7 @@ const fmtK = v => Math.abs(v) >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : Math.abs(v) 
 
 /* ===== 3. อ่านสีจาก token ===== */
 const tok = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const BRAND_COLOR = { Eloop: () => tok('--omnix-chart-1'), Moov: () => tok('--omnix-chart-2') };
+const BRAND_COLOR = { Eloop: () => tok('--brand-eloop'), Moov: () => tok('--brand-moov') };
 const PLATFORM_COLOR = { TikTok: () => tok('--omnix-chart-1'), Facebook: () => tok('--omnix-chart-2'), YouTube: () => tok('--omnix-chart-4') };
 /* สีจริงของแพลตฟอร์ม (ข้อยกเว้นเรื่องสี: อัตลักษณ์ของข้อมูล) — ใช้เฉพาะกราฟ "คลิปที่โพสต์ต่อเดือน" ที่ให้แยกแพลตฟอร์มชัดเจน */
 const PLATFORM_BRAND_COLOR = { TikTok: '#3f3f46', Facebook: '#1877F2' };
