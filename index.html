@@ -457,6 +457,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 .kpi-cal__item.is-plan .ox-dot { background: var(--omnix-accent); }
 .kpi-cal__item.is-demo { display: inline-block; width: auto; cursor: default; padding-right: 8px; }
 .kpi-cal__more { font-size: 10px; color: var(--omnix-accent); background: none; border: 0; padding: 0 6px; text-align: left; cursor: pointer; font-family: inherit; }
+.kpi-status-sel { height: 28px; padding: 0 22px 0 8px; font-size: var(--omnix-text-xs); min-width: 0; width: auto; max-width: 150px; }
 .kpi-brand-seg button { display: inline-flex; align-items: center; gap: 6px; }
 .kpi-brand-dot { width: 9px; height: 9px; border-radius: var(--omnix-radius-full); background: var(--c); flex: 0 0 auto; }
 .kpi-plat { width: 13px; height: 13px; color: var(--omnix-fg); flex: 0 0 auto; margin-right: 3px; vertical-align: -2px; display: inline-block; }
@@ -801,6 +802,10 @@ const PUB_CSV_URL_YT = '';     // YouTube Plan (แท็บ gid 1450311646)
                         API restrictions = Google Sheets API เท่านั้น
    คีย์แบบนี้อ่านได้เฉพาะชีตที่แชร์ "ทุกคนที่มีลิงก์ดูได้" และเขียนไม่ได้ จึงเปิดเผยในหน้าเว็บได้ */
 const GOOGLE_API_KEY = 'AIzaSyDFxaqqQootO4LH9_5n5xVtndDaS8RDHmc';
+/* เขียนสถานะกลับชีต (คอลัมน์ K) ผ่าน Google Apps Script Web App — ดูวิธี deploy ใน SHEETS-API.md
+   ปล่อยว่าง = ปิดการแก้ไข หน้าเว็บจะแสดงสถานะเป็นป้ายอ่านอย่างเดียวเหมือนเดิม */
+const SHEET_WRITE_URL = '';
+const SHEET_WRITE_TOKEN = '';
 const YT_SHEET = { id: '1PLRGfQnKLG8mUy3wjjE5IrA_L925N_HL6d3stWRr9Cw', gid: '1450311646' };
 const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET.id}/gviz/tq?gid=${SHEET.gid}&tqx=out:json`;
 const COLS = { shop: 'Shop Name', product: 'Product', type: 'Content type', topic: 'Topic', title: 'title', url: 'URL', creator: 'Creator', status: 'Status', date: 'DATE', path: 'Path', recorder: 'Recorder', editor: 'Editor', actor: 'Actor', voice: 'Voice over' };
@@ -833,7 +838,7 @@ const DICT = {
     noClipsHint: 'ลองขยายช่วงเวลา หรือเลือกสถานะ "ทั้งหมด"', showing: 'แสดง {a}–{b} จาก {n} รายการ', none: 'ไม่มีรายการ', open: 'เปิด', noLink: 'ไม่มีลิงก์', copyPath: 'คัดลอก Path', copiedPath: 'คัดลอกที่อยู่ไฟล์แล้ว', copyLink: 'คัดลอกลิงก์', copiedLink: 'คัดลอกลิงก์ TikTok แล้ว', copyFail: 'คัดลอกไม่สำเร็จ',
     myQuota: 'โควต้า {n} คลิป/สัปดาห์ (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} สัปดาห์', myTargetSubBrand: '{b} · {w} สัปดาห์', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'จากเป้า {n} คลิป', todo: 'ต้องทำอีก {n} คลิป', metAll: 'ครบตามเป้าแล้ว',
     noMatch: 'ไม่พบคลิปตามเงื่อนไข', noMatchHint: 'ลองเปลี่ยนช่วงเวลา แบรนด์ หรือสถานะ', noSearch: 'ไม่พบคลิปที่ตรงกับคำค้น', noSearchHint: 'ลองเลือก "ทุกสถานะ" หรือพิมพ์คำอื่น',
-    multiHint: 'เลือกได้หลายสถานะ', clickPick: 'คลิกเพื่อกรองเฉพาะคนนี้', clickPickType: 'คลิกเพื่อกรองเฉพาะประเภทนี้', byStatusN: 'เฉพาะสถานะ {s}', 'tab.cal': 'Calendar', 'cal.today': 'วันนี้', 'cal.add': 'วางคอนเทนต์', 'cal.export': 'ส่งออกแผน (CSV)', 'cal.grid': 'ปฏิทินรายเดือน', 'cal.legendPlan': 'แผนที่วางไว้', 'cal.hint': 'ไอคอน = ช่องทางที่โพสต์ · คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง',
+    multiHint: 'เลือกได้หลายสถานะ', clickPick: 'คลิกเพื่อกรองเฉพาะคนนี้', statusSaved: 'บันทึกสถานะ {s} ลงชีตแล้ว', statusFailed: 'บันทึกลงชีตไม่สำเร็จ ({e}) — คืนค่าเดิมแล้ว', clickPickType: 'คลิกเพื่อกรองเฉพาะประเภทนี้', byStatusN: 'เฉพาะสถานะ {s}', 'tab.cal': 'Calendar', 'cal.today': 'วันนี้', 'cal.add': 'วางคอนเทนต์', 'cal.export': 'ส่งออกแผน (CSV)', 'cal.grid': 'ปฏิทินรายเดือน', 'cal.legendPlan': 'แผนที่วางไว้', 'cal.hint': 'ไอคอน = ช่องทางที่โพสต์ · คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง',
     'cal.k.month': 'คลิปในชีตเดือนนี้', 'cal.k.plans': 'แผนที่วางไว้', 'cal.k.free': 'วันที่ยังว่าง', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% ของคลิปเดือนนี้', 'cal.plansSub': 'ยังไม่ถึงวัน {n} รายการ', 'cal.freeSub': 'จากวันที่เหลือในเดือน {n} วัน', 'cal.freePast': 'เดือนนี้ผ่านไปแล้ว',
     'cal.meta': '{n} คลิปจากชีต · {p} แผน · {a} – {b}', 'cal.more': 'อีก {n} รายการ', 'cal.less': 'ย่อ', 'cal.upcoming': 'แผนคอนเทนต์ที่วางไว้', 'cal.local': 'บันทึกไว้ในเบราว์เซอร์นี้ — ส่งออก CSV เพื่อนำไปวางในชีต', 'cal.noPlans': 'ยังไม่มีแผนคอนเทนต์ในเดือนนี้', 'cal.noPlansHint': 'คลิกวันในปฏิทิน หรือกดปุ่ม "วางคอนเทนต์"',
     'cal.newTitle': 'วางคอนเทนต์ล่วงหน้า', 'cal.editTitle': 'แก้ไขแผนคอนเทนต์', 'cal.f.note': 'โน้ต / ไอเดีย', 'cal.f.channel': 'ช่องทางที่จะโพสต์', 'cal.h.channel': 'ช่องทาง', 'cal.save': 'บันทึกแผน', 'cal.delete': 'ลบแผนนี้', 'cal.saved': 'บันทึกแผนแล้ว', 'cal.deleted': 'ลบแผนแล้ว', 'cal.confirmDel': 'ลบแผนคอนเทนต์นี้?', 'cal.needTopic': 'กรอกวันที่และหัวข้อคลิปก่อนบันทึก', 'cal.edit': 'แก้ไข', 'cal.dup': 'ทำซ้ำ', 'cal.exported': 'ส่งออกแผน {n} รายการแล้ว', 'cal.noExport': 'ยังไม่มีแผนให้ส่งออก',
@@ -861,7 +866,7 @@ const DICT = {
     noClipsHint: 'Try a wider date range or "All" statuses', showing: 'Showing {a}–{b} of {n}', none: 'No items', open: 'Open', noLink: 'No link', copyPath: 'Copy path', copiedPath: 'File path copied', copyLink: 'Copy link', copiedLink: 'TikTok link copied', copyFail: 'Copy failed',
     myQuota: 'Quota {n} clips/week (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} weeks', myTargetSubBrand: '{b} · {w} weeks', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'of {n} target', todo: '{n} more clips to do', metAll: 'Target met',
     noMatch: 'No clips match the filters', noMatchHint: 'Try another period, brand or status', noSearch: 'No clips match your search', noSearchHint: 'Try "All statuses" or another keyword',
-    multiHint: 'Select more than one', clickPick: 'click to filter by this person', clickPickType: 'click to filter by this type', byStatusN: 'Status: {s}', 'tab.cal': 'Calendar', 'cal.today': 'Today', 'cal.add': 'Plan content', 'cal.export': 'Export plans (CSV)', 'cal.grid': 'Monthly calendar', 'cal.legendPlan': 'Planned', 'cal.hint': 'Icon = channel · click a day to plan content · click a clip to preview',
+    multiHint: 'Select more than one', clickPick: 'click to filter by this person', statusSaved: 'Status {s} saved to the sheet', statusFailed: 'Could not save to the sheet ({e}) — change reverted', clickPickType: 'click to filter by this type', byStatusN: 'Status: {s}', 'tab.cal': 'Calendar', 'cal.today': 'Today', 'cal.add': 'Plan content', 'cal.export': 'Export plans (CSV)', 'cal.grid': 'Monthly calendar', 'cal.legendPlan': 'Planned', 'cal.hint': 'Icon = channel · click a day to plan content · click a clip to preview',
     'cal.k.month': 'Sheet clips this month', 'cal.k.plans': 'Planned items', 'cal.k.free': 'Empty days left', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% of this month\'s clips', 'cal.plansSub': '{n} still upcoming', 'cal.freeSub': 'of {n} days left this month', 'cal.freePast': 'Month has passed',
     'cal.meta': '{n} clips from sheet · {p} plans · {a} – {b}', 'cal.more': '{n} more', 'cal.less': 'Less', 'cal.upcoming': 'Planned content', 'cal.local': 'Saved in this browser — export CSV to paste into the sheet', 'cal.noPlans': 'No planned content this month', 'cal.noPlansHint': 'Click a day in the calendar or press "Plan content"',
     'cal.newTitle': 'Plan content ahead', 'cal.editTitle': 'Edit planned content', 'cal.f.note': 'Notes / ideas', 'cal.f.channel': 'Channel to post on', 'cal.h.channel': 'Channel', 'cal.save': 'Save plan', 'cal.delete': 'Delete plan', 'cal.saved': 'Plan saved', 'cal.deleted': 'Plan deleted', 'cal.confirmDel': 'Delete this plan?', 'cal.needTopic': 'Enter a date and topic before saving', 'cal.edit': 'Edit', 'cal.dup': 'Duplicate', 'cal.exported': 'Exported {n} plans', 'cal.noExport': 'No plans to export yet',
@@ -944,6 +949,11 @@ const ICO = { up: 'm12 5-7 7 1.4 1.4L11 8.8V19h2V8.8l4.6 4.6L19 12z', down: 'm12
   ext: 'M13 3l3.3 3.3-7 7 1.4 1.4 7-7L21 11V3zM19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z' };
 const ico = n => `<svg class="ox-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICO[n]}"/></svg>`;
 const STATUS_BADGE = { Done: 'success', 'In Progress': 'warning', Draft: 'info', Reject: 'accent', Stuck: 'danger' };
+/* แก้สถานะได้เมื่อมีลิงก์ Apps Script และข้อมูลมาจากแหล่งที่เลขแถวตรงกับชีต (gviz ข้ามแถวที่ซ่อน) */
+const canEditStatus = () => !!SHEET_WRITE_URL && SOURCE !== 'gviz';
+const statusCell = c => canEditStatus() && c.sheetRow
+  ? `<select class="ox-control kpi-status-sel" data-set-status="${c.id}" aria-label="${t('h.status')}">${STATUSES.map(v => `<option value="${v}"${v === c.status ? ' selected' : ''}>${v} · ${t('st.' + v)}</option>`).join('')}</select>`
+  : badgeStatus(c.status);
 const badgeStatus = s => STATUS_BADGE[s] ? `<span class="ox-badge ox-badge--${STATUS_BADGE[s]}" title="${t('st.' + s)}">${s}</span>` : `<span class="ox-badge">${esc(s || '—')}</span>`;
 const brandVar = b => `var(--brand-${b === 'Moov' ? 'moov' : 'eloop'})`;
 const badgeBrand = b => `<span class="ox-badge" style="--c:${brandVar(b)}">${BRAND_LABEL[b] || esc(b)}</span>`;
@@ -960,8 +970,9 @@ function openPreview(item){
   const url = item.url || item.link || '', emb = videoEmbed(url), player = document.getElementById('preview-player');
   player.className = 'kpi-preview__player' + (emb && emb.wide ? ' is-wide' : '');
   player.innerHTML = emb ? `<iframe src="${esc(emb.src)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" title="${esc(item.topic || '')}"></iframe>` : `<div class="ox-chart__empty"><div>${t('noVideo')}</div></div>`;
-  const rows = [[t('h.brand'), item.shop], [t('h.status'), item.status], [t('h.date'), item.date ? thDate(item.date) : (item.shoot ? thDate(item.shoot) : '')], [t('h.product'), item.product], [t('h.type'), item.type || item.playlist], [t('h.creator'), item.creator || item.owner], ['Recorder', item.recorder], ['Editor', item.editor], ['Actor', item.actor], ['Voice', item.voice], ['MC', item.mc]].filter(x => x[1]);
-  document.getElementById('preview-meta').innerHTML = `<div class="kpi-preview__topic">${esc(item.topic || item.title || '—')}</div><dl>${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl><div class="ox-row">${btnCopy(item.topic, t('copyTopic'), t('copiedTopic'))}${url ? btnCopy(url, t('copyLink'), t('copiedLink')) : ''}${btnCopy(item.path, t('copyPath'), t('copiedPath'))}${url ? `<a class="ox-btn ox-btn--primary ox-btn--sm kpi-inline-btn" href="${esc(url)}" target="_blank" rel="noopener">${ico('ext')}${t('open')}</a>` : ''}${item.script ? `<a class="ox-btn ox-btn--secondary ox-btn--sm kpi-inline-btn" href="${esc(item.script)}" target="_blank" rel="noopener">${ico('ext')}${t('yt.script')}</a>` : ''}</div>`;
+  const rows = [[t('h.brand'), item.shop], [t('h.status'), item.sheetRow && canEditStatus() ? '__status__' : item.status], [t('h.date'), item.date ? thDate(item.date) : (item.shoot ? thDate(item.shoot) : '')], [t('h.product'), item.product], [t('h.type'), item.type || item.playlist], [t('h.creator'), item.creator || item.owner], ['Recorder', item.recorder], ['Editor', item.editor], ['Actor', item.actor], ['Voice', item.voice], ['MC', item.mc]].filter(x => x[1]);
+  const statusHtml = item.sheetRow && canEditStatus() ? statusCell(item) : '';
+  document.getElementById('preview-meta').innerHTML = `<div class="kpi-preview__topic">${esc(item.topic || item.title || '—')}</div><dl>${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v === '__status__' ? statusHtml : esc(v)}</dd>`).join('')}</dl><div class="ox-row">${btnCopy(item.topic, t('copyTopic'), t('copiedTopic'))}${url ? btnCopy(url, t('copyLink'), t('copiedLink')) : ''}${btnCopy(item.path, t('copyPath'), t('copiedPath'))}${url ? `<a class="ox-btn ox-btn--primary ox-btn--sm kpi-inline-btn" href="${esc(url)}" target="_blank" rel="noopener">${ico('ext')}${t('open')}</a>` : ''}${item.script ? `<a class="ox-btn ox-btn--secondary ox-btn--sm kpi-inline-btn" href="${esc(item.script)}" target="_blank" rel="noopener">${ico('ext')}${t('yt.script')}</a>` : ''}</div>`;
   document.getElementById('preview-modal').hidden = false;
 }
 function closePreview(){ const m = document.getElementById('preview-modal'); m.hidden = true; document.getElementById('preview-player').innerHTML = ''; }
@@ -1086,12 +1097,13 @@ function parseRows(data){
   const idx = {}; for (const [k, name] of Object.entries(COLS)) { idx[k] = header.indexOf(name.toLowerCase()); if (idx[k] < 0 && ['shop', 'status', 'date', 'creator'].includes(k)) throw new Error(t('err.fmt', { c: name })); }
   const get = (r, k) => idx[k] >= 0 ? (r[idx[k]] || '').trim() : '';
   let sectionYear = null, id = 0; const out = [];
-  for (const r of data.slice(1)) {
+  for (let ri = 1; ri < data.length; ri++) {
+    const r = data[ri], sheetRow = ri + 1;   // แถวจริงในชีต (แถว 1 = หัวตาราง) ใช้ตอนเขียนสถานะกลับ
     const a = (r[0] || '').trim(); if (/^20\d\d$/.test(a)) sectionYear = +a;
     const shop = get(r, 'shop'); if (!BRANDS.includes(shop)) continue;
     const status = get(r, 'status'), topic = get(r, 'topic'), date = parseUSDate(get(r, 'date'));
     if (!status && !topic && !date) continue;   // แถวว่างที่มีแค่ชื่อคน
-    out.push({ id: ++id, year: date ? +date.slice(0, 4) : sectionYear, shop, product: get(r, 'product'), type: get(r, 'type'), topic, title: get(r, 'title'), url: get(r, 'url'), creator: get(r, 'creator').replace(/\s+/g, ' '), status: status || 'Draft', date, path: get(r, 'path').replace(/^'|'$/g, ''), recorder: get(r, 'recorder'), editor: get(r, 'editor'), actor: get(r, 'actor'), voice: get(r, 'voice') });
+    out.push({ id: ++id, sheetRow, year: date ? +date.slice(0, 4) : sectionYear, shop, product: get(r, 'product'), type: get(r, 'type'), topic, title: get(r, 'title'), url: get(r, 'url'), creator: get(r, 'creator').replace(/\s+/g, ' '), status: status || 'Draft', date, path: get(r, 'path').replace(/^'|'$/g, ''), recorder: get(r, 'recorder'), editor: get(r, 'editor'), actor: get(r, 'actor'), voice: get(r, 'voice') });
   }
   return out;
 }
@@ -1337,7 +1349,7 @@ function renderManager(){
   $('mgr-count').textContent = fmtN(rows.length);
   const pages = Math.max(1, Math.ceil(rows.length / st.size)); st.page = Math.min(Math.max(1, st.page), pages);
   const off = (st.page - 1) * st.size, pageRows = rows.slice(off, off + st.size);
-  $('mgr-rows').innerHTML = pageRows.length === 0 ? emptyRow(13, t('noDataIn', { r: rangeLabel }), t('noClipsHint'), `<button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" onclick="setMgrPreset('all_year')">${t('viewYear')}</button>`) : pageRows.map((c, i) => `<tr class="is-clickable" data-pv="tt:${c.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td class="is-crew">${esc(c.recorder || '—')}</td><td class="is-crew">${esc(c.editor || '—')}</td><td class="is-crew">${esc(c.actor || '—')}</td><td class="is-crew">${esc(c.voice || '—')}</td><td>${btnOpen(c)}</td></tr>`).join('');
+  $('mgr-rows').innerHTML = pageRows.length === 0 ? emptyRow(13, t('noDataIn', { r: rangeLabel }), t('noClipsHint'), `<button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" onclick="setMgrPreset('all_year')">${t('viewYear')}</button>`) : pageRows.map((c, i) => `<tr class="is-clickable" data-pv="tt:${c.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${statusCell(c)}</td><td>${esc(c.creator || '—')}</td><td class="is-crew">${esc(c.recorder || '—')}</td><td class="is-crew">${esc(c.editor || '—')}</td><td class="is-crew">${esc(c.actor || '—')}</td><td class="is-crew">${esc(c.voice || '—')}</td><td>${btnOpen(c)}</td></tr>`).join('');
   $('mgr-pageinfo').textContent = rows.length ? t('showing', { a: off + 1, b: Math.min(off + st.size, rows.length), n: fmtN(rows.length) }) : t('none');
   $('mgr-prev').disabled = st.page <= 1; $('mgr-next').disabled = st.page >= pages;
   S.exportRows = rows;
@@ -1393,7 +1405,7 @@ function renderPersonal(){
   const inBrand = period.filter(c => st.brand === 'all' || c.shop === st.brand);
   $('my-status-counts').innerHTML = `<span class="ox-xs ox-muted">${t('byStatus')}:</span>` + STATUSES.map(k => `<span class="ox-badge ox-badge--${STATUS_BADGE[k]} ${st.status !== 'all' && st.status !== k ? 'is-dim' : ''}" data-st="${k}" role="button" tabindex="0" title="${t('st.' + k)}">${k}<span class="ox-num">${inBrand.filter(c => c.status === k).length}</span></span>`).join('');
   $('my-status-counts').onclick = e => { const b = e.target.closest('[data-st]'); if (!b) return; st.status = st.status === b.dataset.st ? 'all' : b.dataset.st; renderPersonal(); };
-  $('my-rows').innerHTML = rows.length === 0 ? emptyRow(9, t('noMatch'), t('noMatchHint')) : rows.map((c, i) => `<tr class="is-clickable" data-pv="tt:${c.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td class="is-nowrap">${btnCopy(c.path, t('copyPath'), t('copiedPath')) || '<span class="ox-muted">—</span>'}</td><td>${btnOpen(c)}</td></tr>`).join('');
+  $('my-rows').innerHTML = rows.length === 0 ? emptyRow(9, t('noMatch'), t('noMatchHint')) : rows.map((c, i) => `<tr class="is-clickable" data-pv="tt:${c.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${statusCell(c)}</td><td class="is-nowrap">${btnCopy(c.path, t('copyPath'), t('copiedPath')) || '<span class="ox-muted">—</span>'}</td><td>${btnOpen(c)}</td></tr>`).join('');
   S.exportRows = rows;
 }
 
@@ -1407,7 +1419,7 @@ function renderReuse(){
   $('re-count').textContent = `${fmtN(rows.length)} ${t('clips')}`;
   const pages = Math.max(1, Math.ceil(rows.length / st.size)); st.page = Math.min(Math.max(1, st.page), pages);
   const off = (st.page - 1) * st.size, pageRows = rows.slice(off, off + st.size);
-  $('re-rows').innerHTML = pageRows.length === 0 ? emptyRow(9, t('noSearch'), t('noSearchHint')) : pageRows.map((c, i) => `<tr class="is-clickable" data-pv="tt:${c.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${btnCopy(c.url, t('copyLink'), t('copiedLink'))}${btnCopy(c.path, t('copyPath'), t('copiedPath'))}${c.url ? btnOpen(c) : ''}</span></td></tr>`).join('');
+  $('re-rows').innerHTML = pageRows.length === 0 ? emptyRow(9, t('noSearch'), t('noSearchHint')) : pageRows.map((c, i) => `<tr class="is-clickable" data-pv="tt:${c.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${statusCell(c)}</td><td>${esc(c.creator || '—')}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${btnCopy(c.url, t('copyLink'), t('copiedLink'))}${btnCopy(c.path, t('copyPath'), t('copiedPath'))}${c.url ? btnOpen(c) : ''}</span></td></tr>`).join('');
   $('re-pageinfo').textContent = rows.length ? t('showing', { a: off + 1, b: Math.min(off + st.size, rows.length), n: fmtN(rows.length) }) : t('none');
   $('re-prev').disabled = st.page <= 1; $('re-next').disabled = st.page >= pages;
   S.exportRows = rows;
@@ -1498,6 +1510,28 @@ function renderYouTube(){
   $('yt-rows').innerHTML = rows.length === 0 ? emptyRow(11, YT.length ? t('noMatch') : t('yt.noData'), YT.length ? t('noMatchHint') : t('yt.noDataHint')) : rows.map((r, i) => `<tr class="is-clickable" data-pv="yt:${r.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${i + 1}</td><td>${badgeBrand(r.shop === 'MoovTH' ? 'Moov' : r.shop)}</td><td>${r.playlist ? `<span class="ox-badge">${esc(r.playlist)}</span>` : '<span class="ox-muted">—</span>'}</td><td>${esc(r.product || '—')}</td><td class="is-topic">${topicCell(r, st.q)}</td><td class="is-nowrap">${ytBadge(r.status)}</td><td>${esc(r.owner || '—')}</td><td>${esc(r.mc || '—')}</td><td>${esc(r.editor || '—')}</td><td class="ox-num is-nowrap">${thDate(r.shoot)}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${lk(r.script, t('yt.script'))}${lk(r.link, t('yt.video'))}</span></td></tr>`).join('');
   S.exportRows = rows;
 }
+/* ===== 8b. เขียนสถานะกลับ Google Sheet (คอลัมน์ K) =====
+   ส่งแบบ text/plain เพื่อเลี่ยง preflight ที่ Apps Script ไม่รองรับ · ฝั่งสคริปต์ตรวจ Topic ก่อนเขียน กันเขียนผิดแถว */
+async function saveStatus(clip, next){
+  const prev = clip.status;
+  const body = { token: SHEET_WRITE_TOKEN, row: clip.sheetRow, status: next, expectTopic: clip.topic || clip.title || '', expectStatus: prev };
+  clip.status = next; render();   // อัปเดตหน้าทันที แล้วค่อยยืนยันกับชีต
+  try {
+    const r = await fetch(SHEET_WRITE_URL, { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow' });
+    const j = await r.json().catch(() => null);
+    if (!j || !j.ok) throw new Error(j && j.error ? j.error : `http ${r.status}`);
+    toast(t('statusSaved', { s: next }));
+  } catch (e) {
+    clip.status = prev; render();
+    toast(t('statusFailed', { e: e.message }));
+  }
+}
+document.addEventListener('change', e => {
+  const sel = e.target.closest('[data-set-status]'); if (!sel) return;
+  const clip = ALL.find(c => String(c.id) === sel.dataset.setStatus);
+  if (clip && clip.status !== sel.value) saveStatus(clip, sel.value);
+});
+
 /* ===== 9. ตัวกรองแบรนด์แบบปุ่ม — มีจุดสีประจำแบรนด์ ===== */
 function renderBrandSeg(id, value, onChange, moovValue = 'Moov'){
   const el = document.getElementById(id); if (!el) return;
