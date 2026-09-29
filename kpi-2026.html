@@ -369,7 +369,7 @@ function classify(raw){
 }
 /* คอลัมน์คงที่ตามโครงชีต: 0 หมวด, 1 ตัวชี้วัด, 2 current, 3 target, 4 ปีก่อน, 5-16 ม.ค.-ธ.ค., 17 SUM, 18 %Progress, 21 Time gone, 22 %.To target */
 function parseKpiRows(rows){
-  const data = {}; ENTITIES.forEach(e => data[e.key] = { follower: null, views: null, engagement: null, watchTime: null });
+  const data = {}; ENTITIES.forEach(e => data[e.key] = { follower: null, views: null, engagement: null, watchTime: null, avgWatchTime: null });
   let cur = null;
   for (const r of rows.slice(1)) {
     const c0 = classify(r[0]);
@@ -388,6 +388,8 @@ function parseKpiRows(rows){
       data[cur].engagement = { target, sum, progress, months, type: 'rate' };
     } else if (ml.includes('watch time organic') && ml.includes('min')) {
       data[cur].watchTime = { target, sum, progress, pace, months, type: 'cumulative' };
+    } else if (ml.includes('average watch time') && !ml.includes('finish')) {
+      data[cur].avgWatchTime = { target, sum, progress, months, type: 'rate' };
     }
   }
   return data;
@@ -771,13 +773,15 @@ function render(){
     const d = DATA[e.key];
     const vs = metricStat(d.views, F.month), fs = metricStat(d.follower, F.month), es = metricStat(d.engagement, F.month);
     const ws = d.watchTime ? metricStat(d.watchTime, F.month) : null;
+    const aws = d.avgWatchTime ? metricStat(d.avgWatchTime, F.month) : null;
+    const isYouTube = e.platform === 'YouTube';
     return `<div class="ox-card ox-entity-card"><div class="ox-card__body">
       <div class="ox-row ox-row--between">
         <div class="ox-entity-head">${entityIcons(e.platform, e.brand, 26)}<div><div class="ox-entity-head__title">${e.platform}</div><div class="ox-entity-head__sub">${e.brand}</div></div></div>
         ${d.views ? statusBadge(vs.progress) : '<span class="ox-badge">รอข้อมูล</span>'}
       </div>
       ${metricBlock(`ยอดวิว ${kpiSuffix}`, vs, fmtInt)}
-      ${e.platform !== 'Facebook' ? metricBlock(`ผู้ติดตามใหม่ ${kpiSuffix}`, fs, fmtInt) : ''}
+      ${isYouTube ? (aws ? metricBlock(`Average Watch Time (%) ${kpiSuffix}`, aws, fmtPct2) : '') : (e.platform !== 'Facebook' ? metricBlock(`ผู้ติดตามใหม่ ${kpiSuffix}`, fs, fmtInt) : '')}
       ${metricBlock(`Engagement Rate ${kpiSuffix}`, es, fmtPct2)}
       ${ws ? metricBlock(`Watch Time (นาที) ${kpiSuffix}`, ws, fmtInt) : ''}
     </div></div>`;
@@ -791,7 +795,8 @@ function render(){
   ents.forEach(e => {
     const d = DATA[e.key];
     if (d.views) rowsHtml.push([e, 'ยอดวิว', fmtInt, metricStat(d.views, F.month)]);
-    if (d.follower && e.platform !== 'Facebook') rowsHtml.push([e, 'ผู้ติดตามใหม่', fmtInt, metricStat(d.follower, F.month)]);
+    if (d.follower && e.platform !== 'Facebook' && e.platform !== 'YouTube') rowsHtml.push([e, 'ผู้ติดตามใหม่', fmtInt, metricStat(d.follower, F.month)]);
+    if (d.avgWatchTime && e.platform === 'YouTube') rowsHtml.push([e, 'Average Watch Time (%)', fmtPct2, metricStat(d.avgWatchTime, F.month)]);
     if (d.engagement) rowsHtml.push([e, 'Engagement Rate', fmtPct2, metricStat(d.engagement, F.month)]);
     if (d.watchTime) rowsHtml.push([e, 'Watch Time (นาที)', fmtInt, metricStat(d.watchTime, F.month)]);
   });
