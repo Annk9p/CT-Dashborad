@@ -598,16 +598,19 @@ function renderContentOutput(){
 
   document.getElementById('content-kpis').innerHTML = brands.map(b => {
     const c = CONTENT_OUTPUT[b];
-    const targetSum = c.target ? c.target.sum : null;
     const ttSum = c.tiktok && c.tiktok.sum, fbSum = c.facebook && c.facebook.sum;
-    const hasActual = ttSum != null || fbSum != null;
-    const actualSum = (ttSum || 0) + (fbSum || 0);
-    const progress = targetSum ? actualSum / targetSum * 100 : null;
     return `<div class="ox-kpi">
       <div class="ox-kpi__label ox-row" style="gap:6px">${brandLogo(b, 16)}คลิปที่โพสต์ (${b})</div>
-      <div class="ox-kpi__value">${hasActual ? fmtN.format(actualSum) : '—'}${targetSum != null ? ' / ' + fmtN.format(targetSum) : ''}</div>
-      <div class="ox-kpi__delta ${progress == null ? '' : (progress >= 100 ? 'is-up' : 'is-down')}">${progress != null ? fmtP(progress) + ' ของเป้าทั้งปี' : '—'}</div>
-      <div class="ox-xs ox-muted">${platformIcon('TikTok', 14)} ${ttSum != null ? fmtN.format(ttSum) : '—'} &nbsp; ${platformIcon('Facebook', 14)} ${fbSum != null ? fmtN.format(fbSum) : '—'}</div>
+      <div class="ox-row" style="justify-content:space-between;gap:var(--omnix-space-4);margin-top:var(--omnix-space-1)">
+        <div style="flex:1;min-width:0">
+          <div class="ox-xs ox-muted ox-row" style="gap:4px">${platformIcon('TikTok', 16)}TikTok</div>
+          <div class="ox-kpi__value" style="font-size:var(--omnix-text-lg)">${ttSum != null ? fmtN.format(ttSum) : '—'}</div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="ox-xs ox-muted ox-row" style="gap:4px">${platformIcon('Facebook', 16)}Facebook</div>
+          <div class="ox-kpi__value" style="font-size:var(--omnix-text-lg)">${fbSum != null ? fmtN.format(fbSum) : '—'}</div>
+        </div>
+      </div>
     </div>`;
   }).join('');
 
