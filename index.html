@@ -560,7 +560,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
         <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-people" role="img"></canvas></div></div>
       </div>
       <div class="ox-chart">
-        <div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="c.type">สัดส่วนตามประเภทคลิป</div><div class="ox-chart__sub" id="sub-type">เฉพาะที่โพสต์แล้ว</div></div><div class="ox-legend" id="lg-type"></div></div>
+        <div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="c.type">ประเภทคลิป</div><div class="ox-chart__sub" id="sub-type">เฉพาะที่โพสต์แล้ว</div></div><div class="ox-legend" id="lg-type"></div></div>
         <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-type" role="img"></canvas></div></div>
       </div>
     </div>
@@ -817,7 +817,7 @@ const DICT = {
     'p.this_week': 'สัปดาห์นี้', 'p.last_week': 'สัปดาห์ก่อน', 'p.this_month': 'เดือนนี้', 'p.last_month': 'เดือนก่อน', 'p.all_year': 'ทั้งปี', 'p.custom': 'กำหนดเอง', to: 'ถึง',
     allBrands: 'ทุกแบรนด์', allStatus: 'ทุกสถานะ', allTypes: 'ทุกประเภท', creators: 'ครีเอเตอร์', status: 'สถานะ', all: 'ทั้งหมด', perPage: 'แสดงต่อหน้า', prev: 'ก่อนหน้า', next: 'ถัดไป', cancel: 'ยกเลิก',
     'k.target': 'เป้าหมายรวม (คลิป)', 'k.done': 'โพสต์แล้ว (Done)', 'k.bal': 'ขาด / เกินเป้า', 'k.pct': 'ความสำเร็จ', 'k.myTarget': 'เป้าหมายช่วงนี้', 'k.todo': 'คงเหลือต้องทำ',
-    'c.trend': 'คลิปที่โพสต์แล้วตามช่วงเวลา', 'c.trendAny': 'จำนวนคลิปตามช่วงเวลา', 'c.peopleAny': 'ครีเอเตอร์', 'c.people': 'ครีเอเตอร์', 'c.people.sub': 'เรียงจากมากไปน้อย', 'c.type': 'สัดส่วนตามประเภทคลิป', 'c.type.sub': 'เฉพาะที่โพสต์แล้ว (Done)',
+    'c.trend': 'คลิปที่โพสต์แล้วตามช่วงเวลา', 'c.trendAny': 'จำนวนคลิปตามช่วงเวลา', 'c.peopleAny': 'ครีเอเตอร์', 'c.people': 'ครีเอเตอร์', 'c.people.sub': 'เรียงจากมากไปน้อย', 'c.type': 'ประเภทคลิป', 'c.type.sub': 'เฉพาะที่โพสต์แล้ว (Done)',
     't.matrix': 'ผลงานรายบุคคล เทียบเป้าหมาย', 't.clips': 'รายการคลิปตามเงื่อนไข', 't.myClips': 'รายการคลิป', 't.reuse': 'คลิปพร้อมนำไปใช้', 't.reuse.sub': 'คลิกแถวเพื่อดูตัวอย่างคลิป · คัดลอกลิงก์ TikTok หรือที่อยู่ไฟล์ต้นฉบับได้ทันที',
     'h.creator': 'ครีเอเตอร์', 'h.elT': 'Eloop เป้า', 'h.elD': 'Eloop โพสต์', 'h.mvT': 'Moov เป้า', 'h.mvD': 'Moov โพสต์', 'h.target': 'รวมเป้า', 'h.done': 'โพสต์แล้ว', 'h.gap': 'ขาด/เกิน', 'h.pct': 'ความสำเร็จ', 'h.status': 'สถานะ',
     'h.recorder': 'ถ่าย (Recorder)', 'h.editor': 'ตัดต่อ (Editor)', 'h.actor': 'นักแสดง (Actor)', 'h.voice': 'พากย์ (Voice)', 'yt.allPlaylists': 'ทุก Playlist', 'yt.allOwners': 'ทุก Owner', 'yt.notStarted': 'ยังไม่เริ่ม', 'yt.search': 'ค้นหาหัวข้อ สินค้า หรือชื่อคน', 'yt.k.total': 'หัวข้อทั้งหมด (2026)', 'yt.k.done': 'เสร็จแล้ว (Done)', 'yt.k.wip': 'กำลังทำ (In Progress + Draft)', 'yt.k.todo': 'ยังไม่เริ่ม', 'yt.c.playlist': 'หัวข้อต่อ Playlist', 'yt.c.playlist.sub': 'แยกตามสถานะ', 'yt.c.status': 'สัดส่วนสถานะ', 'yt.c.status.sub': 'ทุกหัวข้อปี 2026 ตามตัวกรอง', 'yt.crew': 'บทบาททีมงาน — จำนวนหัวข้อต่อคน', 'yt.crew.sub': 'นับจากคอลัมน์ Owner / MC / Editor', 'yt.t.list': 'รายการหัวข้อ YouTube 2026', 'yt.shoot': 'วันถ่าย', 'yt.links': 'ลิงก์', 'yt.script': 'สคริปต์', 'yt.video': 'วิดีโอ', 'yt.ofTotal': '{p}% ของทั้งหมด', 'yt.topics': 'หัวข้อ', 'yt.updated': 'อัปเดตล่าสุด {t} · แหล่งข้อมูล: Google Sheet (YouTube Plan) · เฉพาะส่วน "Youtube 2026"', 'yt.noData': 'ยังไม่มีข้อมูล YouTube 2026', 'yt.noDataHint': 'ตรวจว่าชีตมีแถวหัวข้อ "Youtube 2026" และรัน update_data.sh', refreshed: 'โหลดข้อมูลแล้ว · {t}', allPeople: 'ทุกคน (รวมภาระงาน)', 't.summary': 'รวมภาระงานทุกคน', 'h.ttTotal': 'TikTok รวม', 'h.ttTarget': 'เป้า TikTok', 'h.ytTotal': 'YouTube รวม', 'h.grand': 'รวมทั้งหมด', summarySub: 'TikTok: คลิปในช่วง {a} – {b} · YouTube: หัวข้อปี 2026 ทั้งหมด (นับตามบทบาท)', allPeopleName: 'ทุกคน', allPeopleQuota: 'ภาระงานรวมของทีม', updatedAt: 'ข้อมูลล่าสุด {t}', updatedStale: 'ข้อมูลล่าสุด {t} (เกิน 1 ชม.)', preview: 'ตัวอย่างคลิป', previewHint: 'คลิกแถวเพื่อดูตัวอย่างคลิป', noVideo: 'คลิปนี้ยังไม่มีลิงก์วิดีโอ', close: 'ปิด', 't.crew': 'บทบาททีมงาน — จำนวนคลิปต่อคน', 't.crew.sub': 'นับจากคอลัมน์ Recorder / Editor / Actor / Voice over', crewSub: '{n} คลิป · {p} คน', copyTopic: 'คัดลอกหัวข้อ', copiedTopic: 'คัดลอกหัวข้อแล้ว', nSelected: 'เลือก {n} รายการ', clear: 'ล้าง', byStatus: 'แยกตามสถานะ', 'h.date': 'วันที่', 'h.brand': 'แบรนด์', 'h.product': 'สินค้า', 'h.type': 'ประเภท', 'h.topic': 'หัวข้อคลิป', 'h.file': 'ไฟล์', 'h.actions': 'นำไปใช้',
@@ -833,7 +833,7 @@ const DICT = {
     noClipsHint: 'ลองขยายช่วงเวลา หรือเลือกสถานะ "ทั้งหมด"', showing: 'แสดง {a}–{b} จาก {n} รายการ', none: 'ไม่มีรายการ', open: 'เปิด', noLink: 'ไม่มีลิงก์', copyPath: 'คัดลอก Path', copiedPath: 'คัดลอกที่อยู่ไฟล์แล้ว', copyLink: 'คัดลอกลิงก์', copiedLink: 'คัดลอกลิงก์ TikTok แล้ว', copyFail: 'คัดลอกไม่สำเร็จ',
     myQuota: 'โควต้า {n} คลิป/สัปดาห์ (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} สัปดาห์', myTargetSubBrand: '{b} · {w} สัปดาห์', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'จากเป้า {n} คลิป', todo: 'ต้องทำอีก {n} คลิป', metAll: 'ครบตามเป้าแล้ว',
     noMatch: 'ไม่พบคลิปตามเงื่อนไข', noMatchHint: 'ลองเปลี่ยนช่วงเวลา แบรนด์ หรือสถานะ', noSearch: 'ไม่พบคลิปที่ตรงกับคำค้น', noSearchHint: 'ลองเลือก "ทุกสถานะ" หรือพิมพ์คำอื่น',
-    multiHint: 'เลือกได้หลายสถานะ', clickPick: 'คลิกเพื่อกรองเฉพาะคนนี้', byStatusN: 'เฉพาะสถานะ {s}', 'tab.cal': 'Calendar', 'cal.today': 'วันนี้', 'cal.add': 'วางคอนเทนต์', 'cal.export': 'ส่งออกแผน (CSV)', 'cal.grid': 'ปฏิทินรายเดือน', 'cal.legendPlan': 'แผนที่วางไว้', 'cal.hint': 'ไอคอน = ช่องทางที่โพสต์ · คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง',
+    multiHint: 'เลือกได้หลายสถานะ', clickPick: 'คลิกเพื่อกรองเฉพาะคนนี้', clickPickType: 'คลิกเพื่อกรองเฉพาะประเภทนี้', byStatusN: 'เฉพาะสถานะ {s}', 'tab.cal': 'Calendar', 'cal.today': 'วันนี้', 'cal.add': 'วางคอนเทนต์', 'cal.export': 'ส่งออกแผน (CSV)', 'cal.grid': 'ปฏิทินรายเดือน', 'cal.legendPlan': 'แผนที่วางไว้', 'cal.hint': 'ไอคอน = ช่องทางที่โพสต์ · คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง',
     'cal.k.month': 'คลิปในชีตเดือนนี้', 'cal.k.plans': 'แผนที่วางไว้', 'cal.k.free': 'วันที่ยังว่าง', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% ของคลิปเดือนนี้', 'cal.plansSub': 'ยังไม่ถึงวัน {n} รายการ', 'cal.freeSub': 'จากวันที่เหลือในเดือน {n} วัน', 'cal.freePast': 'เดือนนี้ผ่านไปแล้ว',
     'cal.meta': '{n} คลิปจากชีต · {p} แผน · {a} – {b}', 'cal.more': 'อีก {n} รายการ', 'cal.less': 'ย่อ', 'cal.upcoming': 'แผนคอนเทนต์ที่วางไว้', 'cal.local': 'บันทึกไว้ในเบราว์เซอร์นี้ — ส่งออก CSV เพื่อนำไปวางในชีต', 'cal.noPlans': 'ยังไม่มีแผนคอนเทนต์ในเดือนนี้', 'cal.noPlansHint': 'คลิกวันในปฏิทิน หรือกดปุ่ม "วางคอนเทนต์"',
     'cal.newTitle': 'วางคอนเทนต์ล่วงหน้า', 'cal.editTitle': 'แก้ไขแผนคอนเทนต์', 'cal.f.note': 'โน้ต / ไอเดีย', 'cal.f.channel': 'ช่องทางที่จะโพสต์', 'cal.h.channel': 'ช่องทาง', 'cal.save': 'บันทึกแผน', 'cal.delete': 'ลบแผนนี้', 'cal.saved': 'บันทึกแผนแล้ว', 'cal.deleted': 'ลบแผนแล้ว', 'cal.confirmDel': 'ลบแผนคอนเทนต์นี้?', 'cal.needTopic': 'กรอกวันที่และหัวข้อคลิปก่อนบันทึก', 'cal.edit': 'แก้ไข', 'cal.dup': 'ทำซ้ำ', 'cal.exported': 'ส่งออกแผน {n} รายการแล้ว', 'cal.noExport': 'ยังไม่มีแผนให้ส่งออก',
@@ -845,7 +845,7 @@ const DICT = {
     'p.this_week': 'This week', 'p.last_week': 'Last week', 'p.this_month': 'This month', 'p.last_month': 'Last month', 'p.all_year': 'Whole year', 'p.custom': 'Custom', to: 'to',
     allBrands: 'All brands', allStatus: 'All statuses', allTypes: 'All types', creators: 'Creators', status: 'Status', all: 'All', perPage: 'Per page', prev: 'Previous', next: 'Next', cancel: 'Cancel',
     'k.target': 'Total target (clips)', 'k.done': 'Posted (Done)', 'k.bal': 'Short / over target', 'k.pct': 'Achievement', 'k.myTarget': 'Target this period', 'k.todo': 'Remaining to do',
-    'c.trend': 'Posted clips over time', 'c.trendAny': 'Clips over time', 'c.peopleAny': 'Creators', 'c.people': 'Creators', 'c.people.sub': 'Sorted high to low', 'c.type': 'Share by content type', 'c.type.sub': 'Posted (Done) only',
+    'c.trend': 'Posted clips over time', 'c.trendAny': 'Clips over time', 'c.peopleAny': 'Creators', 'c.people': 'Creators', 'c.people.sub': 'Sorted high to low', 'c.type': 'Content Type', 'c.type.sub': 'Posted (Done) only',
     't.matrix': 'Per-creator delivery vs target', 't.clips': 'Clips matching filters', 't.myClips': 'Clips', 't.reuse': 'Ready-to-use clips', 't.reuse.sub': 'Click a row to preview the clip · copy the TikTok link or source file path instantly',
     'h.creator': 'Creator', 'h.elT': 'Eloop target', 'h.elD': 'Eloop posted', 'h.mvT': 'Moov target', 'h.mvD': 'Moov posted', 'h.target': 'Target', 'h.done': 'Posted', 'h.gap': 'Gap', 'h.pct': 'Achievement', 'h.status': 'Status',
     'h.recorder': 'Recorder', 'h.editor': 'Editor', 'h.actor': 'Actor', 'h.voice': 'Voice over', 'yt.allPlaylists': 'All playlists', 'yt.allOwners': 'All owners', 'yt.notStarted': 'Not started', 'yt.search': 'Search topic, product or person', 'yt.k.total': 'Total topics (2026)', 'yt.k.done': 'Done', 'yt.k.wip': 'In progress + Draft', 'yt.k.todo': 'Not started', 'yt.c.playlist': 'Topics per playlist', 'yt.c.playlist.sub': 'By status', 'yt.c.status': 'Status share', 'yt.c.status.sub': 'All 2026 topics matching filters', 'yt.crew': 'Crew roles — topics per person', 'yt.crew.sub': 'From the Owner / MC / Editor columns', 'yt.t.list': 'YouTube 2026 topics', 'yt.shoot': 'Shoot date', 'yt.links': 'Links', 'yt.script': 'Script', 'yt.video': 'Video', 'yt.ofTotal': '{p}% of total', 'yt.topics': 'topics', 'yt.updated': 'Updated {t} · Source: Google Sheet (YouTube Plan) · "Youtube 2026" section only', 'yt.noData': 'No YouTube 2026 data yet', 'yt.noDataHint': 'Check the sheet has a "Youtube 2026" header row and run update_data.sh', refreshed: 'Data loaded · {t}', allPeople: 'All people (workload summary)', 't.summary': 'Workload summary — all people', 'h.ttTotal': 'TikTok total', 'h.ttTarget': 'TikTok target', 'h.ytTotal': 'YouTube total', 'h.grand': 'Grand total', summarySub: 'TikTok: clips in {a} – {b} · YouTube: all 2026 topics (by role)', allPeopleName: 'All people', allPeopleQuota: 'Team workload summary', updatedAt: 'Data updated {t}', updatedStale: 'Data updated {t} (over 1 h ago)', preview: 'Clip preview', previewHint: 'Click a row to preview the clip', noVideo: 'This clip has no video link yet', close: 'Close', 't.crew': 'Crew roles — clips per person', 't.crew.sub': 'From the Recorder / Editor / Actor / Voice over columns', crewSub: '{n} clips · {p} people', copyTopic: 'Copy topic', copiedTopic: 'Topic copied', nSelected: '{n} selected', clear: 'Clear', byStatus: 'By status', 'h.date': 'Date', 'h.brand': 'Brand', 'h.product': 'Product', 'h.type': 'Type', 'h.topic': 'Topic', 'h.file': 'File', 'h.actions': 'Use',
@@ -861,7 +861,7 @@ const DICT = {
     noClipsHint: 'Try a wider date range or "All" statuses', showing: 'Showing {a}–{b} of {n}', none: 'No items', open: 'Open', noLink: 'No link', copyPath: 'Copy path', copiedPath: 'File path copied', copyLink: 'Copy link', copiedLink: 'TikTok link copied', copyFail: 'Copy failed',
     myQuota: 'Quota {n} clips/week (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} weeks', myTargetSubBrand: '{b} · {w} weeks', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'of {n} target', todo: '{n} more clips to do', metAll: 'Target met',
     noMatch: 'No clips match the filters', noMatchHint: 'Try another period, brand or status', noSearch: 'No clips match your search', noSearchHint: 'Try "All statuses" or another keyword',
-    multiHint: 'Select more than one', clickPick: 'click to filter by this person', byStatusN: 'Status: {s}', 'tab.cal': 'Calendar', 'cal.today': 'Today', 'cal.add': 'Plan content', 'cal.export': 'Export plans (CSV)', 'cal.grid': 'Monthly calendar', 'cal.legendPlan': 'Planned', 'cal.hint': 'Icon = channel · click a day to plan content · click a clip to preview',
+    multiHint: 'Select more than one', clickPick: 'click to filter by this person', clickPickType: 'click to filter by this type', byStatusN: 'Status: {s}', 'tab.cal': 'Calendar', 'cal.today': 'Today', 'cal.add': 'Plan content', 'cal.export': 'Export plans (CSV)', 'cal.grid': 'Monthly calendar', 'cal.legendPlan': 'Planned', 'cal.hint': 'Icon = channel · click a day to plan content · click a clip to preview',
     'cal.k.month': 'Sheet clips this month', 'cal.k.plans': 'Planned items', 'cal.k.free': 'Empty days left', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% of this month\'s clips', 'cal.plansSub': '{n} still upcoming', 'cal.freeSub': 'of {n} days left this month', 'cal.freePast': 'Month has passed',
     'cal.meta': '{n} clips from sheet · {p} plans · {a} – {b}', 'cal.more': '{n} more', 'cal.less': 'Less', 'cal.upcoming': 'Planned content', 'cal.local': 'Saved in this browser — export CSV to paste into the sheet', 'cal.noPlans': 'No planned content this month', 'cal.noPlansHint': 'Click a day in the calendar or press "Plan content"',
     'cal.newTitle': 'Plan content ahead', 'cal.editTitle': 'Edit planned content', 'cal.f.note': 'Notes / ideas', 'cal.f.channel': 'Channel to post on', 'cal.h.channel': 'Channel', 'cal.save': 'Save plan', 'cal.delete': 'Delete plan', 'cal.saved': 'Plan saved', 'cal.deleted': 'Plan deleted', 'cal.confirmDel': 'Delete this plan?', 'cal.needTopic': 'Enter a date and topic before saving', 'cal.edit': 'Edit', 'cal.dup': 'Duplicate', 'cal.exported': 'Exported {n} plans', 'cal.noExport': 'No plans to export yet',
@@ -1075,7 +1075,7 @@ let ALL = [], CLIPS = [], YEARS = [], LOADED_AT = null, loading = false;
 const S = {
   platform: 'tiktok', mode: 'manager', year: new Date().getFullYear(),
   yt: { brand: 'all', playlist: 'all', status: 'all', owner: 'all', q: '' },
-  mgr: { preset: 'this_week', start: '', end: '', brand: 'all', creators: [], statuses: [], q: '', page: 1, size: 30 },
+  mgr: { preset: 'this_week', start: '', end: '', brand: 'all', creators: [], statuses: [], types: [], q: '', page: 1, size: 30 },
   my: { creator: 'Moth', preset: 'this_week', start: '', end: '', brand: 'all', status: 'all', q: '' },
   re: { q: '', status: 'Done', type: 'all', brand: 'all', preset: 'all_year', start: '', end: '', sort: 'newest', page: 1, size: 50 },
   cal: { ym: iso(new Date()).slice(0, 7), brand: 'all', creator: 'all', statuses: [], expanded: new Set() }
@@ -1262,8 +1262,11 @@ function renderManager(){
   const visible = base.filter(byCreator), doneVisible = visible.filter(c => c.status === 'Done');
   /* สถานะที่เลือกจากแถบสถานะ/เมนู — ไม่เลือก = ดูเฉพาะ Done เหมือนเดิม · ['__none'] = ไม่ตรงสถานะไหน */
   const isAllSt = st.statuses.length === 0, stSet = new Set(st.statuses);
-  const sel = isAllSt ? visible : visible.filter(c => stSet.has(c.status));
-  const chartSet = isAllSt ? doneVisible : sel;
+  const isAllTy = st.types.length === 0, tySet = new Set(st.types);
+  const byType = c => isAllTy || tySet.has(c.type || t('unknownType'));
+  const byStatus = c => isAllSt ? c.status === 'Done' : stSet.has(c.status);
+  const sel = (isAllSt ? visible : visible.filter(c => stSet.has(c.status))).filter(byType);
+  const chartSet = (isAllSt ? doneVisible : sel).filter(byType);   // กราฟหลัก/โดนัท = ตามทุกตัวกรอง
   const stLabel = isAllSt ? t('c.type.sub') : t('byStatusN', { s: st.statuses.filter(v => v !== '__none').join(' · ') || t('none') });
   const staff = computeStaff(base, st.start, st.end, st.brand, quotas).filter(s => isAllCr || crSet.has(s.name.toLowerCase())).sort((a, b) => b.done - a.done);
   const T = staff.reduce((a, s) => a + s.target, 0), D = staff.reduce((a, s) => a + s.done, 0), bal = T - D, P = pctOf(D, T);
@@ -1291,7 +1294,7 @@ function renderManager(){
   if (window.Chart) charts.trend = new Chart($('c-trend'), { type: 'line', data: { labels: buckets.map(k => fmtD(toD(k))), datasets: series },
     options: { interaction: { mode: 'index', intersect: false }, scales: { x: { grid: noGrid, ticks: { maxTicksLimit: 10, maxRotation: 0 } }, y: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } } }, plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${i.parsed.y} ${t('clips')}` } } } } });
   /* กราฟรอง 1 */
-  const peopleSource = isAllSt ? base.filter(c => c.status === 'Done') : base.filter(c => stSet.has(c.status));   // ไม่กรองครีเอเตอร์ จะได้กดสลับคนจากกราฟได้
+  const peopleSource = base.filter(c => byStatus(c) && byType(c));   // ไม่กรองครีเอเตอร์ จะได้กดสลับคนจากกราฟได้
   const pc = {}; peopleSource.forEach(c => { const n = c.creator || t('unknownType'); pc[n] = (pc[n] || 0) + 1; });
   const peopleList = Object.entries(pc).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]), peopleTotal = peopleList.reduce((a, x) => a + x[1], 0);
   $('ttl-people').textContent = t(isAllSt ? 'c.people' : 'c.peopleAny');
@@ -1302,15 +1305,15 @@ function renderManager(){
     onPick: name => { const cur = st.creators.filter(v => v !== '__none'); st.creators = cur.some(v => v.toLowerCase() === name.toLowerCase()) ? cur.filter(v => v.toLowerCase() !== name.toLowerCase()) : [...cur, name]; st.page = 1; renderManager(); }
   });
   /* กราฟรอง 2 */
-  const tc = {}; chartSet.forEach(c => { const k = c.type || t('unknownType'); tc[k] = (tc[k] || 0) + 1; });
-  const sorted = Object.entries(tc).sort((a, b) => b[1] - a[1]), top = sorted.slice(0, 5), rest = sorted.slice(5).reduce((a, x) => a + x[1], 0);
-  if (rest) top.push([t('other'), rest]);
-  const typeColors = top.map((x, i) => i === 5 ? tok('--omnix-chart-other') : chartColor(i + 1));
-  $('sub-type').textContent = stLabel;
-  legend($('lg-type'), top.map((x, i) => [x[0], typeColors[i]]));
-  chartState('c-type', top.length ? '' : 'empty', rangeLabel);
-  if (window.Chart) charts.type = new Chart($('c-type'), { type: 'doughnut', plugins: [donutLabels], data: { labels: top.map(x => x[0]), datasets: [{ data: top.map(x => x[1]), backgroundColor: typeColors, borderColor: tok('--omnix-surface'), borderWidth: 2, hoverOffset: 4 }] },
-    options: { cutout: '65%', plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => { const tot = i.dataset.data.reduce((a, b) => a + b, 0); return ` ${i.parsed} ${t('clips')} (${(i.parsed / tot * 100).toFixed(1)}%)`; } } } } } });
+  const typeSource = visible.filter(byStatus);   // ไม่กรองประเภท จะได้กดสลับประเภทจากกราฟได้
+  const tc = {}; typeSource.forEach(c => { const k = c.type || t('unknownType'); tc[k] = (tc[k] || 0) + 1; });
+  const typeList = Object.entries(tc).sort((a, b) => b[1] - a[1]);
+  $('sub-type').textContent = `${stLabel} · ${t('clickPickType')}`;
+  chartState('c-type', typeList.length ? '' : 'empty', rangeLabel);
+  drawDonut('type', 'c-type', 'lg-type', typeList, {
+    selected: new Set(st.types.map(v => v.toLowerCase())),
+    onPick: v => { st.types = st.types.includes(v) ? st.types.filter(x => x !== v) : [...st.types, v]; st.page = 1; renderManager(); }
+  });
 
   /* กราฟบทบาททีมงาน 4 ตัว (P Q R S) — แท่งแนวนอน เรียงมากไปน้อย สีเดียว */
   $('sub-crew').textContent = `${t('t.crew.sub')} · ${isAllSt ? t('allStatus') : stLabel}`;
