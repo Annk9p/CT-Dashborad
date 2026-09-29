@@ -369,7 +369,7 @@ function classify(raw){
 }
 /* คอลัมน์คงที่ตามโครงชีต: 0 หมวด, 1 ตัวชี้วัด, 2 current, 3 target, 4 ปีก่อน, 5-16 ม.ค.-ธ.ค., 17 SUM, 18 %Progress, 21 Time gone, 22 %.To target */
 function parseKpiRows(rows){
-  const data = {}; ENTITIES.forEach(e => data[e.key] = { follower: null, views: null, engagement: null });
+  const data = {}; ENTITIES.forEach(e => data[e.key] = { follower: null, views: null, engagement: null, watchTime: null });
   let cur = null;
   for (const r of rows.slice(1)) {
     const c0 = classify(r[0]);
@@ -386,6 +386,8 @@ function parseKpiRows(rows){
       data[cur].views = { target, sum, progress, pace, months, type: 'cumulative' };
     } else if (ml.includes('engagement rate')) {
       data[cur].engagement = { target, sum, progress, months, type: 'rate' };
+    } else if (ml.includes('watch time organic') && ml.includes('min')) {
+      data[cur].watchTime = { target, sum, progress, pace, months, type: 'cumulative' };
     }
   }
   return data;
@@ -768,6 +770,7 @@ function render(){
   cardsEl.innerHTML = ents.length ? ents.map(e => {
     const d = DATA[e.key];
     const vs = metricStat(d.views, F.month), fs = metricStat(d.follower, F.month), es = metricStat(d.engagement, F.month);
+    const ws = d.watchTime ? metricStat(d.watchTime, F.month) : null;
     return `<div class="ox-card ox-entity-card"><div class="ox-card__body">
       <div class="ox-row ox-row--between">
         <div class="ox-entity-head">${entityIcons(e.platform, e.brand, 26)}<div><div class="ox-entity-head__title">${e.platform}</div><div class="ox-entity-head__sub">${e.brand}</div></div></div>
@@ -776,6 +779,7 @@ function render(){
       ${metricBlock(`ยอดวิว ${kpiSuffix}`, vs, fmtInt)}
       ${metricBlock(`ผู้ติดตามใหม่ ${kpiSuffix}`, fs, fmtInt)}
       ${metricBlock(`Engagement Rate ${kpiSuffix}`, es, fmtPct2)}
+      ${ws ? metricBlock(`Watch Time (นาที) ${kpiSuffix}`, ws, fmtInt) : ''}
     </div></div>`;
   }).join('') : '<div class="ox-muted ox-xs" style="padding:8px 0">ไม่มีข้อมูลตามตัวกรองที่เลือก</div>';
   document.getElementById('cards-note').textContent = `${ents.length} รายการตามตัวกรอง · ${periodLabel}`;
@@ -789,6 +793,7 @@ function render(){
     if (d.views) rowsHtml.push([e, 'ยอดวิว', fmtInt, metricStat(d.views, F.month)]);
     if (d.follower) rowsHtml.push([e, 'ผู้ติดตามใหม่', fmtInt, metricStat(d.follower, F.month)]);
     if (d.engagement) rowsHtml.push([e, 'Engagement Rate', fmtPct2, metricStat(d.engagement, F.month)]);
+    if (d.watchTime) rowsHtml.push([e, 'Watch Time (นาที)', fmtInt, metricStat(d.watchTime, F.month)]);
   });
   document.getElementById('tbody').innerHTML = rowsHtml.length ? rowsHtml.map(([e, metric, fmtValue, s]) => {
     const ytdTxt = s.value == null ? '—' : fmtValue(s.value);
