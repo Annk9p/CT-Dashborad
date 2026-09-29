@@ -432,6 +432,11 @@ function platformIcon(platform, size){
   const pad = Math.round(s * 0.28);
   return `<span class="ox-platform-icon" style="width:${s}px;height:${s}px;background:${ic.bg}" aria-hidden="true"><svg width="${s - pad}" height="${s - pad}" viewBox="${ic.viewBox}"><path fill="#fff" d="${ic.path}"/></svg></span>`;
 }
+/* ไอคอนกลาง (ไม่ใช่แบรนด์/แพลตฟอร์ม) สื่อถึง "คลิปวิดีโอ" — ใช้ token สี ไม่ใช่ hex ของแบรนด์ */
+function contentIcon(size){
+  const s = size || 22, pad = Math.round(s * 0.28);
+  return `<span class="ox-platform-icon" style="width:${s}px;height:${s}px;background:${tok('--omnix-surface-2')}" aria-hidden="true"><svg width="${s - pad}" height="${s - pad}" viewBox="0 0 24 24" fill="${tok('--omnix-fg-muted')}"><path d="M4 4h11a2 2 0 0 1 2 2v2.5l4-2.2v11.4l-4-2.2V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg></span>`;
+}
 /* โลโก้แบรนด์จริง (ไฟล์ภาพ) — สีพื้นขาวคงรูปแบบโลโก้เดิมของแต่ละแบรนด์ */
 const BRAND_LOGO = { Eloop: 'assets/brand-eloop.webp', Moov: 'assets/brand-moov.png' };
 function brandLogo(brand, size){
@@ -612,7 +617,7 @@ function renderContentOutput(){
           <div class="ox-kpi__value" style="font-size:var(--omnix-text-lg)">${fbSum != null ? fmtN.format(fbSum) : '—'}</div>
         </div>
         <div style="flex:1;min-width:0">
-          <div class="ox-xs ox-muted">Output (เป้าหมาย)</div>
+          <div class="ox-xs ox-muted ox-row" style="gap:4px">${contentIcon(16)}Content Output</div>
           <div class="ox-kpi__value" style="font-size:var(--omnix-text-lg)">${targetSum != null ? fmtN.format(targetSum) : '—'}</div>
         </div>
       </div>
