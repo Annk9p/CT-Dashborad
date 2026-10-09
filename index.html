@@ -598,7 +598,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
   <section class="kpi-page" id="page-personal" role="tabpanel">
     <div class="ox-filter-bar" role="group">
       <div class="kpi-person"><span class="kpi-avatar" id="my-avatar">–</span><div><div class="kpi-person__name" id="my-name">—</div><div class="ox-xs ox-muted" id="my-quota">—</div></div></div>
-      <select id="my-creator" class="ox-control"></select>
+      <div class="kpi-dd" id="dd-my-creators"><button type="button" class="ox-btn ox-btn--secondary ox-btn--sm kpi-dd__btn" aria-haspopup="listbox" aria-expanded="false"><span class="kpi-dd__label">—</span></button><div class="kpi-dd__menu" role="listbox" hidden></div></div>
       <span class="ox-filter-bar__spacer"></span>
       <select id="my-preset" class="ox-control">
         <option value="this_week" data-i18n="p.this_week">สัปดาห์นี้</option><option value="last_week" data-i18n="p.last_week">สัปดาห์ก่อน</option><option value="this_month" data-i18n="p.this_month">เดือนนี้</option><option value="all_year" data-i18n="p.all_year">ทั้งปี</option><option value="custom" data-i18n="p.custom">กำหนดเอง</option>
@@ -616,7 +616,6 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
     <div class="kpi-card" id="my-summary-card" hidden>
       <div class="kpi-table-head">
         <h2 data-i18n="t.summary">รวมภาระงานทุกคน</h2>
-        <div class="ox-row"><span class="ox-label" style="margin:0" data-i18n="creators">ครีเอเตอร์</span><div class="kpi-dd" id="dd-sum-creators"><button type="button" class="ox-btn ox-btn--secondary ox-btn--sm kpi-dd__btn" aria-haspopup="listbox" aria-expanded="false"><span class="kpi-dd__label">—</span></button><div class="kpi-dd__menu" role="listbox" hidden></div></div></div>
         <span class="ox-xs ox-muted" id="my-summary-sub">—</span>
       </div>
       <div class="ox-table-wrap"><table class="ox-table ox-table--data kpi-sum-table">
@@ -1091,7 +1090,7 @@ const S = {
   platform: 'tiktok', mode: 'manager', year: new Date().getFullYear(),
   yt: { brand: 'all', playlist: 'all', status: 'all', owner: 'all', q: '' },
   mgr: { preset: 'this_week', start: '', end: '', brand: 'all', creators: [], statuses: [], types: [], q: '', page: 1, size: 30 },
-  my: { creator: 'Moth', creators: [], preset: 'this_week', start: '', end: '', brand: 'all', status: 'all', q: '' },
+  my: { creators: [], preset: 'this_week', start: '', end: '', brand: 'all', status: 'all', q: '' },
   re: { q: '', status: 'Done', type: 'all', brand: 'all', preset: 'all_year', start: '', end: '', sort: 'newest', page: 1, size: 50 },
   cal: { ym: iso(new Date()).slice(0, 7), brand: 'all', creator: 'all', statuses: [], expanded: new Set() }
 };
@@ -1120,8 +1119,7 @@ function setYear(y){
   [S.mgr.start, S.mgr.end] = presetRange(S.mgr.preset, y); [S.my.start, S.my.end] = presetRange(S.my.preset, y); [S.re.start, S.re.end] = presetRange(S.re.preset, y);
   S.mgr.page = S.re.page = 1;
   const staff = allStaff();
-  if (S.my.creator !== '__all' && !staff.includes(S.my.creator)) S.my.creator = staff[0] || '';
-  document.getElementById('my-creator').innerHTML = `<option value="__all">${t('allPeople')}</option>` + staff.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  S.my.creators = S.my.creators.filter(n => staff.some(v => v.toLowerCase() === n.toLowerCase()));
   const types = [...new Set(CLIPS.map(c => c.type).filter(Boolean))].sort();
   document.getElementById('re-type').innerHTML = `<option value="all">${t('allTypes')}</option>` + types.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('');
 }
@@ -1361,18 +1359,23 @@ function renderManager(){
 function setMgrPreset(p){ S.mgr.preset = p; [S.mgr.start, S.mgr.end] = presetRange(p, S.year); S.mgr.page = 1; renderManager(); }
 
 /* ===== 7. ภาระงานรายคน ===== */
+/* เมนูครีเอเตอร์หน้า CT Workload — ว่าง = ทุกคน · 1 คน = ดูรายคน · ตั้งแต่ 2 คน = สรุปรวมเฉพาะคนที่เลือก */
+function myPeopleNames(){ return [...new Set([...allStaff(), ...YT.flatMap(r => [r.owner, r.mc, r.editor]).filter(Boolean)])].sort(); }
+function renderMyCreatorDD(){
+  renderDropdown(document.getElementById('dd-my-creators'), myPeopleNames(), S.my.creators, v => v, next => { S.my.creators = next.filter(v => v !== '__none'); renderPersonal(); });
+}
+
 function renderSummary(){
   renderStatusLegend();
   const st = S.my, quotas = getQuotas(), $ = id => document.getElementById(id), weeks = targetWeeks(st.start, st.end);
-  $('my-creator').value = '__all'; $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; renderBrandSeg('my-brand', st.brand, v => { S.my.brand = v; renderPersonal(); }); $('my-status').value = st.status;
+  renderMyCreatorDD(); $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; renderBrandSeg('my-brand', st.brand, v => { S.my.brand = v; renderPersonal(); }); $('my-status').value = st.status;
   $('my-name').textContent = t('allPeopleName'); $('my-avatar').textContent = '∑'; $('my-quota').textContent = t('allPeopleQuota');
   $('my-summary-card').hidden = false; $('my-clips-card').hidden = true;
   $('my-summary-sub').textContent = t('summarySub', { a: thDate(st.start), b: thDate(st.end) });
   const period = CLIPS.filter(c => inRange(c, st.start, st.end) && (st.brand === 'all' || c.shop === st.brand));
   const names = new Set([...allStaff(), ...YT.flatMap(r => [r.owner, r.mc, r.editor]).filter(Boolean)]);
   const allNames = [...names].sort();
-  renderDropdown($('dd-sum-creators'), allNames, st.creators, v => v, next => { st.creators = next; renderSummary(); });
-  const pickAll = st.creators.length === 0, pick = new Set(st.creators.filter(v => v !== '__none').map(v => v.toLowerCase()));
+  const pickAll = st.creators.length === 0, pick = new Set(st.creators.map(v => v.toLowerCase()));
   const rows = allNames.filter(n => pickAll || pick.has(n.toLowerCase())).map(n => {
     const mine = period.filter(c => c.creator.toLowerCase() === n.toLowerCase()), cnt = k => mine.filter(c => c.status === k).length;
     const q = quotas[n] || { eloop: 0, moov: 0 }, target = (st.brand === 'EloopTH' ? q.eloop : st.brand === 'Moov' ? q.moov : q.eloop + q.moov) * weeks;
@@ -1386,15 +1389,15 @@ function renderSummary(){
   const P = pctOf(T('done'), T('target')); $('my-k-pct').textContent = T('target') ? `${P}%` : '—'; setDelta($('my-d-pct'), P >= 100 ? 'up' : P < 70 ? 'down' : '', `${thDate(st.start)} – ${thDate(st.end)}`);
   $('my-summary-rows').innerHTML = rows.length === 0 ? emptyRow(14, t('noMatch'), t('noMatchHint')) : rows.map(r => `<tr class="is-clickable" data-person="${esc(r.n)}"><td><span class="ox-row"><span class="kpi-avatar">${esc(r.n.charAt(0))}</span><strong>${esc(r.n)}</strong></span></td><td class="is-num">${r.done}</td><td class="is-num">${r.ip}</td><td class="is-num">${r.dr}</td><td class="is-num">${r.rj}</td><td class="is-num">${r.sk}</td><td class="is-num"><strong>${r.tt}</strong></td><td class="is-num">${r.target}</td><td>${r.target ? progress(r.pct) : '<span class="ox-muted">—</span>'}</td><td class="is-num">${r.o}</td><td class="is-num">${r.m}</td><td class="is-num">${r.e}</td><td class="is-num"><strong>${r.ytTot}</strong></td><td class="is-num"><strong>${r.grand}</strong></td></tr>`).join('') +
     `<tr><td><strong>${LANG === 'th' ? 'รวม' : 'Total'}</strong></td><td class="is-num"><strong>${T('done')}</strong></td><td class="is-num">${T('ip')}</td><td class="is-num">${T('dr')}</td><td class="is-num">${T('rj')}</td><td class="is-num">${T('sk')}</td><td class="is-num"><strong>${T('tt')}</strong></td><td class="is-num">${T('target')}</td><td>${T('target') ? progress(P) : ''}</td><td class="is-num">${T('o')}</td><td class="is-num">${T('m')}</td><td class="is-num">${T('e')}</td><td class="is-num"><strong>${T('ytTot')}</strong></td><td class="is-num"><strong>${T('grand')}</strong></td></tr>`;
-  $('my-summary-rows').onclick = e => { const tr = e.target.closest('[data-person]'); if (tr) { S.my.creator = tr.dataset.person; renderPersonal(); } };
+  $('my-summary-rows').onclick = e => { const tr = e.target.closest('[data-person]'); if (tr) { S.my.creators = [tr.dataset.person]; renderPersonal(); } };
   S.exportRows = rows;
 }
 function renderPersonal(){
   renderStatusLegend();
-  if (S.my.creator === '__all') return renderSummary();
-  const st = S.my, quotas = getQuotas(), name = st.creator, q = quotas[name] || { eloop: 0, moov: 0 }, $ = id => document.getElementById(id);
+  if (S.my.creators.length !== 1) return renderSummary();   // ว่าง = ทุกคน · 2 คนขึ้นไป = สรุปเฉพาะกลุ่มที่เลือก
+  const st = S.my, quotas = getQuotas(), name = st.creators[0], q = quotas[name] || { eloop: 0, moov: 0 }, $ = id => document.getElementById(id);
   $('my-summary-card').hidden = true; $('my-clips-card').hidden = false;
-  $('my-creator').value = name; $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; renderBrandSeg('my-brand', st.brand, v => { S.my.brand = v; renderPersonal(); }); $('my-status').value = st.status;
+  renderMyCreatorDD(); $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; renderBrandSeg('my-brand', st.brand, v => { S.my.brand = v; renderPersonal(); }); $('my-status').value = st.status;
   $('my-name').textContent = name || '—'; $('my-avatar').textContent = (name || '–').charAt(0);
   $('my-quota').textContent = t('myQuota', { n: q.eloop + q.moov, e: q.eloop, m: q.moov });
   const weeks = targetWeeks(st.start, st.end), elT = q.eloop * weeks, mvT = q.moov * weeks;
@@ -1715,8 +1718,7 @@ on('mgr-start', 'change', mgrCustom); on('mgr-end', 'change', mgrCustom);
 on('mgr-search', 'input', e => { S.mgr.q = e.target.value.trim(); S.mgr.page = 1; renderManager(); });
 on('mgr-pagesize', 'change', e => { S.mgr.size = +e.target.value; S.mgr.page = 1; renderManager(); });
 on('mgr-prev', 'click', () => { S.mgr.page--; renderManager(); }); on('mgr-next', 'click', () => { S.mgr.page++; renderManager(); });
-$('mgr-matrix').addEventListener('click', e => { const b = e.target.closest('[data-jump]'); if (b) { S.my.creator = b.dataset.jump; S.my.preset = S.mgr.preset === 'custom' ? 'custom' : S.mgr.preset; S.my.start = S.mgr.start; S.my.end = S.mgr.end; switchMode('personal'); } });
-on('my-creator', 'change', e => { S.my.creator = e.target.value; renderPersonal(); });
+$('mgr-matrix').addEventListener('click', e => { const b = e.target.closest('[data-jump]'); if (b) { S.my.creators = [b.dataset.jump]; S.my.preset = S.mgr.preset === 'custom' ? 'custom' : S.mgr.preset; S.my.start = S.mgr.start; S.my.end = S.mgr.end; switchMode('personal'); } });
 on('my-preset', 'change', e => { S.my.preset = e.target.value; if (e.target.value !== 'custom') [S.my.start, S.my.end] = presetRange(e.target.value, S.year); renderPersonal(); });
 const myCustom = () => { const s = $('my-start').value, e = $('my-end').value; if (!s || !e || s > e) return; S.my.preset = 'custom'; S.my.start = s; S.my.end = e; renderPersonal(); };
 on('my-start', 'change', myCustom); on('my-end', 'change', myCustom);
