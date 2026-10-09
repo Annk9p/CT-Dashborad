@@ -507,6 +507,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
     <div class="ox-segment" role="tablist" id="platform-tabs" aria-label="Platform">
       <button type="button" role="tab" data-platform="tiktok" class="is-active" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true" class="kpi-tab-logo"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5 2.6 2.6 0 0 1-2.59-2.6 2.6 2.6 0 0 1 3.4-2.47V9.66a5.7 5.7 0 0 0-5.02 9.83 5.69 5.69 0 0 0 9.9-3.98V9.13a7.35 7.35 0 0 0 4.3 1.38V7.42a4.3 4.3 0 0 1-3.25-1.6z" style="fill:#25f4ee" transform="translate(-1.1,-.9)"/><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5 2.6 2.6 0 0 1-2.59-2.6 2.6 2.6 0 0 1 3.4-2.47V9.66a5.7 5.7 0 0 0-5.02 9.83 5.69 5.69 0 0 0 9.9-3.98V9.13a7.35 7.35 0 0 0 4.3 1.38V7.42a4.3 4.3 0 0 1-3.25-1.6z" style="fill:#fe2c55" transform="translate(1.1,.9)"/><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5 2.6 2.6 0 0 1-2.59-2.6 2.6 2.6 0 0 1 3.4-2.47V9.66a5.7 5.7 0 0 0-5.02 9.83 5.69 5.69 0 0 0 9.9-3.98V9.13a7.35 7.35 0 0 0 4.3 1.38V7.42a4.3 4.3 0 0 1-3.25-1.6z" fill="currentColor"/></svg>TikTok</button>
       <button type="button" role="tab" data-platform="youtube" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true" class="kpi-tab-logo"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.76-1.77C18.3 5 12 5 12 5s-6.3 0-7.84.43A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.76 1.77C5.7 19 12 19 12 19s6.3 0 7.84-.43a2.5 2.5 0 0 0 1.76-1.77A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8z" style="fill:#ff0000"/><path d="M10 15V9l5.2 3z" style="fill:#fff"/></svg>YouTube</button>
+      <button type="button" role="tab" data-platform="workload" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true" class="kpi-tab-logo"><path d="M20 6h-4V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm-10-2h4v2h-4zM4 19V8h16l.001 11z" fill="currentColor"/></svg><span data-i18n="tab.personal">CT Workload</span></button>
       <button type="button" role="tab" data-platform="cal" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4h-2V2h-2v2H9V2H7v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14zm0-12H5V6h14z"/></svg>Calendar</button>
     </div>
   </div>
@@ -514,7 +515,6 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
   <div class="kpi-tabs" id="tiktok-tabs">
     <div class="ox-segment" role="tablist" id="mode-tabs">
       <button type="button" role="tab" data-mode="manager" class="is-active" data-i18n="tab.manager">ภาพรวม</button>
-      <button type="button" role="tab" data-mode="personal" data-i18n="tab.personal">CT Workload</button>
       <button type="button" role="tab" data-mode="reuse" data-i18n="tab.reuse">คลังวิดีโอ</button>
     </div>
   </div>
@@ -1592,7 +1592,7 @@ function renderBrandSeg(id, value, onChange, moovValue = 'Moov'){
 }
 
 /* ===== 9a. แถบสถานะ — กดเลือกเพื่อกรองหน้าที่เปิดอยู่ (ภาพรวมเลือกหลายสถานะได้) ===== */
-const viewKey = () => S.platform === 'cal' ? 'cal' : S.mode;
+const viewKey = () => S.platform === 'cal' ? 'cal' : S.platform === 'workload' ? 'personal' : S.mode;
 function activeStatuses(){
   if (viewKey() === 'manager') return S.mgr.statuses.filter(v => v !== '__none');
   if (viewKey() === 'personal') return S.my.status === 'all' ? [] : [S.my.status];
@@ -1729,9 +1729,10 @@ function switchPlatform(p){
   document.querySelectorAll('#platform-tabs [role=tab]').forEach(b => { b.classList.toggle('is-active', b.dataset.platform === p); b.setAttribute('aria-selected', b.dataset.platform === p); });
   document.getElementById('tiktok-tabs').hidden = p !== 'tiktok';
   document.getElementById('status-legend').hidden = p === 'youtube';
-  if (p === 'tiktok') { document.getElementById('page-youtube').classList.remove('is-active'); document.getElementById('page-cal').classList.remove('is-active'); return switchMode(S.mode); }
-  ['manager', 'personal', 'reuse', 'cal', 'youtube'].forEach(k => document.getElementById(`page-${k}`).classList.toggle('is-active', k === (p === 'cal' ? 'cal' : 'youtube')));
-  p === 'cal' ? renderCal() : renderYouTube();
+  if (p === 'tiktok') { ['youtube', 'cal', 'personal'].forEach(k => document.getElementById(`page-${k}`).classList.remove('is-active')); return switchMode(S.mode); }
+  const page = p === 'cal' ? 'cal' : p === 'workload' ? 'personal' : 'youtube';
+  ['manager', 'personal', 'reuse', 'cal', 'youtube'].forEach(k => document.getElementById(`page-${k}`).classList.toggle('is-active', k === page));
+  p === 'cal' ? renderCal() : p === 'workload' ? renderPersonal() : renderYouTube();
 }
 function updateBadge(){
   const raw = S.platform === 'youtube' ? YT_AT : LOADED_AT; if (!raw) return;
@@ -1739,11 +1740,11 @@ function updateBadge(){
   const stale = (Date.now() - d.getTime()) > 3600e3, el = document.getElementById('updated-badge');
   el.classList.toggle('is-stale', stale); document.getElementById('updated-text').textContent = t(stale ? 'updatedStale' : 'updatedAt', { t: fmtT(d) });
 }
-function render(){ updateBadge(); if (S.platform === 'youtube') return renderYouTube(); if (!ALL.length) return; if (S.platform === 'cal') return renderCal(); ({ manager: renderManager, personal: renderPersonal, reuse: renderReuse })[S.mode](); }
+function render(){ updateBadge(); if (S.platform === 'youtube') return renderYouTube(); if (!ALL.length) return; if (S.platform === 'cal') return renderCal(); if (S.platform === 'workload') return renderPersonal(); ({ manager: renderManager, reuse: renderReuse })[S.mode](); }
 function switchMode(m){
   S.mode = m;
   document.querySelectorAll('#mode-tabs [role=tab]').forEach(b => { b.classList.toggle('is-active', b.dataset.mode === m); b.setAttribute('aria-selected', b.dataset.mode === m); });
-  ['manager', 'personal', 'reuse'].forEach(k => document.getElementById(`page-${k}`).classList.toggle('is-active', k === m));
+  ['manager', 'reuse'].forEach(k => document.getElementById(`page-${k}`).classList.toggle('is-active', k === m));
   render();
 }
 const $ = id => document.getElementById(id), on = (id, ev, fn) => $(id).addEventListener(ev, fn);
@@ -1759,7 +1760,7 @@ on('mgr-start', 'change', mgrCustom); on('mgr-end', 'change', mgrCustom);
 on('mgr-search', 'input', e => { S.mgr.q = e.target.value.trim(); S.mgr.page = 1; renderManager(); });
 on('mgr-pagesize', 'change', e => { S.mgr.size = +e.target.value; S.mgr.page = 1; renderManager(); });
 on('mgr-prev', 'click', () => { S.mgr.page--; renderManager(); }); on('mgr-next', 'click', () => { S.mgr.page++; renderManager(); });
-$('mgr-matrix').addEventListener('click', e => { const b = e.target.closest('[data-jump]'); if (b) { S.my.creators = [b.dataset.jump]; S.my.preset = S.mgr.preset === 'custom' ? 'custom' : S.mgr.preset; S.my.start = S.mgr.start; S.my.end = S.mgr.end; switchMode('personal'); } });
+$('mgr-matrix').addEventListener('click', e => { const b = e.target.closest('[data-jump]'); if (b) { S.my.creators = [b.dataset.jump]; S.my.preset = S.mgr.preset === 'custom' ? 'custom' : S.mgr.preset; S.my.start = S.mgr.start; S.my.end = S.mgr.end; switchPlatform('workload'); } });
 on('my-preset', 'change', e => { S.my.preset = e.target.value; if (e.target.value !== 'custom') [S.my.start, S.my.end] = presetRange(e.target.value, S.year); renderPersonal(); });
 const myCustom = () => { const s = $('my-start').value, e = $('my-end').value; if (!s || !e || s > e) return; S.my.preset = 'custom'; S.my.start = s; S.my.end = e; renderPersonal(); };
 on('my-start', 'change', myCustom); on('my-end', 'change', myCustom);
