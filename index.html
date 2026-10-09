@@ -1121,7 +1121,13 @@ function parseRows(data){
   return out;
 }
 const getQuotas = () => storage.get('ELOOP_MOOV_QUOTAS') || JSON.parse(JSON.stringify(DEFAULT_QUOTAS));
-function allStaff(){ const set = new Set(Object.keys(getQuotas())); CLIPS.forEach(c => { if (c.creator && c.creator.length < 20) set.add(c.creator); }); return [...set].sort(); }
+/* ลำดับครีเอเตอร์ประจำทีม — 7 คนนี้ขึ้นก่อนเสมอ ที่เหลือเรียงตามตัวอักษร */
+const PEOPLE_ORDER = ['Yung', 'Moth', 'View', 'Guild', 'Nu', 'Ann', 'Wasu'];
+const orderPeople = list => {
+  const rank = n => { const i = PEOPLE_ORDER.findIndex(v => v.toLowerCase() === n.toLowerCase()); return i < 0 ? PEOPLE_ORDER.length : i; };
+  return [...list].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
+};
+function allStaff(){ const set = new Set(Object.keys(getQuotas())); CLIPS.forEach(c => { if (c.creator && c.creator.length < 20) set.add(c.creator); }); return orderPeople(set); }
 function setYear(y){
   S.year = y; CLIPS = ALL.filter(c => c.year === y);
   const cur = new Date().getFullYear();
@@ -1371,7 +1377,7 @@ function setMgrPreset(p){ S.mgr.preset = p; [S.mgr.start, S.mgr.end] = presetRan
 
 /* ===== 7. ภาระงานรายคน ===== */
 /* เมนูครีเอเตอร์หน้า CT Workload — ว่าง = ทุกคน · 1 คน = ดูรายคน · ตั้งแต่ 2 คน = สรุปรวมเฉพาะคนที่เลือก */
-function myPeopleNames(){ return [...new Set([...allStaff(), ...YT.flatMap(r => [r.owner, r.mc, r.editor]).filter(Boolean)])].sort(); }
+function myPeopleNames(){ return orderPeople(new Set([...allStaff(), ...YT.flatMap(r => [r.owner, r.mc, r.editor]).filter(Boolean)])); }
 /* มุมมองรายคน · แพลตฟอร์ม YouTube — หัวข้อที่คนนั้นมีส่วนร่วม (Owner / MC / Editor) */
 function renderPersonalYT(name, qs){
   const $ = id => document.getElementById(id), lower = name.toLowerCase();
@@ -1410,7 +1416,7 @@ function renderSummary(){
   const cols = 1 + (showTT ? 8 : 0) + (showYT ? 4 : 0) + (showTT && showYT ? 1 : 0);
   const period = CLIPS.filter(c => inRange(c, st.start, st.end) && (st.brand === 'all' || c.shop === st.brand));
   const names = new Set([...allStaff(), ...YT.flatMap(r => [r.owner, r.mc, r.editor]).filter(Boolean)]);
-  const allNames = [...names].sort();
+  const allNames = orderPeople(names);
   const picks = st.creators.filter(v => v !== '__none'), noneSel = st.creators.includes('__none');   // ['__none'] = กดล้าง ยังไม่ได้เลือกใคร
   const pickAll = !noneSel && picks.length === 0, pick = new Set(picks.map(v => v.toLowerCase()));
   const rows = (noneSel ? [] : allNames.filter(n => pickAll || pick.has(n.toLowerCase()))).map(n => {
@@ -1661,7 +1667,7 @@ function renderCal(){
   // ตัวเลือกครีเอเตอร์ = คนในชีต + คนในแผน
   const people = new Set(allStaff()); getPlans().forEach(p => { if (p.creator) people.add(p.creator); });
   const sel = $('cal-creator'), cur = S.cal.creator;
-  sel.innerHTML = `<option value="all">${t('allPeopleName')}</option>` + [...people].sort().map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  sel.innerHTML = `<option value="all">${t('allPeopleName')}</option>` + orderPeople(people).map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
   sel.value = [...people].includes(cur) ? cur : 'all'; S.cal.creator = sel.value;
   renderBrandSeg('cal-brand', S.cal.brand, v => { S.cal.brand = v; renderCal(); });
   const clips = calFilter(ALL.filter(c => c.date && c.date >= start && c.date <= end && (!S.cal.statuses.length || S.cal.statuses.includes(c.status))), 'creator');
