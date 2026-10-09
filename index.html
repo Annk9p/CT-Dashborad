@@ -513,7 +513,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
   <div class="kpi-tabs" id="tiktok-tabs">
     <div class="ox-segment" role="tablist" id="mode-tabs">
       <button type="button" role="tab" data-mode="manager" class="is-active" data-i18n="tab.manager">ภาพรวม</button>
-      <button type="button" role="tab" data-mode="personal" data-i18n="tab.personal">ภาระงาน</button>
+      <button type="button" role="tab" data-mode="personal" data-i18n="tab.personal">CT Workload</button>
       <button type="button" role="tab" data-mode="reuse" data-i18n="tab.reuse">คลังวิดีโอ</button>
     </div>
   </div>
@@ -614,7 +614,11 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
       <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.pct">ความสำเร็จ</div><div class="ox-kpi__value" id="my-k-pct">—</div><div class="ox-kpi__delta" id="my-d-pct">—</div></div>
     </div>
     <div class="kpi-card" id="my-summary-card" hidden>
-      <div class="kpi-table-head"><h2 data-i18n="t.summary">รวมภาระงานทุกคน</h2><span class="ox-xs ox-muted" id="my-summary-sub">—</span></div>
+      <div class="kpi-table-head">
+        <h2 data-i18n="t.summary">รวมภาระงานทุกคน</h2>
+        <div class="ox-row"><span class="ox-label" style="margin:0" data-i18n="creators">ครีเอเตอร์</span><div class="kpi-dd" id="dd-sum-creators"><button type="button" class="ox-btn ox-btn--secondary ox-btn--sm kpi-dd__btn" aria-haspopup="listbox" aria-expanded="false"><span class="kpi-dd__label">—</span></button><div class="kpi-dd__menu" role="listbox" hidden></div></div></div>
+        <span class="ox-xs ox-muted" id="my-summary-sub">—</span>
+      </div>
       <div class="ox-table-wrap"><table class="ox-table ox-table--data kpi-sum-table">
         <thead><tr><th data-i18n="h.creator">ครีเอเตอร์</th><th class="is-num">TikTok Done</th><th class="is-num">In Progress</th><th class="is-num">Draft</th><th class="is-num">Reject</th><th class="is-num">Stuck</th><th class="is-num" data-i18n="h.ttTotal">TikTok รวม</th><th class="is-num" data-i18n="h.ttTarget">เป้า TikTok</th><th data-i18n="h.pct">ความสำเร็จ</th><th class="is-num">YT Owner</th><th class="is-num">YT MC</th><th class="is-num">YT Editor</th><th class="is-num" data-i18n="h.ytTotal">YouTube รวม</th><th class="is-num" data-i18n="h.grand">รวมทั้งหมด</th></tr></thead>
         <tbody id="my-summary-rows"></tbody></table></div>
@@ -818,7 +822,7 @@ const DEFAULT_QUOTAS = { Moth:{eloop:1,moov:1}, Guild:{eloop:2,moov:1}, Yung:{el
 const DICT = {
   th: {
     brand: 'Content 2026', theme: 'สลับธีม', title: 'Content 2026 — EloopTH & Moov', subtitle: 'ติดตามเป้าหมายการส่งคลิปรายสัปดาห์ ภาระงานรายคน และคลังคลิปสำหรับนำไปใช้ต่อ — อ่านสดจาก Google Sheet',
-    refresh: 'รีเฟรชข้อมูล', csv: 'ดาวน์โหลด CSV', reload: 'โหลดใหม่', 'tab.manager': 'ภาพรวม', 'tab.personal': 'ภาระงาน', 'tab.reuse': 'คลังวิดีโอ',
+    refresh: 'รีเฟรชข้อมูล', csv: 'ดาวน์โหลด CSV', reload: 'โหลดใหม่', 'tab.manager': 'ภาพรวม', 'tab.personal': 'CT Workload', 'tab.reuse': 'คลังวิดีโอ',
     'p.this_week': 'สัปดาห์นี้', 'p.last_week': 'สัปดาห์ก่อน', 'p.this_month': 'เดือนนี้', 'p.last_month': 'เดือนก่อน', 'p.all_year': 'ทั้งปี', 'p.custom': 'กำหนดเอง', to: 'ถึง',
     allBrands: 'ทุกแบรนด์', allStatus: 'ทุกสถานะ', allTypes: 'ทุกประเภท', creators: 'ครีเอเตอร์', status: 'สถานะ', all: 'ทั้งหมด', perPage: 'แสดงต่อหน้า', prev: 'ก่อนหน้า', next: 'ถัดไป', cancel: 'ยกเลิก',
     'k.target': 'เป้าหมายรวม (คลิป)', 'k.done': 'โพสต์แล้ว (Done)', 'k.bal': 'ขาด / เกินเป้า', 'k.pct': 'ความสำเร็จ', 'k.myTarget': 'เป้าหมายช่วงนี้', 'k.todo': 'คงเหลือต้องทำ',
@@ -846,7 +850,7 @@ const DICT = {
   },
   en: {
     brand: 'Content 2026', theme: 'Toggle theme', title: 'Content 2026 — EloopTH & Moov', subtitle: 'Weekly clip delivery targets, per-creator workload and a reusable video library — live from Google Sheets',
-    refresh: 'Refresh data', csv: 'Download CSV', reload: 'Reload', 'tab.manager': 'Overview', 'tab.personal': 'Workload', 'tab.reuse': 'Video library',
+    refresh: 'Refresh data', csv: 'Download CSV', reload: 'Reload', 'tab.manager': 'Overview', 'tab.personal': 'CT Workload', 'tab.reuse': 'Video library',
     'p.this_week': 'This week', 'p.last_week': 'Last week', 'p.this_month': 'This month', 'p.last_month': 'Last month', 'p.all_year': 'Whole year', 'p.custom': 'Custom', to: 'to',
     allBrands: 'All brands', allStatus: 'All statuses', allTypes: 'All types', creators: 'Creators', status: 'Status', all: 'All', perPage: 'Per page', prev: 'Previous', next: 'Next', cancel: 'Cancel',
     'k.target': 'Total target (clips)', 'k.done': 'Posted (Done)', 'k.bal': 'Short / over target', 'k.pct': 'Achievement', 'k.myTarget': 'Target this period', 'k.todo': 'Remaining to do',
@@ -1087,7 +1091,7 @@ const S = {
   platform: 'tiktok', mode: 'manager', year: new Date().getFullYear(),
   yt: { brand: 'all', playlist: 'all', status: 'all', owner: 'all', q: '' },
   mgr: { preset: 'this_week', start: '', end: '', brand: 'all', creators: [], statuses: [], types: [], q: '', page: 1, size: 30 },
-  my: { creator: 'Moth', preset: 'this_week', start: '', end: '', brand: 'all', status: 'all', q: '' },
+  my: { creator: 'Moth', creators: [], preset: 'this_week', start: '', end: '', brand: 'all', status: 'all', q: '' },
   re: { q: '', status: 'Done', type: 'all', brand: 'all', preset: 'all_year', start: '', end: '', sort: 'newest', page: 1, size: 50 },
   cal: { ym: iso(new Date()).slice(0, 7), brand: 'all', creator: 'all', statuses: [], expanded: new Set() }
 };
@@ -1366,12 +1370,15 @@ function renderSummary(){
   $('my-summary-sub').textContent = t('summarySub', { a: thDate(st.start), b: thDate(st.end) });
   const period = CLIPS.filter(c => inRange(c, st.start, st.end) && (st.brand === 'all' || c.shop === st.brand));
   const names = new Set([...allStaff(), ...YT.flatMap(r => [r.owner, r.mc, r.editor]).filter(Boolean)]);
-  const rows = [...names].map(n => {
+  const allNames = [...names].sort();
+  renderDropdown($('dd-sum-creators'), allNames, st.creators, v => v, next => { st.creators = next; renderSummary(); });
+  const pickAll = st.creators.length === 0, pick = new Set(st.creators.filter(v => v !== '__none').map(v => v.toLowerCase()));
+  const rows = allNames.filter(n => pickAll || pick.has(n.toLowerCase())).map(n => {
     const mine = period.filter(c => c.creator.toLowerCase() === n.toLowerCase()), cnt = k => mine.filter(c => c.status === k).length;
     const q = quotas[n] || { eloop: 0, moov: 0 }, target = (st.brand === 'EloopTH' ? q.eloop : st.brand === 'Moov' ? q.moov : q.eloop + q.moov) * weeks;
     const yt = k => YT.filter(r => (r[k] || '').toLowerCase() === n.toLowerCase()).length, ytTot = yt('owner') + yt('mc') + yt('editor');
     return { n, done: cnt('Done'), ip: cnt('In Progress'), dr: cnt('Draft'), rj: cnt('Reject'), sk: cnt('Stuck'), tt: mine.length, target, pct: pctOf(cnt('Done'), target), o: yt('owner'), m: yt('mc'), e: yt('editor'), ytTot, grand: mine.length + ytTot };
-  }).filter(r => r.grand > 0 || r.target > 0).sort((a, b) => b.grand - a.grand);
+  }).filter(r => pickAll ? (r.grand > 0 || r.target > 0) : true).sort((a, b) => b.grand - a.grand);
   const T = k => rows.reduce((a, r) => a + r[k], 0);
   $('my-k-target').textContent = fmtN(T('target')); setDelta($('my-d-target'), '', `${rows.length} ${LANG === 'th' ? 'คน' : 'people'} · ${weeks} ${LANG === 'th' ? 'สัปดาห์' : 'weeks'}`);
   $('my-k-done').textContent = fmtN(T('done')); setDelta($('my-d-done'), '', `TikTok ${T('tt')} · YouTube ${T('ytTot')}`);
