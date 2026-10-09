@@ -458,7 +458,8 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 .kpi-cal__item.is-demo { display: inline-block; width: auto; cursor: default; padding-right: 8px; }
 .kpi-cal__more { font-size: 10px; color: var(--omnix-accent); background: none; border: 0; padding: 0 6px; text-align: left; cursor: pointer; font-family: inherit; }
 .kpi-status-sel { height: 28px; padding: 0 22px 0 8px; font-size: var(--omnix-text-xs); min-width: 0; width: auto; max-width: 150px; }
-.kpi-brand-seg button { display: inline-flex; align-items: center; gap: 6px; }
+.kpi-brand-seg button, .kpi-plat-seg button { display: inline-flex; align-items: center; gap: 6px; }
+.kpi-plat-seg .kpi-plat { margin-right: 0; }
 .kpi-brand-dot { width: 9px; height: 9px; border-radius: var(--omnix-radius-full); background: var(--c); flex: 0 0 auto; }
 .kpi-plat { width: 13px; height: 13px; color: var(--omnix-fg); flex: 0 0 auto; margin-right: 3px; vertical-align: -2px; display: inline-block; }
 .kpi-plat-cell { display: inline-flex; align-items: center; gap: var(--omnix-space-1); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
@@ -604,6 +605,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
         <option value="this_week" data-i18n="p.this_week">สัปดาห์นี้</option><option value="last_week" data-i18n="p.last_week">สัปดาห์ก่อน</option><option value="this_month" data-i18n="p.this_month">เดือนนี้</option><option value="all_year" data-i18n="p.all_year">ทั้งปี</option><option value="custom" data-i18n="p.custom">กำหนดเอง</option>
       </select>
       <div class="kpi-date-inputs"><input type="date" class="ox-control" id="my-start"><span class="ox-muted ox-xs" data-i18n="to">ถึง</span><input type="date" class="ox-control" id="my-end"></div>
+      <div class="ox-segment kpi-plat-seg" id="my-platform" role="group" aria-label="Platform"></div>
       <div class="ox-segment kpi-brand-seg" id="my-brand" role="group" aria-label="Brand"></div>
       <select id="my-status" class="ox-control"><option value="all" data-i18n="allStatus">ทุกสถานะ</option><option value="Done">Done</option><option value="In Progress">In Progress</option><option value="Draft">Draft</option><option value="Reject">Reject</option><option value="Stuck">Stuck</option></select>
     </div>
@@ -619,7 +621,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
         <span class="ox-xs ox-muted" id="my-summary-sub">—</span>
       </div>
       <div class="ox-table-wrap"><table class="ox-table ox-table--data kpi-sum-table">
-        <thead><tr><th data-i18n="h.creator">ครีเอเตอร์</th><th class="is-num">TikTok Done</th><th class="is-num">In Progress</th><th class="is-num">Draft</th><th class="is-num">Reject</th><th class="is-num">Stuck</th><th class="is-num" data-i18n="h.ttTotal">TikTok รวม</th><th class="is-num" data-i18n="h.ttTarget">เป้า TikTok</th><th data-i18n="h.pct">ความสำเร็จ</th><th class="is-num">YT Owner</th><th class="is-num">YT MC</th><th class="is-num">YT Editor</th><th class="is-num" data-i18n="h.ytTotal">YouTube รวม</th><th class="is-num" data-i18n="h.grand">รวมทั้งหมด</th></tr></thead>
+        <thead id="my-summary-head"><tr><th data-i18n="h.creator">ครีเอเตอร์</th><th class="is-num">TikTok Done</th><th class="is-num">In Progress</th><th class="is-num">Draft</th><th class="is-num">Reject</th><th class="is-num">Stuck</th><th class="is-num" data-i18n="h.ttTotal">TikTok รวม</th><th class="is-num" data-i18n="h.ttTarget">เป้า TikTok</th><th data-i18n="h.pct">ความสำเร็จ</th><th class="is-num">YT Owner</th><th class="is-num">YT MC</th><th class="is-num">YT Editor</th><th class="is-num" data-i18n="h.ytTotal">YouTube รวม</th><th class="is-num" data-i18n="h.grand">รวมทั้งหมด</th></tr></thead>
         <tbody id="my-summary-rows"></tbody></table></div>
     </div>
 
@@ -630,7 +632,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
         <div class="kpi-search"><input type="search" id="my-search" class="ox-control" data-i18n-ph="ph.search2"></div>
       </div>
       <div class="ox-table-wrap"><table class="ox-table ox-table--data">
-        <thead><tr><th class="is-num">#</th><th data-i18n="h.date">วันที่</th><th data-i18n="h.brand">แบรนด์</th><th data-i18n="h.product">สินค้า</th><th data-i18n="h.type">ประเภท</th><th class="is-topic" data-i18n="h.topic">หัวข้อคลิป</th><th data-i18n="h.status">สถานะ</th><th data-i18n="h.file">ไฟล์</th><th>TikTok</th></tr></thead>
+        <thead id="my-rows-head"></thead>
         <tbody id="my-rows"></tbody></table></div>
     </div>
   </section>
@@ -814,7 +816,7 @@ const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET.id}/gviz/tq?gid
 const COLS = { shop: 'Shop Name', product: 'Product', type: 'Content type', topic: 'Topic', title: 'title', url: 'URL', creator: 'Creator', status: 'Status', date: 'DATE', path: 'Path', recorder: 'Recorder', editor: 'Editor', actor: 'Actor', voice: 'Voice over' };
 const STATUSES = ['Done', 'In Progress', 'Draft', 'Reject', 'Stuck'];
 const BRANDS = ['EloopTH', 'Moov'];
-const BRAND_LABEL = { EloopTH: 'Eloop', Moov: 'Moov' };
+const BRAND_LABEL = { EloopTH: 'Eloop', Moov: 'Moov', MoovTH: 'Moov' };
 const DEFAULT_QUOTAS = { Moth:{eloop:1,moov:1}, Guild:{eloop:2,moov:1}, Yung:{eloop:1,moov:1}, View:{eloop:1,moov:0}, Wasu:{eloop:0,moov:2}, Nu:{eloop:1,moov:2}, Ann:{eloop:1,moov:1} };
 
 /* ===== 1. i18n — ทุกข้อความผ่าน t() สองภาษา ===== */
@@ -828,7 +830,7 @@ const DICT = {
     'c.trend': 'คลิปที่โพสต์แล้วตามช่วงเวลา', 'c.trendAny': 'จำนวนคลิปตามช่วงเวลา', 'c.peopleAny': 'ครีเอเตอร์', 'c.people': 'ครีเอเตอร์', 'c.people.sub': 'เรียงจากมากไปน้อย', 'c.type': 'ประเภทคลิป', 'c.type.sub': 'เฉพาะที่โพสต์แล้ว (Done)',
     't.matrix': 'ผลงานรายบุคคล เทียบเป้าหมาย', 't.clips': 'รายการคลิปตามเงื่อนไข', 't.myClips': 'รายการคลิป', 't.reuse': 'คลิปพร้อมนำไปใช้', 't.reuse.sub': 'คลิกแถวเพื่อดูตัวอย่างคลิป · คัดลอกลิงก์ TikTok หรือที่อยู่ไฟล์ต้นฉบับได้ทันที',
     'h.creator': 'ครีเอเตอร์', 'h.elT': 'Eloop เป้า', 'h.elD': 'Eloop โพสต์', 'h.mvT': 'Moov เป้า', 'h.mvD': 'Moov โพสต์', 'h.target': 'รวมเป้า', 'h.done': 'โพสต์แล้ว', 'h.gap': 'ขาด/เกิน', 'h.pct': 'ความสำเร็จ', 'h.status': 'สถานะ',
-    'h.recorder': 'ถ่าย (Recorder)', 'h.editor': 'ตัดต่อ (Editor)', 'h.actor': 'นักแสดง (Actor)', 'h.voice': 'พากย์ (Voice)', 'yt.allPlaylists': 'ทุก Playlist', 'yt.allOwners': 'ทุก Owner', 'yt.notStarted': 'ยังไม่เริ่ม', 'yt.search': 'ค้นหาหัวข้อ สินค้า หรือชื่อคน', 'yt.k.total': 'หัวข้อทั้งหมด (2026)', 'yt.k.done': 'เสร็จแล้ว (Done)', 'yt.k.wip': 'กำลังทำ (In Progress + Draft)', 'yt.k.todo': 'ยังไม่เริ่ม', 'yt.c.playlist': 'หัวข้อต่อ Playlist', 'yt.c.playlist.sub': 'แยกตามสถานะ', 'yt.c.status': 'สัดส่วนสถานะ', 'yt.c.status.sub': 'ทุกหัวข้อปี 2026 ตามตัวกรอง', 'yt.crew': 'บทบาททีมงาน — จำนวนหัวข้อต่อคน', 'yt.crew.sub': 'นับจากคอลัมน์ Owner / MC / Editor', 'yt.t.list': 'รายการหัวข้อ YouTube 2026', 'yt.shoot': 'วันถ่าย', 'yt.links': 'ลิงก์', 'yt.script': 'สคริปต์', 'yt.video': 'วิดีโอ', 'yt.ofTotal': '{p}% ของทั้งหมด', 'yt.topics': 'หัวข้อ', 'yt.updated': 'อัปเดตล่าสุด {t} · แหล่งข้อมูล: Google Sheet (YouTube Plan) · เฉพาะส่วน "Youtube 2026"', 'yt.noData': 'ยังไม่มีข้อมูล YouTube 2026', 'yt.noDataHint': 'ตรวจว่าชีตมีแถวหัวข้อ "Youtube 2026" และรัน update_data.sh', refreshed: 'โหลดข้อมูลแล้ว · {t}', allPeople: 'ทุกคน (รวมภาระงาน)', 't.summary': 'รวมภาระงานทุกคน', 'h.ttTotal': 'TikTok รวม', 'h.ttTarget': 'เป้า TikTok', 'h.ytTotal': 'YouTube รวม', 'h.grand': 'รวมทั้งหมด', summarySub: 'TikTok: คลิปในช่วง {a} – {b} · YouTube: หัวข้อปี 2026 ทั้งหมด (นับตามบทบาท)', allPeopleName: 'ทุกคน', allPeopleQuota: 'ภาระงานรวมของทีม', updatedAt: 'ข้อมูลล่าสุด {t}', updatedStale: 'ข้อมูลล่าสุด {t} (เกิน 1 ชม.)', preview: 'ตัวอย่างคลิป', previewHint: 'คลิกแถวเพื่อดูตัวอย่างคลิป', noVideo: 'คลิปนี้ยังไม่มีลิงก์วิดีโอ', close: 'ปิด', 't.crew': 'บทบาททีมงาน — จำนวนคลิปต่อคน', 't.crew.sub': 'นับจากคอลัมน์ Recorder / Editor / Actor / Voice over', crewSub: '{n} คลิป · {p} คน', copyTopic: 'คัดลอกหัวข้อ', copiedTopic: 'คัดลอกหัวข้อแล้ว', nSelected: 'เลือก {n} รายการ', clear: 'ล้าง', noneSelected: 'ยังไม่เลือก', byStatus: 'แยกตามสถานะ', 'h.date': 'วันที่', 'h.brand': 'แบรนด์', 'h.product': 'สินค้า', 'h.type': 'ประเภท', 'h.topic': 'หัวข้อคลิป', 'h.file': 'ไฟล์', 'h.actions': 'นำไปใช้',
+    'h.recorder': 'ถ่าย (Recorder)', 'h.editor': 'ตัดต่อ (Editor)', 'h.actor': 'นักแสดง (Actor)', 'h.voice': 'พากย์ (Voice)', 'yt.allPlaylists': 'ทุก Playlist', 'yt.allOwners': 'ทุก Owner', 'yt.notStarted': 'ยังไม่เริ่ม', 'yt.search': 'ค้นหาหัวข้อ สินค้า หรือชื่อคน', 'yt.k.total': 'หัวข้อทั้งหมด (2026)', 'yt.k.done': 'เสร็จแล้ว (Done)', 'yt.k.wip': 'กำลังทำ (In Progress + Draft)', 'yt.k.todo': 'ยังไม่เริ่ม', 'yt.c.playlist': 'หัวข้อต่อ Playlist', 'yt.c.playlist.sub': 'แยกตามสถานะ', 'yt.c.status': 'สัดส่วนสถานะ', 'yt.c.status.sub': 'ทุกหัวข้อปี 2026 ตามตัวกรอง', 'yt.crew': 'บทบาททีมงาน — จำนวนหัวข้อต่อคน', 'yt.crew.sub': 'นับจากคอลัมน์ Owner / MC / Editor', 'yt.t.list': 'รายการหัวข้อ YouTube 2026', 'yt.shoot': 'วันถ่าย', 'yt.links': 'ลิงก์', 'yt.script': 'สคริปต์', 'yt.video': 'วิดีโอ', 'yt.ofTotal': '{p}% ของทั้งหมด', 'yt.topics': 'หัวข้อ', 'yt.updated': 'อัปเดตล่าสุด {t} · แหล่งข้อมูล: Google Sheet (YouTube Plan) · เฉพาะส่วน "Youtube 2026"', 'yt.noData': 'ยังไม่มีข้อมูล YouTube 2026', 'yt.noDataHint': 'ตรวจว่าชีตมีแถวหัวข้อ "Youtube 2026" และรัน update_data.sh', refreshed: 'โหลดข้อมูลแล้ว · {t}', allPeople: 'ทุกคน (รวมภาระงาน)', 't.summary': 'รวมภาระงานทุกคน', 'h.ttTotal': 'TikTok รวม', 'h.ttTarget': 'เป้า TikTok', 'h.ytTotal': 'YouTube รวม', 'h.grand': 'รวมทั้งหมด', summarySub: 'TikTok: คลิปในช่วง {a} – {b} · YouTube: หัวข้อปี 2026 ทั้งหมด (นับตามบทบาท)', allPeopleName: 'ทุกคน', allPeopleQuota: 'ภาระงานรวมของทีม', updatedAt: 'ข้อมูลล่าสุด {t}', updatedStale: 'ข้อมูลล่าสุด {t} (เกิน 1 ชม.)', preview: 'ตัวอย่างคลิป', previewHint: 'คลิกแถวเพื่อดูตัวอย่างคลิป', noVideo: 'คลิปนี้ยังไม่มีลิงก์วิดีโอ', close: 'ปิด', 't.crew': 'บทบาททีมงาน — จำนวนคลิปต่อคน', 't.crew.sub': 'นับจากคอลัมน์ Recorder / Editor / Actor / Voice over', crewSub: '{n} คลิป · {p} คน', copyTopic: 'คัดลอกหัวข้อ', copiedTopic: 'คัดลอกหัวข้อแล้ว', nSelected: 'เลือก {n} รายการ', clear: 'ล้าง', noneSelected: 'ยังไม่เลือก', allPlatforms: 'ทุกแพลตฟอร์ม', 'yt.role': 'บทบาท', 'yt.noTarget': 'YouTube ไม่มีโควต้ารายสัปดาห์', byStatus: 'แยกตามสถานะ', 'h.date': 'วันที่', 'h.brand': 'แบรนด์', 'h.product': 'สินค้า', 'h.type': 'ประเภท', 'h.topic': 'หัวข้อคลิป', 'h.file': 'ไฟล์', 'h.actions': 'นำไปใช้',
     'ph.search': 'ค้นหาหัวข้อ สินค้า ประเภท หรือชื่อคน', 'ph.search2': 'ค้นหาหัวข้อหรือสินค้า', 'ph.search3': 'ค้นหาตามหัวข้อหรือสินค้า เช่น E29, iPhone 18, ชาร์จเร็ว, ฟิล์ม',
     're.done': 'Done — แนะนำสำหรับยิงแอด', 'sort.newest': 'ล่าสุดก่อน', 'sort.oldest': 'เก่าสุดก่อน',
     'quota.btn': 'ตั้งค่าโควต้า', 'quota.title': 'ตั้งค่าโควต้าเป้าหมายรายสัปดาห์', 'quota.help': 'จำนวนคลิปต่อสัปดาห์ของแต่ละคน แยกแบรนด์ — บันทึกไว้ในเบราว์เซอร์นี้', 'quota.reset': 'คืนค่าเริ่มต้น', 'quota.save': 'บันทึกโควต้า', 'quota.saved': 'บันทึกโควต้าแล้ว', 'quota.resetDone': 'คืนค่าเริ่มต้นแล้ว', 'quota.confirm': 'คืนค่าโควต้าเริ่มต้นทั้งหมด?',
@@ -856,7 +858,7 @@ const DICT = {
     'c.trend': 'Posted clips over time', 'c.trendAny': 'Clips over time', 'c.peopleAny': 'Creators', 'c.people': 'Creators', 'c.people.sub': 'Sorted high to low', 'c.type': 'Content Type', 'c.type.sub': 'Posted (Done) only',
     't.matrix': 'Per-creator delivery vs target', 't.clips': 'Clips matching filters', 't.myClips': 'Clips', 't.reuse': 'Ready-to-use clips', 't.reuse.sub': 'Click a row to preview the clip · copy the TikTok link or source file path instantly',
     'h.creator': 'Creator', 'h.elT': 'Eloop target', 'h.elD': 'Eloop posted', 'h.mvT': 'Moov target', 'h.mvD': 'Moov posted', 'h.target': 'Target', 'h.done': 'Posted', 'h.gap': 'Gap', 'h.pct': 'Achievement', 'h.status': 'Status',
-    'h.recorder': 'Recorder', 'h.editor': 'Editor', 'h.actor': 'Actor', 'h.voice': 'Voice over', 'yt.allPlaylists': 'All playlists', 'yt.allOwners': 'All owners', 'yt.notStarted': 'Not started', 'yt.search': 'Search topic, product or person', 'yt.k.total': 'Total topics (2026)', 'yt.k.done': 'Done', 'yt.k.wip': 'In progress + Draft', 'yt.k.todo': 'Not started', 'yt.c.playlist': 'Topics per playlist', 'yt.c.playlist.sub': 'By status', 'yt.c.status': 'Status share', 'yt.c.status.sub': 'All 2026 topics matching filters', 'yt.crew': 'Crew roles — topics per person', 'yt.crew.sub': 'From the Owner / MC / Editor columns', 'yt.t.list': 'YouTube 2026 topics', 'yt.shoot': 'Shoot date', 'yt.links': 'Links', 'yt.script': 'Script', 'yt.video': 'Video', 'yt.ofTotal': '{p}% of total', 'yt.topics': 'topics', 'yt.updated': 'Updated {t} · Source: Google Sheet (YouTube Plan) · "Youtube 2026" section only', 'yt.noData': 'No YouTube 2026 data yet', 'yt.noDataHint': 'Check the sheet has a "Youtube 2026" header row and run update_data.sh', refreshed: 'Data loaded · {t}', allPeople: 'All people (workload summary)', 't.summary': 'Workload summary — all people', 'h.ttTotal': 'TikTok total', 'h.ttTarget': 'TikTok target', 'h.ytTotal': 'YouTube total', 'h.grand': 'Grand total', summarySub: 'TikTok: clips in {a} – {b} · YouTube: all 2026 topics (by role)', allPeopleName: 'All people', allPeopleQuota: 'Team workload summary', updatedAt: 'Data updated {t}', updatedStale: 'Data updated {t} (over 1 h ago)', preview: 'Clip preview', previewHint: 'Click a row to preview the clip', noVideo: 'This clip has no video link yet', close: 'Close', 't.crew': 'Crew roles — clips per person', 't.crew.sub': 'From the Recorder / Editor / Actor / Voice over columns', crewSub: '{n} clips · {p} people', copyTopic: 'Copy topic', copiedTopic: 'Topic copied', nSelected: '{n} selected', clear: 'Clear', noneSelected: 'None selected', byStatus: 'By status', 'h.date': 'Date', 'h.brand': 'Brand', 'h.product': 'Product', 'h.type': 'Type', 'h.topic': 'Topic', 'h.file': 'File', 'h.actions': 'Use',
+    'h.recorder': 'Recorder', 'h.editor': 'Editor', 'h.actor': 'Actor', 'h.voice': 'Voice over', 'yt.allPlaylists': 'All playlists', 'yt.allOwners': 'All owners', 'yt.notStarted': 'Not started', 'yt.search': 'Search topic, product or person', 'yt.k.total': 'Total topics (2026)', 'yt.k.done': 'Done', 'yt.k.wip': 'In progress + Draft', 'yt.k.todo': 'Not started', 'yt.c.playlist': 'Topics per playlist', 'yt.c.playlist.sub': 'By status', 'yt.c.status': 'Status share', 'yt.c.status.sub': 'All 2026 topics matching filters', 'yt.crew': 'Crew roles — topics per person', 'yt.crew.sub': 'From the Owner / MC / Editor columns', 'yt.t.list': 'YouTube 2026 topics', 'yt.shoot': 'Shoot date', 'yt.links': 'Links', 'yt.script': 'Script', 'yt.video': 'Video', 'yt.ofTotal': '{p}% of total', 'yt.topics': 'topics', 'yt.updated': 'Updated {t} · Source: Google Sheet (YouTube Plan) · "Youtube 2026" section only', 'yt.noData': 'No YouTube 2026 data yet', 'yt.noDataHint': 'Check the sheet has a "Youtube 2026" header row and run update_data.sh', refreshed: 'Data loaded · {t}', allPeople: 'All people (workload summary)', 't.summary': 'Workload summary — all people', 'h.ttTotal': 'TikTok total', 'h.ttTarget': 'TikTok target', 'h.ytTotal': 'YouTube total', 'h.grand': 'Grand total', summarySub: 'TikTok: clips in {a} – {b} · YouTube: all 2026 topics (by role)', allPeopleName: 'All people', allPeopleQuota: 'Team workload summary', updatedAt: 'Data updated {t}', updatedStale: 'Data updated {t} (over 1 h ago)', preview: 'Clip preview', previewHint: 'Click a row to preview the clip', noVideo: 'This clip has no video link yet', close: 'Close', 't.crew': 'Crew roles — clips per person', 't.crew.sub': 'From the Recorder / Editor / Actor / Voice over columns', crewSub: '{n} clips · {p} people', copyTopic: 'Copy topic', copiedTopic: 'Topic copied', nSelected: '{n} selected', clear: 'Clear', noneSelected: 'None selected', allPlatforms: 'All platforms', 'yt.role': 'Role', 'yt.noTarget': 'YouTube has no weekly quota', byStatus: 'By status', 'h.date': 'Date', 'h.brand': 'Brand', 'h.product': 'Product', 'h.type': 'Type', 'h.topic': 'Topic', 'h.file': 'File', 'h.actions': 'Use',
     'ph.search': 'Search topic, product, type or creator', 'ph.search2': 'Search topic or product', 'ph.search3': 'Search by topic or product, e.g. E29, iPhone 18, fast charge, film',
     're.done': 'Done — recommended for ads', 'sort.newest': 'Newest first', 'sort.oldest': 'Oldest first',
     'quota.btn': 'Set quotas', 'quota.title': 'Weekly target quotas', 'quota.help': 'Clips per week for each creator, per brand — saved in this browser', 'quota.reset': 'Reset to defaults', 'quota.save': 'Save quotas', 'quota.saved': 'Quotas saved', 'quota.resetDone': 'Defaults restored', 'quota.confirm': 'Reset all quotas to defaults?',
@@ -958,7 +960,7 @@ const statusCell = c => canEditStatus() && c.sheetRow
   ? `<select class="ox-control kpi-status-sel" data-set-status="${c.id}" aria-label="${t('h.status')}">${STATUSES.map(v => `<option value="${v}"${v === c.status ? ' selected' : ''}>${v} · ${t('st.' + v)}</option>`).join('')}</select>`
   : badgeStatus(c.status);
 const badgeStatus = s => STATUS_BADGE[s] ? `<span class="ox-badge ox-badge--${STATUS_BADGE[s]}" title="${t('st.' + s)}">${s}</span>` : `<span class="ox-badge">${esc(s || '—')}</span>`;
-const brandVar = b => `var(--brand-${b === 'Moov' ? 'moov' : 'eloop'})`;
+const brandVar = b => `var(--brand-${/^moov/i.test(b) ? 'moov' : 'eloop'})`;
 const badgeBrand = b => `<span class="ox-badge" style="--c:${brandVar(b)}">${BRAND_LABEL[b] || esc(b)}</span>`;
 const badgeType = ty => ty ? `<span class="ox-badge">${esc(ty)}</span>` : '<span class="ox-muted">—</span>';
 const highlight = (text, q) => q ? esc(text).replace(new RegExp(`(${escRe(esc(q))})`, 'gi'), '<mark class="kpi-hl">$1</mark>') : esc(text);
@@ -1003,7 +1005,7 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-copy
 /* ===== 4. กราฟ ===== */
 const tok = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const chartColor = i => tok(`--omnix-chart-${i}`) || tok('--omnix-chart-other');
-const brandColor = b => tok(b === 'Moov' ? '--brand-moov' : '--brand-eloop');   // สีตามตัวตนแบรนด์ ใช้เหมือนกันทุกกราฟ
+const brandColor = b => tok(/^moov/i.test(b) ? '--brand-moov' : '--brand-eloop');   // สีตามตัวตนแบรนด์ ใช้เหมือนกันทุกกราฟ
 function oxChartDefaults(){
   if (!window.Chart) return;
   Chart.defaults.font.family = tok('--omnix-font'); Chart.defaults.font.size = 12; Chart.defaults.color = tok('--omnix-chart-axis');
@@ -1090,7 +1092,7 @@ const S = {
   platform: 'tiktok', mode: 'manager', year: new Date().getFullYear(),
   yt: { brand: 'all', playlist: 'all', status: 'all', owner: 'all', q: '' },
   mgr: { preset: 'this_week', start: '', end: '', brand: 'all', creators: [], statuses: [], types: [], q: '', page: 1, size: 30 },
-  my: { creators: [], preset: 'this_week', start: '', end: '', brand: 'all', status: 'all', q: '' },
+  my: { creators: [], platform: 'all', preset: 'this_week', start: '', end: '', brand: 'all', status: 'all', q: '' },
   re: { q: '', status: 'Done', type: 'all', brand: 'all', preset: 'all_year', start: '', end: '', sort: 'newest', page: 1, size: 50 },
   cal: { ym: iso(new Date()).slice(0, 7), brand: 'all', creator: 'all', statuses: [], expanded: new Set() }
 };
@@ -1362,6 +1364,34 @@ function setMgrPreset(p){ S.mgr.preset = p; [S.mgr.start, S.mgr.end] = presetRan
 /* ===== 7. ภาระงานรายคน ===== */
 /* เมนูครีเอเตอร์หน้า CT Workload — ว่าง = ทุกคน · 1 คน = ดูรายคน · ตั้งแต่ 2 คน = สรุปรวมเฉพาะคนที่เลือก */
 function myPeopleNames(){ return [...new Set([...allStaff(), ...YT.flatMap(r => [r.owner, r.mc, r.editor]).filter(Boolean)])].sort(); }
+/* มุมมองรายคน · แพลตฟอร์ม YouTube — หัวข้อที่คนนั้นมีส่วนร่วม (Owner / MC / Editor) */
+function renderPersonalYT(name, qs){
+  const $ = id => document.getElementById(id), lower = name.toLowerCase();
+  const roleOf = r => [['Owner', r.owner], ['MC', r.mc], ['Editor', r.editor]].filter(x => (x[1] || '').toLowerCase() === lower).map(x => x[0]);
+  const mine = YT.map(r => ({ r, roles: roleOf(r) })).filter(x => x.roles.length);
+  const rows = mine.filter(x => !qs || `${x.r.topic} ${x.r.product} ${x.r.playlist}`.toLowerCase().includes(qs));
+  const cnt = k => mine.filter(x => x.r.status === k).length;
+  $('my-k-target').textContent = '—'; setDelta($('my-d-target'), '', t('yt.noTarget'));
+  $('my-k-done').textContent = fmtN(cnt('Done')); setDelta($('my-d-done'), '', `${t('yt.topics')} ${fmtN(mine.length)}`);
+  const todo = mine.length - cnt('Done');
+  $('my-k-bal').textContent = fmtN(todo); setDelta($('my-d-bal'), todo > 0 ? 'down' : 'up', todo > 0 ? t('todo', { n: todo }) : t('metAll'));
+  const P = pctOf(cnt('Done'), mine.length); $('my-k-pct').textContent = mine.length ? `${P}%` : '—'; setDelta($('my-d-pct'), P >= 100 ? 'up' : P < 70 ? 'down' : '', t('yt.ofTotal', { p: P }));
+  $('my-count').textContent = fmtN(rows.length);
+  $('my-status-counts').innerHTML = `<span class="ox-xs ox-muted">${t('byStatus')}:</span>` + ['Done', 'In Progress', 'Draft', 'Not started'].map(k => `<span class="ox-badge ox-badge--${STATUS_BADGE[k] || 'info'}">${k}<span class="ox-num">${mine.filter(x => x.r.status === k).length}</span></span>`).join('');
+  $('my-status-counts').onclick = null;
+  $('my-rows-head').innerHTML = `<tr><th class="is-num">#</th><th>${t('h.brand')}</th><th>Playlist</th><th>${t('h.product')}</th><th class="is-topic">${t('h.topic')}</th><th>${t('h.status')}</th><th>${t('yt.role')}</th><th>${t('yt.shoot')}</th><th>${t('yt.links')}</th></tr>`;
+  $('my-rows').innerHTML = rows.length === 0 ? emptyRow(9, t('noMatch'), t('noMatchHint')) : rows.map((x, i) => {
+    const r = x.r;
+    return `<tr class="is-clickable" data-pv="yt:${r.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${i + 1}</td><td>${badgeBrand(r.shop)}</td><td>${esc(r.playlist || '—')}</td><td>${esc(r.product || '—')}</td><td class="is-topic">${topicCell(r, qs)}</td><td>${badgeStatus(r.status)}</td><td class="is-crew">${x.roles.join(' · ')}</td><td class="ox-num is-nowrap">${r.shoot ? thDate(r.shoot) : '—'}</td><td class="is-nowrap">${r.link ? `<a class="ox-btn ox-btn--secondary ox-btn--sm kpi-inline-btn" href="${esc(r.link)}" target="_blank" rel="noopener">${ico('ext')}${t('yt.video')}</a>` : '<span class="ox-muted ox-xs">—</span>'}</td></tr>`;
+  }).join('');
+  S.exportRows = rows.map(x => x.r);
+}
+function renderMyPlatformSeg(){
+  const el = document.getElementById('my-platform');
+  const items = [['all', t('allPlatforms'), ''], ['tiktok', 'TikTok', 'tiktok'], ['youtube', 'YouTube', 'youtube']];
+  el.innerHTML = items.map(([v, label, ico]) => `<button type="button" data-plat="${v}" class="${v === S.my.platform ? 'is-active' : ''}" aria-pressed="${v === S.my.platform}">${ico ? platIcon(ico) : ''}${esc(label)}</button>`).join('');
+  if (!el.dataset.wired) { el.dataset.wired = '1'; el.addEventListener('click', e => { const b = e.target.closest('[data-plat]'); if (b) { S.my.platform = b.dataset.plat; renderPersonal(); } }); }
+}
 function renderMyCreatorDD(){
   renderDropdown(document.getElementById('dd-my-creators'), myPeopleNames(), S.my.creators, v => v, next => { S.my.creators = next; renderPersonal(); });
 }
@@ -1372,7 +1402,11 @@ function renderSummary(){
   renderMyCreatorDD(); $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; renderBrandSeg('my-brand', st.brand, v => { S.my.brand = v; renderPersonal(); }); $('my-status').value = st.status;
   $('my-name').textContent = t('allPeopleName'); $('my-avatar').textContent = '∑'; $('my-quota').textContent = t('allPeopleQuota');
   $('my-summary-card').hidden = false; $('my-clips-card').hidden = true;
+  renderMyPlatformSeg();
+  const showTT = st.platform !== 'youtube', showYT = st.platform !== 'tiktok';
   $('my-summary-sub').textContent = t('summarySub', { a: thDate(st.start), b: thDate(st.end) });
+  $('my-summary-head').innerHTML = `<tr><th>${t('h.creator')}</th>${showTT ? `<th class="is-num">TikTok Done</th><th class="is-num">In Progress</th><th class="is-num">Draft</th><th class="is-num">Reject</th><th class="is-num">Stuck</th><th class="is-num">${t('h.ttTotal')}</th><th class="is-num">${t('h.ttTarget')}</th><th>${t('h.pct')}</th>` : ''}${showYT ? `<th class="is-num">YT Owner</th><th class="is-num">YT MC</th><th class="is-num">YT Editor</th><th class="is-num">${t('h.ytTotal')}</th>` : ''}${showTT && showYT ? `<th class="is-num">${t('h.grand')}</th>` : ''}</tr>`;
+  const cols = 1 + (showTT ? 8 : 0) + (showYT ? 4 : 0) + (showTT && showYT ? 1 : 0);
   const period = CLIPS.filter(c => inRange(c, st.start, st.end) && (st.brand === 'all' || c.shop === st.brand));
   const names = new Set([...allStaff(), ...YT.flatMap(r => [r.owner, r.mc, r.editor]).filter(Boolean)]);
   const allNames = [...names].sort();
@@ -1383,14 +1417,17 @@ function renderSummary(){
     const q = quotas[n] || { eloop: 0, moov: 0 }, target = (st.brand === 'EloopTH' ? q.eloop : st.brand === 'Moov' ? q.moov : q.eloop + q.moov) * weeks;
     const yt = k => YT.filter(r => (r[k] || '').toLowerCase() === n.toLowerCase()).length, ytTot = yt('owner') + yt('mc') + yt('editor');
     return { n, done: cnt('Done'), ip: cnt('In Progress'), dr: cnt('Draft'), rj: cnt('Reject'), sk: cnt('Stuck'), tt: mine.length, target, pct: pctOf(cnt('Done'), target), o: yt('owner'), m: yt('mc'), e: yt('editor'), ytTot, grand: mine.length + ytTot };
-  }).filter(r => pickAll ? (r.grand > 0 || r.target > 0) : true).sort((a, b) => b.grand - a.grand);
+  }).map(r => ({ ...r, shown: st.platform === 'tiktok' ? r.tt : st.platform === 'youtube' ? r.ytTot : r.grand }))
+    .filter(r => pickAll ? (r.shown > 0 || (showTT && r.target > 0)) : true).sort((a, b) => b.shown - a.shown);
   const T = k => rows.reduce((a, r) => a + r[k], 0);
   $('my-k-target').textContent = fmtN(T('target')); setDelta($('my-d-target'), '', `${rows.length} ${LANG === 'th' ? 'คน' : 'people'} · ${weeks} ${LANG === 'th' ? 'สัปดาห์' : 'weeks'}`);
-  $('my-k-done').textContent = fmtN(T('done')); setDelta($('my-d-done'), '', `TikTok ${T('tt')} · YouTube ${T('ytTot')}`);
+  $('my-k-done').textContent = fmtN(showTT ? T('done') : T('ytTot')); setDelta($('my-d-done'), '', showTT && showYT ? `TikTok ${T('tt')} · YouTube ${T('ytTot')}` : showTT ? `TikTok ${T('tt')}` : `YouTube ${T('ytTot')}`);
   const gap = T('target') - T('done'); $('my-k-bal').textContent = T('target') ? (gap > 0 ? fmtN(gap) : `+${fmtN(-gap)}`) : '—'; setDelta($('my-d-bal'), gap > 0 ? 'down' : 'up', gap > 0 ? t('todo', { n: gap }) : gap === 0 ? t('metAll') : t('over', { n: -gap }));
   const P = pctOf(T('done'), T('target')); $('my-k-pct').textContent = T('target') ? `${P}%` : '—'; setDelta($('my-d-pct'), P >= 100 ? 'up' : P < 70 ? 'down' : '', `${thDate(st.start)} – ${thDate(st.end)}`);
-  $('my-summary-rows').innerHTML = rows.length === 0 ? emptyRow(14, t(noneSel ? 'noCreators' : 'noMatch'), t(noneSel ? 'noCreatorsHint' : 'noMatchHint')) : rows.map(r => `<tr class="is-clickable" data-person="${esc(r.n)}"><td><span class="ox-row"><span class="kpi-avatar">${esc(r.n.charAt(0))}</span><strong>${esc(r.n)}</strong></span></td><td class="is-num">${r.done}</td><td class="is-num">${r.ip}</td><td class="is-num">${r.dr}</td><td class="is-num">${r.rj}</td><td class="is-num">${r.sk}</td><td class="is-num"><strong>${r.tt}</strong></td><td class="is-num">${r.target}</td><td>${r.target ? progress(r.pct) : '<span class="ox-muted">—</span>'}</td><td class="is-num">${r.o}</td><td class="is-num">${r.m}</td><td class="is-num">${r.e}</td><td class="is-num"><strong>${r.ytTot}</strong></td><td class="is-num"><strong>${r.grand}</strong></td></tr>`).join('') +
-    `<tr><td><strong>${LANG === 'th' ? 'รวม' : 'Total'}</strong></td><td class="is-num"><strong>${T('done')}</strong></td><td class="is-num">${T('ip')}</td><td class="is-num">${T('dr')}</td><td class="is-num">${T('rj')}</td><td class="is-num">${T('sk')}</td><td class="is-num"><strong>${T('tt')}</strong></td><td class="is-num">${T('target')}</td><td>${T('target') ? progress(P) : ''}</td><td class="is-num">${T('o')}</td><td class="is-num">${T('m')}</td><td class="is-num">${T('e')}</td><td class="is-num"><strong>${T('ytTot')}</strong></td><td class="is-num"><strong>${T('grand')}</strong></td></tr>`;
+  const ttCells = r => `<td class="is-num">${r.done}</td><td class="is-num">${r.ip}</td><td class="is-num">${r.dr}</td><td class="is-num">${r.rj}</td><td class="is-num">${r.sk}</td><td class="is-num"><strong>${r.tt}</strong></td><td class="is-num">${r.target}</td><td>${r.target ? progress(r.pct) : '<span class="ox-muted">—</span>'}</td>`;
+  const ytCells = r => `<td class="is-num">${r.o}</td><td class="is-num">${r.m}</td><td class="is-num">${r.e}</td><td class="is-num"><strong>${r.ytTot}</strong></td>`;
+  $('my-summary-rows').innerHTML = rows.length === 0 ? emptyRow(cols, t(noneSel ? 'noCreators' : 'noMatch'), t(noneSel ? 'noCreatorsHint' : 'noMatchHint')) : rows.map(r => `<tr class="is-clickable" data-person="${esc(r.n)}"><td><span class="ox-row"><span class="kpi-avatar">${esc(r.n.charAt(0))}</span><strong>${esc(r.n)}</strong></span></td>${showTT ? ttCells(r) : ''}${showYT ? ytCells(r) : ''}${showTT && showYT ? `<td class="is-num"><strong>${r.grand}</strong></td>` : ''}</tr>`).join('') +
+    `<tr><td><strong>${LANG === 'th' ? 'รวม' : 'Total'}</strong></td>${showTT ? ttCells({ done: T('done'), ip: T('ip'), dr: T('dr'), rj: T('rj'), sk: T('sk'), tt: T('tt'), target: T('target'), pct: P }) : ''}${showYT ? ytCells({ o: T('o'), m: T('m'), e: T('e'), ytTot: T('ytTot') }) : ''}${showTT && showYT ? `<td class="is-num"><strong>${T('grand')}</strong></td>` : ''}</tr>`;
   $('my-summary-rows').onclick = e => { const tr = e.target.closest('[data-person]'); if (tr) { S.my.creators = [tr.dataset.person]; renderPersonal(); } };
   S.exportRows = rows;
 }
@@ -1399,7 +1436,7 @@ function renderPersonal(){
   if (S.my.creators.filter(v => v !== '__none').length !== 1) return renderSummary();   // ว่าง = ทุกคน · 2 คนขึ้นไป = สรุปเฉพาะกลุ่มที่เลือก
   const st = S.my, quotas = getQuotas(), name = st.creators.filter(v => v !== '__none')[0], q = quotas[name] || { eloop: 0, moov: 0 }, $ = id => document.getElementById(id);
   $('my-summary-card').hidden = true; $('my-clips-card').hidden = false;
-  renderMyCreatorDD(); $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; renderBrandSeg('my-brand', st.brand, v => { S.my.brand = v; renderPersonal(); }); $('my-status').value = st.status;
+  renderMyCreatorDD(); renderMyPlatformSeg(); $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; renderBrandSeg('my-brand', st.brand, v => { S.my.brand = v; renderPersonal(); }); $('my-status').value = st.status;
   $('my-name').textContent = name || '—'; $('my-avatar').textContent = (name || '–').charAt(0);
   $('my-quota').textContent = t('myQuota', { n: q.eloop + q.moov, e: q.eloop, m: q.moov });
   const weeks = targetWeeks(st.start, st.end), elT = q.eloop * weeks, mvT = q.moov * weeks;
@@ -1412,6 +1449,8 @@ function renderPersonal(){
   $('my-k-bal').textContent = T ? (gap > 0 ? fmtN(gap) : `+${fmtN(-gap)}`) : '—'; setDelta($('my-d-bal'), gap > 0 ? 'down' : 'up', gap > 0 ? t('todo', { n: gap }) : gap === 0 ? t('metAll') : t('over', { n: -gap }));
   $('my-k-pct').textContent = T ? `${P}%` : '—'; setDelta($('my-d-pct'), P >= 100 ? 'up' : P < 70 ? 'down' : '', `${thDate(st.start)} – ${thDate(st.end)}`);
   const qs = st.q.toLowerCase();
+  if (st.platform === 'youtube') return renderPersonalYT(name, qs);
+  $('my-rows-head').innerHTML = `<tr><th class="is-num">#</th><th>${t('h.date')}</th><th>${t('h.brand')}</th><th>${t('h.product')}</th><th>${t('h.type')}</th><th class="is-topic">${t('h.topic')}</th><th>${t('h.status')}</th><th>${t('h.file')}</th><th>TikTok</th></tr>`;
   const rows = period.filter(c => (st.brand === 'all' || c.shop === st.brand) && (st.status === 'all' || c.status === st.status) && (!qs || `${c.topic} ${c.title} ${c.product} ${c.type}`.toLowerCase().includes(qs))).sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
   $('my-count').textContent = fmtN(rows.length);
   const inBrand = period.filter(c => st.brand === 'all' || c.shop === st.brand);
