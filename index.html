@@ -473,6 +473,19 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 .kpi-brand-dot { width: 9px; height: 9px; border-radius: var(--omnix-radius-full); background: var(--c); flex: 0 0 auto; }
 .kpi-plat { width: 13px; height: 13px; color: var(--omnix-fg); flex: 0 0 auto; margin-right: 3px; vertical-align: -2px; display: inline-block; }
 .kpi-plat-cell { display: inline-flex; align-items: center; gap: var(--omnix-space-1); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.kpi-cal__dots { display: none; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+.kpi-cal__dot { width: 6px; height: 6px; border-radius: var(--omnix-radius-full); background: var(--c, var(--omnix-chart-other)); }
+.kpi-cal__dot.is-plan { background: transparent; border: 1.5px solid var(--omnix-accent); width: 7px; height: 7px; }
+.kpi-cal__dotmore { font-size: 9px; color: var(--omnix-fg-muted); line-height: 1; }
+.kpi-cal-day { border-top: 1px solid var(--omnix-border); padding: var(--omnix-space-3); display: flex; flex-direction: column; gap: var(--omnix-space-2); }
+.kpi-cal-day[hidden] { display: none; }
+.kpi-cal-day__head { display: flex; align-items: center; gap: var(--omnix-space-2); flex-wrap: wrap; }
+.kpi-cal-day__list { display: flex; flex-direction: column; gap: var(--omnix-space-1); }
+.kpi-cal-day__row { display: flex; align-items: center; gap: var(--omnix-space-2); width: 100%; padding: var(--omnix-space-2); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); background: var(--omnix-surface); color: var(--omnix-fg); font: inherit; font-size: var(--omnix-text-xs); text-align: left; cursor: pointer; }
+.kpi-cal-day__row:hover { background: var(--omnix-surface-2); }
+.kpi-cal-day__row.is-plan { border-style: dashed; border-color: var(--omnix-accent); }
+.kpi-cal-day__bar { width: 3px; align-self: stretch; border-radius: 2px; background: var(--c); flex: 0 0 auto; }
+.kpi-cal-day__text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .kpi-plan-form { display: grid; grid-template-columns: 1fr 1fr; gap: var(--omnix-space-3); }
 .kpi-plan-form .is-full { grid-column: 1 / -1; }
 .kpi-plan-form .ox-field { margin: 0; }
@@ -515,10 +528,17 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
   .ox-kpi { padding: var(--omnix-space-3); }
   .ox-kpi__value { font-size: var(--omnix-text-lg); }
   /* ปฏิทิน: ช่องเล็กลง อ่านครบทั้งเดือนด้วยการเลื่อนซ้ายขวา */
-  .kpi-cal { min-width: 640px; }
-  .kpi-cal__day { min-height: 96px; padding: var(--omnix-space-1); }
-  .kpi-cal__item { font-size: 10px; padding: 1px 4px; }
-  .kpi-cal__num { width: 20px; height: 20px; }
+  .kpi-cal-wrap { overflow-x: hidden; }
+  .kpi-cal { min-width: 0; }
+  .kpi-cal__day { min-height: 46px; padding: 3px 2px; gap: 2px; align-items: center; }
+  .kpi-cal__head { width: 100%; justify-content: center; gap: 2px; }
+  .kpi-cal__item, .kpi-cal__more { display: none; }
+  .kpi-cal__dots { display: flex; justify-content: center; }
+  .kpi-cal__num { width: 22px; height: 22px; font-size: 11px; }
+  .kpi-cal__count { display: none; }
+  .kpi-cal__wd { padding: 4px 0; font-size: 10px; }
+  .kpi-cal__day.is-picked { background: var(--omnix-accent-soft); box-shadow: inset 0 0 0 1px var(--omnix-accent); }
+  .kpi-cal__day.is-picked .kpi-cal__num { color: var(--omnix-accent); }
   .kpi-preview__player { max-height: 46vh; }
   .ox-modal { max-height: 92vh; }
   .ox-modal__body { max-height: 70vh; overflow-y: auto; }
@@ -760,6 +780,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
         <div class="kpi-legend-bar ox-xs ox-muted"><span class="kpi-cal__item is-demo" style="--c:var(--brand-eloop)">Eloop</span><span class="kpi-cal__item is-demo" style="--c:var(--brand-moov)">Moov</span><span class="kpi-cal__item is-plan is-demo" data-i18n="cal.legendPlan">แผนที่วางไว้</span><span data-i18n="cal.hint">คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง</span></div>
       </div>
       <div class="kpi-cal-wrap"><div class="kpi-cal" id="cal-grid" role="grid"></div></div>
+      <div class="kpi-cal-day" id="cal-day" hidden></div>
     </div>
 
     <div class="kpi-card">
@@ -911,7 +932,7 @@ const DICT = {
     noClipsHint: 'ลองขยายช่วงเวลา หรือเลือกสถานะ "ทั้งหมด"', showing: 'แสดง {a}–{b} จาก {n} รายการ', none: 'ไม่มีรายการ', open: 'เปิด', noLink: 'ไม่มีลิงก์', copyPath: 'คัดลอก Path', copiedPath: 'คัดลอกที่อยู่ไฟล์แล้ว', copyLink: 'คัดลอกลิงก์', copiedLink: 'คัดลอกลิงก์ TikTok แล้ว', copyFail: 'คัดลอกไม่สำเร็จ',
     myQuota: 'โควต้า {n} คลิป/สัปดาห์ (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} สัปดาห์', myTargetSubBrand: '{b} · {w} สัปดาห์', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'จากเป้า {n} คลิป', todo: 'ต้องทำอีก {n} คลิป', metAll: 'ครบตามเป้าแล้ว',
     noMatch: 'ไม่พบคลิปตามเงื่อนไข', noMatchHint: 'ลองเปลี่ยนช่วงเวลา แบรนด์ หรือสถานะ', noSearch: 'ไม่พบคลิปที่ตรงกับคำค้น', noSearchHint: 'ลองเลือก "ทุกสถานะ" หรือพิมพ์คำอื่น',
-    multiHint: 'เลือกได้หลายสถานะ', clickPick: 'คลิกเพื่อกรองเฉพาะคนนี้', statusSaved: 'บันทึกสถานะ {s} ลงชีตแล้ว', statusFailed: 'บันทึกลงชีตไม่สำเร็จ ({e}) — คืนค่าเดิมแล้ว', clickPickType: 'คลิกเพื่อกรองเฉพาะประเภทนี้', byStatusN: 'เฉพาะสถานะ {s}', 'tab.cal': 'Calendar', 'cal.today': 'วันนี้', 'cal.add': 'วางคอนเทนต์', 'cal.export': 'ส่งออกแผน (CSV)', 'cal.grid': 'ปฏิทินรายเดือน', 'cal.legendPlan': 'แผนที่วางไว้', 'cal.hint': 'ไอคอน = ช่องทางที่โพสต์ · คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง',
+    multiHint: 'เลือกได้หลายสถานะ', clickPick: 'คลิกเพื่อกรองเฉพาะคนนี้', statusSaved: 'บันทึกสถานะ {s} ลงชีตแล้ว', statusFailed: 'บันทึกลงชีตไม่สำเร็จ ({e}) — คืนค่าเดิมแล้ว', clickPickType: 'คลิกเพื่อกรองเฉพาะประเภทนี้', byStatusN: 'เฉพาะสถานะ {s}', 'tab.cal': 'Calendar', 'cal.today': 'วันนี้', 'cal.add': 'วางคอนเทนต์', 'cal.export': 'ส่งออกแผน (CSV)', 'cal.grid': 'ปฏิทินรายเดือน', 'cal.legendPlan': 'แผนที่วางไว้', 'cal.hint': 'ไอคอน = ช่องทางที่โพสต์ · คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง', 'cal.nItems': '{n} รายการ', 'cal.dayEmpty': 'ยังไม่มีงานในวันนี้',
     'cal.k.month': 'คลิปในชีตเดือนนี้', 'cal.k.plans': 'แผนที่วางไว้', 'cal.k.free': 'วันที่ยังว่าง', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% ของคลิปเดือนนี้', 'cal.plansSub': 'ยังไม่ถึงวัน {n} รายการ', 'cal.freeSub': 'จากวันที่เหลือในเดือน {n} วัน', 'cal.freePast': 'เดือนนี้ผ่านไปแล้ว',
     'cal.meta': '{n} คลิปจากชีต · {p} แผน · {a} – {b}', 'cal.more': 'อีก {n} รายการ', 'cal.less': 'ย่อ', 'cal.upcoming': 'แผนคอนเทนต์ที่วางไว้', 'cal.local': 'บันทึกไว้ในเบราว์เซอร์นี้ — ส่งออก CSV เพื่อนำไปวางในชีต', 'cal.noPlans': 'ยังไม่มีแผนคอนเทนต์ในเดือนนี้', 'cal.noPlansHint': 'คลิกวันในปฏิทิน หรือกดปุ่ม "วางคอนเทนต์"',
     'cal.newTitle': 'วางคอนเทนต์ล่วงหน้า', 'cal.editTitle': 'แก้ไขแผนคอนเทนต์', 'cal.f.note': 'โน้ต / ไอเดีย', 'cal.f.channel': 'ช่องทางที่จะโพสต์', 'cal.h.channel': 'ช่องทาง', 'cal.save': 'บันทึกแผน', 'cal.delete': 'ลบแผนนี้', 'cal.saved': 'บันทึกแผนแล้ว', 'cal.deleted': 'ลบแผนแล้ว', 'cal.confirmDel': 'ลบแผนคอนเทนต์นี้?', 'cal.needTopic': 'กรอกวันที่และหัวข้อคลิปก่อนบันทึก', 'cal.edit': 'แก้ไข', 'cal.dup': 'ทำซ้ำ', 'cal.exported': 'ส่งออกแผน {n} รายการแล้ว', 'cal.noExport': 'ยังไม่มีแผนให้ส่งออก',
@@ -939,7 +960,7 @@ const DICT = {
     noClipsHint: 'Try a wider date range or "All" statuses', showing: 'Showing {a}–{b} of {n}', none: 'No items', open: 'Open', noLink: 'No link', copyPath: 'Copy path', copiedPath: 'File path copied', copyLink: 'Copy link', copiedLink: 'TikTok link copied', copyFail: 'Copy failed',
     myQuota: 'Quota {n} clips/week (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} weeks', myTargetSubBrand: '{b} · {w} weeks', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'of {n} target', todo: '{n} more clips to do', metAll: 'Target met',
     noMatch: 'No clips match the filters', noMatchHint: 'Try another period, brand or status', noSearch: 'No clips match your search', noSearchHint: 'Try "All statuses" or another keyword',
-    multiHint: 'Select more than one', clickPick: 'click to filter by this person', statusSaved: 'Status {s} saved to the sheet', statusFailed: 'Could not save to the sheet ({e}) — change reverted', clickPickType: 'click to filter by this type', byStatusN: 'Status: {s}', 'tab.cal': 'Calendar', 'cal.today': 'Today', 'cal.add': 'Plan content', 'cal.export': 'Export plans (CSV)', 'cal.grid': 'Monthly calendar', 'cal.legendPlan': 'Planned', 'cal.hint': 'Icon = channel · click a day to plan content · click a clip to preview',
+    multiHint: 'Select more than one', clickPick: 'click to filter by this person', statusSaved: 'Status {s} saved to the sheet', statusFailed: 'Could not save to the sheet ({e}) — change reverted', clickPickType: 'click to filter by this type', byStatusN: 'Status: {s}', 'tab.cal': 'Calendar', 'cal.today': 'Today', 'cal.add': 'Plan content', 'cal.export': 'Export plans (CSV)', 'cal.grid': 'Monthly calendar', 'cal.legendPlan': 'Planned', 'cal.hint': 'Icon = channel · click a day to plan content · click a clip to preview', 'cal.nItems': '{n} items', 'cal.dayEmpty': 'Nothing scheduled yet',
     'cal.k.month': 'Sheet clips this month', 'cal.k.plans': 'Planned items', 'cal.k.free': 'Empty days left', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% of this month\'s clips', 'cal.plansSub': '{n} still upcoming', 'cal.freeSub': 'of {n} days left this month', 'cal.freePast': 'Month has passed',
     'cal.meta': '{n} clips from sheet · {p} plans · {a} – {b}', 'cal.more': '{n} more', 'cal.less': 'Less', 'cal.upcoming': 'Planned content', 'cal.local': 'Saved in this browser — export CSV to paste into the sheet', 'cal.noPlans': 'No planned content this month', 'cal.noPlansHint': 'Click a day in the calendar or press "Plan content"',
     'cal.newTitle': 'Plan content ahead', 'cal.editTitle': 'Edit planned content', 'cal.f.note': 'Notes / ideas', 'cal.f.channel': 'Channel to post on', 'cal.h.channel': 'Channel', 'cal.save': 'Save plan', 'cal.delete': 'Delete plan', 'cal.saved': 'Plan saved', 'cal.deleted': 'Plan deleted', 'cal.confirmDel': 'Delete this plan?', 'cal.needTopic': 'Enter a date and topic before saving', 'cal.edit': 'Edit', 'cal.dup': 'Duplicate', 'cal.exported': 'Exported {n} plans', 'cal.noExport': 'No plans to export yet',
@@ -1162,7 +1183,7 @@ const S = {
   mgr: { preset: 'this_week', start: '', end: '', brand: 'all', creators: [], statuses: [], types: [], q: '', page: 1, size: 30 },
   my: { creators: [], statuses: [], platform: 'all', preset: 'this_week', start: '', end: '', brand: 'all', q: '' },
   re: { q: '', status: 'Done', type: 'all', brand: 'all', preset: 'all_year', start: '', end: '', sort: 'newest', page: 1, size: 50 },
-  cal: { ym: iso(new Date()).slice(0, 7), brand: 'all', creator: 'all', statuses: [], expanded: new Set() }
+  cal: { ym: iso(new Date()).slice(0, 7), brand: 'all', creator: 'all', statuses: [], sel: null, expanded: new Set() }
 };
 function parseUSDate(s){ const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec((s || '').trim()); return m ? `${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}` : ''; }
 function parseRows(data){
@@ -1788,9 +1809,12 @@ function renderCal(){
       ? `<button type="button" class="kpi-cal__item st-${esc(it.status)}" style="--c:${brandVar(it.shop)}" data-clip="${it.id}" title="${esc(`${PLAT_LABEL[platformOf(it)]} · ${it.status} · ${it.creator} · ${it.topic || it.title}`)}"><span class="ox-dot"></span>${platIcon(platformOf(it))}${esc(it.topic || it.title || it.product || '—')}</button>`
       : `<button type="button" class="kpi-cal__item is-plan" data-plan="${it.id}" title="${esc(`${PLAT_LABEL[it.channel || 'tiktok']} · ${t('cal.st.' + it.status)} · ${it.creator || ''} · ${it.topic}`)}"><span class="ox-dot"></span>${platIcon(it.channel || 'tiktok')}${esc(it.topic)}</button>`).join('');
     if (items.length > 3) html += `<button type="button" class="kpi-cal__more" data-more="${s}">${expanded ? t('cal.less') : t('cal.more', { n: items.length - 3 })}</button>`;
+    html += `<div class="kpi-cal__dots">${items.slice(0, 4).map(it => `<span class="kpi-cal__dot ${it.kind === 'plan' ? 'is-plan' : ''}" style="--c:${it.kind === 'plan' ? 'var(--omnix-accent)' : brandVar(it.shop)}"></span>`).join('')}${items.length > 4 ? `<span class="kpi-cal__dotmore">+${items.length - 4}</span>` : ''}</div>`;
     html += '</div>';
   }
   $('cal-grid').innerHTML = html;
+  [...$('cal-grid').querySelectorAll('[data-day]')].forEach(el => el.classList.toggle('is-picked', el.dataset.day === S.cal.sel));
+  renderCalDay(byDay);
   // ตารางแผน
   $('cal-plan-count').textContent = fmtN(plans.length);
   $('cal-plan-rows').innerHTML = plans.length ? plans.map(p => `<tr>
@@ -1798,6 +1822,20 @@ function renderCal(){
     <td class="is-topic"><div class="line-clamp-2" title="${esc(p.topic)}">${esc(p.topic)}</div>${p.note ? `<div class="ox-xs ox-muted line-clamp-2">${esc(p.note)}</div>` : ''}</td><td>${badgePlan(p.status)}</td>
     <td class="is-nowrap"><span class="ox-row"><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" data-edit-plan="${p.id}">${t('cal.edit')}</button><button class="ox-btn ox-btn--ghost ox-btn--sm" type="button" data-dup-plan="${p.id}">${t('cal.dup')}</button>${btnCopy(p.topic, t('copyTopic'), t('copiedTopic'))}</span></td></tr>`).join('')
     : emptyRow(9, t('cal.noPlans'), t('cal.noPlansHint'), `<button class="ox-btn ox-btn--primary ox-btn--sm" type="button" style="margin-top:8px" onclick="openPlan(null, S.cal.ym + '-01')">${t('cal.add')}</button>`);
+}
+/* แผงรายการของวันที่แตะ — ใช้บนจอมือถือที่ช่องปฏิทินเล็กเกินกว่าจะใส่ข้อความ */
+function renderCalDay(byDay){
+  const el = document.getElementById('cal-day'), d = S.cal.sel;
+  if (!d) { el.hidden = true; el.innerHTML = ''; return; }
+  const items = byDay[d] || [];
+  el.hidden = false;
+  el.innerHTML = `<div class="kpi-cal-day__head"><strong>${fmtDW(toD(d))}</strong><span class="ox-xs ox-muted">${items.length ? t('cal.nItems', { n: items.length }) : t('cal.dayEmpty')}</span>
+      <span class="ox-topbar__spacer"></span>
+      <button class="ox-btn ox-btn--primary ox-btn--sm" type="button" data-plan-day="${d}">${t('cal.add')}</button>
+      <button class="ox-btn ox-btn--ghost ox-btn--icon ox-btn--sm" type="button" data-close-day aria-label="${t('close')}">✕</button></div>` +
+    (items.length ? `<div class="kpi-cal-day__list">${items.map(it => it.kind === 'clip'
+      ? `<button type="button" class="kpi-cal-day__row" data-clip="${it.id}"><span class="kpi-cal-day__bar" style="--c:${brandVar(it.shop)}"></span>${platIcon(platformOf(it))}<span class="kpi-cal-day__text">${esc(it.topic || it.title || it.product || '—')}</span>${badgeStatus(it.status)}</button>`
+      : `<button type="button" class="kpi-cal-day__row is-plan" data-plan="${it.id}"><span class="kpi-cal-day__bar" style="--c:var(--omnix-accent)"></span>${platIcon(it.channel || 'tiktok')}<span class="kpi-cal-day__text">${esc(it.topic)}</span>${badgePlan(it.status)}</button>`).join('')}</div>` : '');
 }
 function openPlan(id, date){
   const p = id ? getPlans().find(x => x.id === id) : null;
@@ -1901,7 +1939,15 @@ $('cal-grid').addEventListener('click', e => {
   const clip = e.target.closest('[data-clip]'); if (clip) { const c = ALL.find(x => String(x.id) === clip.dataset.clip); if (c) openPreview(c); return; }
   const plan = e.target.closest('[data-plan]'); if (plan) return openPlan(+plan.dataset.plan);
   const more = e.target.closest('[data-more]'); if (more) { const s = more.dataset.more; S.cal.expanded.has(s) ? S.cal.expanded.delete(s) : S.cal.expanded.add(s); return renderCal(); }
-  const day = e.target.closest('[data-day]'); if (day) openPlan(null, day.dataset.day);
+  const day = e.target.closest('[data-day]'); if (!day) return;
+  if (matchMedia('(max-width: 767px)').matches) { S.cal.sel = S.cal.sel === day.dataset.day ? null : day.dataset.day; renderCal(); if (S.cal.sel) document.getElementById('cal-day').scrollIntoView({ block: 'nearest' }); return; }
+  openPlan(null, day.dataset.day);
+});
+document.getElementById('cal-day').addEventListener('click', e => {
+  const add = e.target.closest('[data-plan-day]'); if (add) return openPlan(null, add.dataset.planDay);
+  if (e.target.closest('[data-close-day]')) { S.cal.sel = null; return renderCal(); }
+  const clip = e.target.closest('[data-clip]'); if (clip) { const c = ALL.find(x => String(x.id) === clip.dataset.clip); return c && openPreview(c); }
+  const plan = e.target.closest('[data-plan]'); if (plan) openPlan(+plan.dataset.plan);
 });
 $('cal-plan-rows').addEventListener('click', e => {
   const ed = e.target.closest('[data-edit-plan]'); if (ed) return openPlan(+ed.dataset.editPlan);
