@@ -477,6 +477,58 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 .kpi-plan-form .is-full { grid-column: 1 / -1; }
 .kpi-plan-form .ox-field { margin: 0; }
 @media (max-width: 767px) { .kpi-plan-form { grid-template-columns: 1fr; } .kpi-cal-nav__title { min-width: 110px; } }
+
+/* ===== มือถือ ===== */
+@media (max-width: 767px) {
+  .ox-main__inner { padding: var(--omnix-space-4) var(--omnix-space-4) var(--omnix-space-8); gap: var(--omnix-space-4); }
+  .ox-page-title { font-size: var(--omnix-text-lg); }
+  .ox-page-head { gap: var(--omnix-space-2); }
+  .ox-page-head__actions { width: 100%; flex-wrap: wrap; gap: var(--omnix-space-2); }
+  .ox-page-head p.ox-muted { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .kpi-updated { order: -1; width: 100%; }
+  /* แถวปุ่ม/ชิป: เลื่อนซ้ายขวาแทนการตัดบรรทัด จะได้ไม่กินพื้นที่แนวตั้ง */
+  .kpi-platform, .kpi-tabs, .kpi-legend-bar, .ox-filter-bar, .kpi-status-counts {
+    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .kpi-platform::-webkit-scrollbar, .kpi-tabs::-webkit-scrollbar, .kpi-legend-bar::-webkit-scrollbar,
+  .ox-filter-bar::-webkit-scrollbar, .kpi-status-counts::-webkit-scrollbar { display: none; }
+  .kpi-platform > *, .kpi-tabs > *, .kpi-legend-bar > *, .ox-filter-bar > *, .kpi-status-counts > * { flex: 0 0 auto; }
+  .ox-filter-bar { padding: var(--omnix-space-3); gap: var(--omnix-space-2); }
+  .ox-filter-bar .ox-control, .ox-filter-bar .ox-btn { height: 32px; font-size: var(--omnix-text-xs); }
+  .ox-filter-bar__meta { white-space: nowrap; }
+  .kpi-search { min-width: 180px; }
+  .kpi-legend-bar .ox-chip { white-space: nowrap; }
+  .kpi-dd__menu { min-width: min(240px, calc(100vw - 32px)); max-width: calc(100vw - 32px); max-height: 60vh; }
+  /* ตาราง: เลื่อนแนวนอนได้ และตรึงคอลัมน์ชื่อไว้ */
+  .ox-table-wrap { -webkit-overflow-scrolling: touch; }
+  .ox-table--data th, .ox-table--data td { padding: var(--omnix-space-2); }
+  .kpi-sum-table th:first-child, .kpi-sum-table td:first-child {
+    position: sticky; left: 0; z-index: 2; background: var(--omnix-surface); box-shadow: 1px 0 0 var(--omnix-border);
+  }
+  .kpi-sum-table thead th:first-child { z-index: 3; background: var(--omnix-surface-2); }
+  .kpi-sum-table .kpi-avatar { display: none; }
+  .kpi-table-head { padding: var(--omnix-space-3); gap: var(--omnix-space-2); }
+  /* กราฟเตี้ยลงนิดเพื่อให้เลื่อนดูได้ไวขึ้น */
+  .ox-chart__canvas { height: 220px; }
+  .ox-chart--tall .ox-chart__canvas { height: 280px; }
+  .ox-chart__head { flex-direction: column; gap: var(--omnix-space-2); }
+  .ox-kpi { padding: var(--omnix-space-3); }
+  .ox-kpi__value { font-size: var(--omnix-text-lg); }
+  /* ปฏิทิน: ช่องเล็กลง อ่านครบทั้งเดือนด้วยการเลื่อนซ้ายขวา */
+  .kpi-cal { min-width: 640px; }
+  .kpi-cal__day { min-height: 96px; padding: var(--omnix-space-1); }
+  .kpi-cal__item { font-size: 10px; padding: 1px 4px; }
+  .kpi-cal__num { width: 20px; height: 20px; }
+  .kpi-preview__player { max-height: 46vh; }
+  .ox-modal { max-height: 92vh; }
+  .ox-modal__body { max-height: 70vh; overflow-y: auto; }
+}
+@media (max-width: 420px) {
+  .ox-topbar { padding: 0 var(--omnix-space-3); }
+  .ox-brand { font-size: var(--omnix-text-sm); }
+  .ox-kpi-grid { gap: var(--omnix-space-3); }
+  .ox-table .is-topic { min-width: 180px; max-width: 220px; }
+}
 @media (max-width: 767px) { .kpi-toast { left: var(--omnix-space-4); right: var(--omnix-space-4); } .ox-table .is-topic { min-width: 220px; } }
 </style>
 </head>
