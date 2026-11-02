@@ -475,7 +475,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 .kpi-plat-cell { display: inline-flex; align-items: center; gap: var(--omnix-space-1); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
 .kpi-cal__dots { display: none; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
 .kpi-cal__dot { width: 6px; height: 6px; border-radius: var(--omnix-radius-full); background: var(--c, var(--omnix-chart-other)); }
-.kpi-cal__dot.is-plan { background: transparent; border: 1.5px solid var(--omnix-accent); width: 7px; height: 7px; }
+.kpi-cal__dot.is-plan { background: transparent; border: 1.5px solid var(--c, var(--omnix-accent)); width: 7px; height: 7px; }
 .kpi-cal__dotmore { font-size: 9px; color: var(--omnix-fg-muted); line-height: 1; }
 .kpi-cal-day { border-top: 1px solid var(--omnix-border); padding: var(--omnix-space-3); display: flex; flex-direction: column; gap: var(--omnix-space-2); }
 .kpi-cal-day[hidden] { display: none; }
@@ -1043,6 +1043,9 @@ const ICO = { up: 'm12 5-7 7 1.4 1.4L11 8.8V19h2V8.8l4.6 4.6L19 12z', down: 'm12
   ext: 'M13 3l3.3 3.3-7 7 1.4 1.4 7-7L21 11V3zM19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z' };
 const ico = n => `<svg class="ox-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICO[n]}"/></svg>`;
 const STATUS_BADGE = { Done: 'success', 'In Progress': 'warning', Draft: 'info', Reject: 'accent', Stuck: 'danger' };
+const BADGE_COLOR = { success: 'var(--omnix-success-fg)', warning: 'var(--omnix-warning-fg)', info: 'var(--omnix-info-fg)', accent: 'var(--omnix-accent)', danger: 'var(--omnix-danger-fg)' };
+const statusColor = st => BADGE_COLOR[STATUS_BADGE[st]] || 'var(--omnix-chart-other)';
+const planColor = st => BADGE_COLOR[PLAN_BADGE[st]] || 'var(--omnix-accent)';
 /* แก้สถานะได้เมื่อมีลิงก์ Apps Script และข้อมูลมาจากแหล่งที่เลขแถวตรงกับชีต (gviz ข้ามแถวที่ซ่อน) */
 const canEditStatus = () => !!SHEET_WRITE_URL && SOURCE !== 'gviz';
 const statusCell = c => canEditStatus() && c.sheetRow
@@ -1809,7 +1812,7 @@ function renderCal(){
       ? `<button type="button" class="kpi-cal__item st-${esc(it.status)}" style="--c:${brandVar(it.shop)}" data-clip="${it.id}" title="${esc(`${PLAT_LABEL[platformOf(it)]} · ${it.status} · ${it.creator} · ${it.topic || it.title}`)}"><span class="ox-dot"></span>${platIcon(platformOf(it))}${esc(it.topic || it.title || it.product || '—')}</button>`
       : `<button type="button" class="kpi-cal__item is-plan" data-plan="${it.id}" title="${esc(`${PLAT_LABEL[it.channel || 'tiktok']} · ${t('cal.st.' + it.status)} · ${it.creator || ''} · ${it.topic}`)}"><span class="ox-dot"></span>${platIcon(it.channel || 'tiktok')}${esc(it.topic)}</button>`).join('');
     if (items.length > 3) html += `<button type="button" class="kpi-cal__more" data-more="${s}">${expanded ? t('cal.less') : t('cal.more', { n: items.length - 3 })}</button>`;
-    html += `<div class="kpi-cal__dots">${items.slice(0, 4).map(it => `<span class="kpi-cal__dot ${it.kind === 'plan' ? 'is-plan' : ''}" style="--c:${it.kind === 'plan' ? 'var(--omnix-accent)' : brandVar(it.shop)}"></span>`).join('')}${items.length > 4 ? `<span class="kpi-cal__dotmore">+${items.length - 4}</span>` : ''}</div>`;
+    html += `<div class="kpi-cal__dots">${items.slice(0, 4).map(it => `<span class="kpi-cal__dot ${it.kind === 'plan' ? 'is-plan' : ''}" style="--c:${it.kind === 'plan' ? planColor(it.status) : statusColor(it.status)}" title="${esc(it.kind === 'plan' ? t('cal.st.' + it.status) : `${it.status} · ${t('st.' + it.status)}`)}"></span>`).join('')}${items.length > 4 ? `<span class="kpi-cal__dotmore">+${items.length - 4}</span>` : ''}</div>`;
     html += '</div>';
   }
   $('cal-grid').innerHTML = html;
