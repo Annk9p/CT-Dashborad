@@ -459,11 +459,6 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 .kpi-cal__item { display: block; font-size: 11px; line-height: 1.3; padding: 2px 6px; border-radius: 4px; border-left: 3px solid var(--c, var(--omnix-chart-other)); background: var(--omnix-surface-2); color: var(--omnix-fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; border-top: 0; border-right: 0; border-bottom: 0; font-family: inherit; width: 100%; cursor: pointer; }
 .kpi-cal__day:hover .kpi-cal__item { background: var(--omnix-surface); }
 .kpi-cal__item .ox-dot { display: inline-block; width: 6px; height: 6px; border-radius: var(--omnix-radius-full); margin-right: 4px; vertical-align: middle; background: var(--omnix-fg-muted); }
-.kpi-cal__item.st-Done .ox-dot { background: var(--omnix-success-fg); }
-.kpi-cal__item.st-In\ Progress .ox-dot { background: var(--omnix-warning-fg); }
-.kpi-cal__item.st-Draft .ox-dot { background: var(--omnix-info-fg); }
-.kpi-cal__item.st-Stuck .ox-dot { background: var(--omnix-danger-fg); }
-.kpi-cal__item.st-Reject .ox-dot { background: var(--omnix-accent); }
 .kpi-cal__item.is-plan { border: 1px dashed var(--omnix-accent); border-left: 3px solid var(--omnix-accent); background: var(--omnix-accent-soft); color: var(--omnix-accent); }
 .kpi-cal__item.is-plan .ox-dot { background: var(--omnix-accent); }
 .kpi-cal__item.is-demo { display: inline-block; width: auto; cursor: default; padding-right: 8px; }
@@ -1809,8 +1804,8 @@ function renderCal(){
     const cls = ['kpi-cal__day', out && 'is-out', s === TODAY && 'is-today', s < TODAY && 'is-past'].filter(Boolean).join(' ');
     html += `<div class="${cls}" role="gridcell" data-day="${s}"><div class="kpi-cal__head"><span class="kpi-cal__num">${d.getDate()}</span>${items.length ? `<span class="kpi-cal__count">${items.length}</span>` : ''}</div>`;
     html += shown.map(it => it.kind === 'clip'
-      ? `<button type="button" class="kpi-cal__item st-${esc(it.status)}" style="--c:${brandVar(it.shop)}" data-clip="${it.id}" title="${esc(`${PLAT_LABEL[platformOf(it)]} · ${it.status} · ${it.creator} · ${it.topic || it.title}`)}"><span class="ox-dot"></span>${platIcon(platformOf(it))}${esc(it.topic || it.title || it.product || '—')}</button>`
-      : `<button type="button" class="kpi-cal__item is-plan" data-plan="${it.id}" title="${esc(`${PLAT_LABEL[it.channel || 'tiktok']} · ${t('cal.st.' + it.status)} · ${it.creator || ''} · ${it.topic}`)}"><span class="ox-dot"></span>${platIcon(it.channel || 'tiktok')}${esc(it.topic)}</button>`).join('');
+      ? `<button type="button" class="kpi-cal__item" style="--c:${brandVar(it.shop)}" data-clip="${it.id}" title="${esc(`${PLAT_LABEL[platformOf(it)]} · ${it.status} · ${t('st.' + it.status)} · ${it.creator} · ${it.topic || it.title}`)}"><span class="ox-dot" style="background:${statusColor(it.status)}"></span>${platIcon(platformOf(it))}${esc(it.topic || it.title || it.product || '—')}</button>`
+      : `<button type="button" class="kpi-cal__item is-plan" data-plan="${it.id}" title="${esc(`${PLAT_LABEL[it.channel || 'tiktok']} · ${t('cal.st.' + it.status)} · ${it.creator || ''} · ${it.topic}`)}"><span class="ox-dot" style="background:${planColor(it.status)}"></span>${platIcon(it.channel || 'tiktok')}${esc(it.topic)}</button>`).join('');
     if (items.length > 3) html += `<button type="button" class="kpi-cal__more" data-more="${s}">${expanded ? t('cal.less') : t('cal.more', { n: items.length - 3 })}</button>`;
     html += `<div class="kpi-cal__dots">${items.slice(0, 4).map(it => `<span class="kpi-cal__dot ${it.kind === 'plan' ? 'is-plan' : ''}" style="--c:${it.kind === 'plan' ? planColor(it.status) : statusColor(it.status)}" title="${esc(it.kind === 'plan' ? t('cal.st.' + it.status) : `${it.status} · ${t('st.' + it.status)}`)}"></span>`).join('')}${items.length > 4 ? `<span class="kpi-cal__dotmore">+${items.length - 4}</span>` : ''}</div>`;
     html += '</div>';
