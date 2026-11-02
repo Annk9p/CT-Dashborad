@@ -1544,9 +1544,9 @@ function renderSummary(){
   const gap = base.total - base.done;
   $('my-k-bal').textContent = base.total ? (gap > 0 ? fmtN(gap) : `+${fmtN(-gap)}`) : '—'; setDelta($('my-d-bal'), gap > 0 ? 'down' : 'up', gap > 0 ? t('todo', { n: gap }) : gap === 0 ? t('metAll') : t('over', { n: -gap }));
   const P = pctOf(base.done, base.total); $('my-k-pct').textContent = base.total ? `${P}%` : '—'; setDelta($('my-d-pct'), P >= 100 ? 'up' : P < 70 ? 'down' : '', showTT ? `${thDate(st.start)} – ${thDate(st.end)}` : t('yt.topics2026'));
-  /* Request = Total Amount − จำนวนในสถานะที่เลือก · ติดลบ = แดง · เป็นบวก = เขียว */
+  /* Request = จำนวนในสถานะที่เลือก − Total Amount · ติดลบ = แดง · เป็นบวก = เขียว */
   const reqCell = v => `<td class="is-num kpi-req ${v < 0 ? 'is-short' : v > 0 ? 'is-over' : ''}">${v === 0 ? '0' : fmtN(v)}</td>`;
-  const trio = (amt, dn) => `<td class="is-num">${fmtN(amt)}</td><td class="is-num"><strong>${fmtN(dn)}</strong></td>${reqCell(amt - dn)}`;
+  const trio = (amt, dn) => `<td class="is-num">${fmtN(amt)}</td><td class="is-num"><strong>${fmtN(dn)}</strong></td>${reqCell(dn - amt)}`;
   const ttCells = r => brandCols.map(b => trio(r.byBrand[b].amt, r.byBrand[b].dn)).join('') +
     (showBoth ? trio(brandCols.reduce((a, b) => a + r.byBrand[b].amt, 0), brandCols.reduce((a, b) => a + r.byBrand[b].dn, 0)) : '');
   const ytCells = r => `<td class="is-num">${r.o}</td><td class="is-num">${r.m}</td><td class="is-num">${r.e}</td><td class="is-num"><strong>${r.ytTot}</strong></td>`;
