@@ -280,6 +280,7 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
   /* สีตามตัวตนแบรนด์ — ใช้ชุดเดียวกันทุกกราฟ/ป้าย/ปฏิทิน */
   --brand-eloop: #e02b20;
   --brand-moov: #131820;
+  --omnix-dot-warning: #eab308;   /* จุดสถานะ In Progress — เหลืองชัดกว่า warning-fg ที่ออกส้ม */
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not(.light) {
@@ -287,6 +288,7 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
     --omnix-chart-4: #ec4899; --omnix-chart-5: #3b82f6; --omnix-chart-other: #64748b;
     --omnix-chart-grid: #232a35; --omnix-chart-axis: #98a2b1;
     --brand-eloop: #ff6a5e; --brand-moov: #e7ebf1;   /* ธีมมืด: แดงสว่างขึ้น · ดำกลับเป็นขาว */
+    --omnix-dot-warning: #fbbf24;
   }
 }
 :root[data-theme="dark"], :root.dark {
@@ -294,6 +296,7 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
   --omnix-chart-4: #ec4899; --omnix-chart-5: #3b82f6; --omnix-chart-other: #64748b;
   --omnix-chart-grid: #232a35; --omnix-chart-axis: #98a2b1;
   --brand-eloop: #ff6a5e; --brand-moov: #e7ebf1;
+  --omnix-dot-warning: #fbbf24;
 }
 
 /* แถวตัวกรอง — แถวเดียว อยู่บนสุดเสมอ */
@@ -1038,7 +1041,7 @@ const ICO = { up: 'm12 5-7 7 1.4 1.4L11 8.8V19h2V8.8l4.6 4.6L19 12z', down: 'm12
   ext: 'M13 3l3.3 3.3-7 7 1.4 1.4 7-7L21 11V3zM19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z' };
 const ico = n => `<svg class="ox-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICO[n]}"/></svg>`;
 const STATUS_BADGE = { Done: 'success', 'In Progress': 'warning', Draft: 'info', Reject: 'accent', Stuck: 'danger' };
-const BADGE_COLOR = { success: 'var(--omnix-success-fg)', warning: 'var(--omnix-warning-fg)', info: 'var(--omnix-info-fg)', accent: 'var(--omnix-accent)', danger: 'var(--omnix-danger-fg)' };
+const BADGE_COLOR = { success: 'var(--omnix-success-fg)', warning: 'var(--omnix-dot-warning)', info: 'var(--omnix-info-fg)', accent: 'var(--omnix-accent)', danger: 'var(--omnix-danger-fg)' };
 const statusColor = st => BADGE_COLOR[STATUS_BADGE[st]] || 'var(--omnix-chart-other)';
 const planColor = st => BADGE_COLOR[PLAN_BADGE[st]] || 'var(--omnix-accent)';
 /* แก้สถานะได้เมื่อมีลิงก์ Apps Script และข้อมูลมาจากแหล่งที่เลขแถวตรงกับชีต (gviz ข้ามแถวที่ซ่อน) */
